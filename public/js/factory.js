@@ -1,0 +1,948 @@
+(function() {
+    app.factory('functions', function($http, $window) {
+        return {
+            loading: function() {
+                console.log("[factory.js] loading");
+
+                $('#loader-wrapper').css('display', '');
+                $window.onload = function(e) {
+                    //your magic here
+                    $('#loader-wrapper').css('display', 'none');
+                }
+
+                setTimeout(function() {
+                    $('#loader-wrapper').css('display', 'none');
+                }, 4000);
+            },
+            loadingWait: function() {
+                console.log("[factory.js] loading");
+
+                $('#loader-wrapper').css('display', '');
+            },
+            loadingEndWait: function() {
+                console.log("[factory.js] loading");
+
+                $('#loader-wrapper').css('display', 'none');
+            },
+            loadingWaitTime: function(x) {
+                console.log("[factory.js] loading");
+
+                $('#loader-wrapper').css('display', '');
+                setTimeout(function() {
+                    $('#loader-wrapper').css('display', 'none');
+                }, x);
+            },
+            sumaArray: function(data, indice) {
+                console.log("[functions][sumaArray]");
+
+                var sumaTotal = 0;
+
+                for (var x = 0; x < data.length; x++) {
+
+                    console.log("Suma: " + data[x][indice]);
+
+                    sumaTotal = parseFloat(sumaTotal) + parseFloat(data[x][indice]);
+
+                }
+
+                return sumaTotal;
+
+            },
+            generarGraficaPieChart: function(data) {
+
+                console.log("[functions][generarGraficaBarras]");
+
+                console.log(data);
+
+                //instrumentos
+                var labels = Array();
+
+                //titulos
+                var dataPie = Array();
+
+                for (var x = 0; x < data.length; x++) {
+
+                    labels[x] = data[x].instrumento;
+                    dataPie[x] = data[x].titulos;
+
+                }
+
+                console.log(labels);
+                console.log(dataPie);
+
+                /* pie chart */
+                var pieChart = function() {
+                        var config = {
+                            type: 'pie',
+                            data: {
+                                datasets: [{
+                                    data: dataPie,
+                                    backgroundColor: [
+                                        primary_100,
+                                        danger_500,
+                                        success_100,
+                                        info_100,
+                                        success_500,
+                                        danger_100,
+                                        success_500,
+                                        info_500,
+                                        primary_500
+                                    ],
+                                    label: 'My dataset' // for legend
+                                }],
+                                labels: labels
+                            },
+                            options: {
+                                responsive: true,
+                                legend: {
+                                    display: true,
+                                    position: 'bottom',
+                                }
+                            }
+                        };
+                        new Chart($("#pieChart > canvas").get(0).getContext("2d"), config);
+                    }
+                    /* pie chart -- end */
+
+                pieChart();
+
+            },
+            generarGraficaBarras: function(data) {
+
+                console.log("[functions][generarGraficaBarras]");
+
+                console.log(data);
+
+                var dataTargetProfit = Array();
+                var dataProfit = Array();
+
+                var max = 0;
+                var y = 0;
+
+                var sum = 0;
+
+                for (var x = 0; x < data.length; x++) {
+
+                    console.log("unix: " + moment(data[x].fecha_valuacion).unix());
+
+                    if (data[x][0] == 1) {
+
+                        console.log("fecha: " + moment(data[x][1]).format('YYYY-MM-DD HH:mm:ss'));
+                        console.log("valueOf: " + moment(data[x][1]).valueOf());
+                        console.log("resultado: " + data[x][4]);
+                        console.log("valor_en_libros: " + data[x][5]);
+                        console.log("val_costo: " + data[x][6]);
+                        console.log("precio_mercado: " + data[x][7]);
+
+                        //número límites de la gráfica
+                        //if(data[x][4]>-100000 && data[x][4]<100000){
+
+                        console.log("Genera");
+
+                        dataTargetProfit[y] = Array();
+                        dataProfit[y] = Array();
+
+                        dataTargetProfit[y][0] = moment(data[x][1]).valueOf();
+                        dataTargetProfit[y][1] = parseFloat(data[x][4]) + parseFloat(sum);
+                        dataProfit[y][0] = moment(data[x][1]).valueOf();
+                        dataProfit[y][1] = parseFloat(data[x][7]);
+                        sum = sum + parseFloat(data[x][4]);
+
+                        y++;
+
+                        //maximo de la gráfica
+                        if (data[x][4] > max) {
+                            max = data[x][4];
+                        }
+
+                        //} else {
+                        //  console.log("No Genera");
+                        //}
+
+                    }
+
+                }
+
+                console.log(dataTargetProfit);
+
+                /*
+                var dataTargetProfit = [
+                ]
+                */
+
+
+
+
+                //var dataProfit = []
+                var dataSignups = []
+
+                /* flot toggle example */
+                var flot_toggle = function() {
+
+                    var data = [{
+                            label: "P&L",
+                            data: dataTargetProfit,
+                            color: info_400,
+                            bars: {
+                                show: true,
+                                align: "center",
+                                barWidth: 100000000,
+                                lineWidth: 0,
+                                /*fillColor: {
+                                  colors: [color.primary._500, color.primary._900]
+                                },*/
+                                fillColor: {
+                                    colors: [{
+                                            opacity: 0.9
+                                        },
+                                        {
+                                            opacity: 0.1
+                                        }
+                                    ]
+                                }
+                            },
+                            highlightColor: 'rgba(255,255,255,0.3)',
+                            shadowSize: 1
+                        },
+                        {
+                            label: "Líneas 1",
+                            data: [],
+                            color: warning_500,
+                            lines: {
+                                show: true,
+                                lineWidth: 2,
+                                fill: true
+                            },
+                            shadowSize: 0,
+                            points: {
+                                show: true
+                            }
+                        },
+                        {
+                            label: "Líneas 2",
+                            data: dataSignups,
+                            color: success_500,
+                            lines: {
+                                show: true,
+                                lineWidth: 2,
+                                fill: true
+                            },
+                            shadowSize: 0,
+                            points: {
+                                show: true
+                            }
+                        }
+                    ]
+
+                    var options = {
+                        grid: {
+                            hoverable: true,
+                            clickable: true,
+                            tickColor: '#f2f2f2',
+                            borderWidth: 1,
+                            borderColor: '#f2f2f2'
+                        },
+                        tooltip: true,
+                        tooltipOpts: {
+                            cssClass: 'tooltip-inner',
+                            defaultTheme: false
+                        },
+                        xaxis: {
+                            mode: "time"
+                        },
+                        yaxes: {
+                            tickFormatter: function(val, axis) {
+                                return "$" + val;
+                            },
+                            max: 1200
+                        }
+
+                    };
+
+                    var plot2 = null;
+
+                    function plotNow() {
+                        var d = [];
+                        $("#js-checkbox-toggles").find(':checkbox').each(function() {
+                            if ($(this).is(':checked')) {
+                                d.push(data[$(this).attr("name").substr(4, 1)]);
+                            }
+                        });
+                        if (d.length > 0) {
+                            if (plot2) {
+                                plot2.setData(d);
+                                plot2.draw();
+                            } else {
+                                plot2 = $.plot($("#flot-toggles"), d, options);
+                            }
+                        }
+
+                    };
+
+                    $("#js-checkbox-toggles").find(':checkbox').on('change', function() {
+                        plotNow();
+                    });
+                    plotNow()
+                }
+                flot_toggle();
+                /* flot toggle example -- end Barras*/
+
+                /* lienas
+
+                var data = [
+                  {
+                      label: "P&L",
+                      data: [],
+                      color: info_400,
+                      bars:
+                      {
+                          show: true,
+                          align: "center",
+                          barWidth: 30 * 30 * 60 * 1000 * 80,
+                          lineWidth: 0,
+                          //fillColor: {
+                          //    colors: [color.primary._500, color.primary._900]
+                          //},
+                          fillColor:
+                          {
+                              colors: [
+                              {
+                                  opacity: 0.9
+                              },
+                              {
+                                  opacity: 0.1
+                              }]
+                          }
+                      },
+                      highlightColor: 'rgba(255,255,255,0.3)',
+                      shadowSize: 1
+                  },
+                  {
+                      label: "Líneas",
+                      data: dataProfit,
+                      color: warning_500,
+                      lines:
+                      {
+                          show: true,
+                          lineWidth: 2,
+                          fill: true
+                      },
+                      shadowSize: 0,
+                      points:
+                      {
+                          show: true
+                      }
+                  },
+                  {
+                      label: "Líneas 2",
+                      data: dataSignups,
+                      color: success_500,
+                      lines:
+                      {
+                          show: true,
+                          lineWidth: 2,
+                          fill: true
+                      },
+                      shadowSize: 0,
+                      points:
+                      {
+                          show: true
+                      }
+                  }]
+
+                  var options = {
+                      grid:
+                      {
+                          hoverable: true,
+                          clickable: true,
+                          tickColor: '#f2f2f2',
+                          borderWidth: 1,
+                          borderColor: '#f2f2f2'
+                      },
+                      tooltip: true,
+                      tooltipOpts:
+                      {
+                          cssClass: 'tooltip-inner',
+                          defaultTheme: false
+                      },
+                      xaxis:
+                      {
+                          mode: "time"
+                      },
+                      yaxes:
+                      {
+                          tickFormatter: function(val, axis)
+                          {
+                              return "$" + val;
+                          },
+                          max: 1200
+                      }
+
+                  };
+
+                  var plot3 = null;
+
+                  function plotNow2()
+                      {
+                          var d = [];
+                          $("#js-checkbox-toggles").find(':checkbox').each(function()
+                          {
+                              if ($(this).is(':checked'))
+                              {
+                                  d.push(data[$(this).attr("name").substr(4, 1)]);
+                              }
+                          });
+                          if (d.length > 0)
+                          {
+                              if (plot3)
+                              {
+                                  plot3.setData(d);
+                                  plot3.draw();
+                              }
+                              else
+                              {
+                                  plot3 = $.plot($("#flot-toggles-lineas"), d, options);
+                              }
+                          }
+
+                      };
+
+                      $("#js-checkbox-toggles").find(':checkbox').on('change', function()
+                      {
+                          plotNow2();
+                      });
+
+                      plotNow2();
+                  fin líneas */
+
+            },
+            generateAddKeyResult: function(contabilidad) {
+
+                for (var x = 0; x < contabilidad.length; x++) {
+
+                    contabilidad[x]["resultado"] = parseFloat((parseFloat(contabilidad[x].no_hay_titulo) + parseFloat(contabilidad[x].caja)).toFixed(2));
+
+                }
+
+                return contabilidad;
+
+            },
+            postIngresar: function(correo, contPass) {
+
+                console.log("[factory][postIngresar]");
+
+                console.log("correo: " + correo + " contPass: " + contPass);
+
+                var url = '/api/usuarios/ingresar';
+                return $http.get(url, {
+                    params: { cache: false, correo: correo, contPass: contPass },
+                    cache: false
+                });
+
+            },
+            getUsuario: function(id_usuarios) {
+
+                console.log("[factory][getUsuario]");
+
+                var url = '/api/usuarios/obtener';
+                return $http.get(url, {
+                    params: { cache: false, id_usuarios: id_usuarios },
+                    cache: false
+                });
+
+            },
+            getAllContaduria: function() {
+
+                console.log("[factory][getAllContaduria]");
+
+                var url = '/api/mesa-de-dinero/posicion/global/obtenerAll';
+                return $http.get(url, {
+                    params: { cache: false },
+                    cache: false
+                });
+
+            },
+            getContaduriaByMaxDate: function() {
+
+                console.log("[factory][getContaduriaByMaxDate]");
+
+                var url = '/api/mesa-de-dinero/posicion/global/obtenerByMaxDate';
+                return $http.get(url, {
+                    params: { cache: false },
+                    cache: false
+                });
+
+            },
+            getMesaDeDinero: function(start, end, instrumento) {
+
+                console.log("[factory][getMesaDeDinero]");
+
+                var url = '/api/mesa-de-dinero/obtener';
+                return $http.get(url, {
+                    params: { cache: false, start: start, end: end, instrumento: instrumento },
+                    cache: false
+                });
+
+            },
+            getPosicionPorInstrumentoObtenerInstrumentos: function(start, end) {
+
+                console.log("[factory][getPosicionPorInstrumentoObtenerInstrumentos]");
+
+                var url = '/api/mesa-de-dinero/posicion/porInstrumento/obtenerInstrumentos';
+                return $http.get(url, {
+                    params: { cache: false, start: start, end: end },
+                    cache: false
+                });
+
+            },
+            getOperacionesDirectoObtenerInstrumentos: function(start, end) {
+
+                console.log("[factory][getOperacionesDirectoObtenerInstrumentos]");
+
+                var url = '/api/mesa-de-dinero/operacion/directo/obtenerInstrumentos';
+                return $http.get(url, {
+                    params: { cache: false, start: start, end: end },
+                    cache: false
+                });
+
+            },
+            postLogout: function() {
+
+                console.log("[factory][postLogout]");
+
+                var url = '/api/usuarios/logout';
+                return $http.get(url, {
+                    params: { cache: false },
+                    cache: false
+                });
+
+            },
+            getZonaHoraria: function(id_usuarios) {
+
+                console.log("[factory][getZonasHoraria]");
+
+                var url = '/api/usuarios/zonaHoraria/obtener';
+                return $http.get(url, {
+                    params: { cache: false, id_usuarios: id_usuarios },
+                    cache: false
+                });
+
+            },
+            postOperacionDirecta: function(fecha_de_operacion, operacion, instrumento, montoNominal, precio,
+                tasaSobreTasa, numeroDeTitulos, montoLiquidacion, fechaLiquidacion,
+                contraparte) {
+
+                var url = '/api/mesa-de-dinero/operacion/directo/nueva';
+                return $http.post(url, {
+                    cache: false,
+                    fecha_de_operacion: fecha_de_operacion,
+                    operacion: operacion,
+                    instrumento: instrumento,
+                    montoNominal: montoNominal,
+                    precio: precio,
+                    tasaSobreTasa: tasaSobreTasa,
+                    numeroDeTitulos: numeroDeTitulos,
+                    montoLiquidacion: montoLiquidacion,
+                    fechaLiquidacion: fechaLiquidacion,
+                    contraparte: contraparte
+                });
+            },
+            postLimitesLineas: function(token, tipoEnvio) {
+                var url = 'http://localhost:8080/app/limiteslineas/lista/' + tipoEnvio;
+                //var url = 'http://localhost:8080/app/limiteslineas/lista/' + tipoEnvio;
+
+
+                console.log(token)
+
+                return $http.get(url, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: token
+                    }
+                });
+            },
+
+            deleteMercado: function(token, id) {
+                var url = 'http://localhost:8080/app/limitesMercado/' + id;
+                //var url = 'http://localhost:8080/app/limitesMercado/' + id;
+
+
+                console.log(token)
+
+                return $http.delete(url, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: token
+                    }
+                });
+            },
+            deletelimiteVar: function(token, id) {
+                var url = 'http://localhost:8080/app/limitesVarMd/' + id;
+                //var url = 'http://localhost:8080/app/limitesVarMd/' + id;
+
+
+                console.log(token)
+
+                return $http.delete(url, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: token
+                    }
+                });
+            },
+
+            addLimites: function(token, data) {
+
+                var url = 'http://localhost:8080/app/limiteslineas/';
+
+                console.log(token)
+
+                return $http.post(url, data, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: token
+                    }
+                });
+            },
+            addLimitesVarMd: function(token, data) {
+
+                //var url = 'http://localhost:8080/app/limitesVarMd/';
+                var url = 'http://localhost:8080/app/limitesVarMd/';
+
+                console.log(token)
+
+                return $http.post(url, data, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: token
+                    }
+                });
+            },
+            addLimitesMercado: function(token, data) {
+
+                //var url = 'http://localhost:8080/app/limitesMercado/';
+                var url = 'http://localhost:8080/app/limitesMercado/';
+
+                console.log(token)
+
+                return $http.post(url, data, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: token
+                    }
+                });
+            },
+
+
+            updateLimites: function(token, data, id) {
+
+                var url = 'http://localhost:8080/app/limiteslineas/' + id;
+
+                console.log(token)
+
+                return $http.put(url, data, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: token
+                    }
+                });
+            },
+
+            updateLimitesMercado: function(token, data, id) {
+
+                //var url = 'http://localhost:8080/app/limiteslineas/' + id;
+                //var url = 'http://localhost:8080/app/limitesMercado/' + id;
+                var url = 'http://localhost:8080/app/limitesMercado/' + id;
+
+
+                console.log(token)
+
+                return $http.put(url, data, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: token
+                    }
+                });
+            },
+
+            updateLimitesVarMd: function(token, data, id) {
+
+                //var url = 'http://localhost:8080/app/limiteslineas/' + id;
+                //var url = 'http://localhost:8080/app/limitesVarMd/' + id;
+                var url = 'http://localhost:8080/app/limitesVarMd/' + id;
+
+                console.log(token)
+
+                return $http.put(url, data, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: token
+                    }
+                });
+            },
+
+            deleteLimites: function(token, id) {
+
+                var url = 'http://localhost:8080/app/limiteslineas/' + id;
+
+                console.log(token)
+
+                return $http.delete(url, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: token
+                    }
+                });
+
+            },
+            getSemaforos: function(token, tipoEnvio) {
+                var url = 'http://localhost:8080/app/semaforosalertas/lista/' + tipoEnvio;
+                //var url = 'http://localhost:8080/app/semaforosalertas/lista/' + tipoEnvio;
+
+
+                console.log(token)
+                console.log(tipoEnvio)
+
+                return $http.get(url, {
+
+                    headers: {
+                        'Content-Type': 'application/json;charset=utf8',
+                        Authorization: token
+                    }
+                });
+            },
+            getListaSemaforosOperaciones: function(token) {
+                var url = 'http://localhost:8080/app/semaforosalertas/listaSegundaTabla';
+                //var url = 'http://localhost:8080/app/semaforosalertas/listaSegundaTabla';
+
+
+                console.log(token)
+
+                return $http.get(url, {
+
+                    headers: {
+                        'Content-Type': 'application/json;charset=utf8',
+                        Authorization: token
+                    }
+                });
+            },
+            getLimitesVarMd: function(token) {
+                var url = 'http://localhost:8080/app/limitesVarMd/findAllVar';
+                //var url = 'http://localhost:8080/applimitesVarMd/findAllVar';
+
+
+                console.log(token)
+
+                return $http.get(url, {
+
+                    headers: {
+                        'Content-Type': 'application/json;charset=utf8',
+                        Authorization: token
+                    }
+                });
+            },
+            getLimitesVarMercado: function(token) {
+                var url = 'http://localhost:8080/app/limitesMercado/findAll';
+                //var url = 'http://localhost:8080/app/limitesMercado/findAll';
+
+
+                console.log(token)
+
+                return $http.get(url, {
+
+                    headers: {
+                        'Content-Type': 'application/json;charset=utf8',
+                        Authorization: token
+                    }
+                });
+            },
+            getLogaritmo: function(token, data) {
+                var url = 'http://localhost:8080/app/logaritmo/log';
+
+                console.log(token)
+
+                return $http.post(url, data, {
+
+                    headers: {
+                        'Content-Type': 'application/json;charset=utf8',
+                        Authorization: token
+                    }
+                });
+            },
+
+            mesaDeDinero(token) {
+                const uri = 'http://localhost:8080/app/logaritmo/mesaDinero/';
+
+                return $http.get(uri, {
+
+                    headers: {
+                        'Content-Type': 'application/json;charset=utf8',
+                        Authorization: token
+                    }
+
+
+                });
+            },
+
+            mesaDeDerivados(token) {
+                const uri = 'http://localhost:8080/app/logaritmo/mesaDerivados/';
+                //const uri = 'http://localhost:8080/app/logaritmo/mesaDerivados/';
+
+                return $http.get(uri, {
+
+                    headers: {
+                        'Content-Type': 'application/json;charset=utf8',
+                        Authorization: token
+                    }
+
+
+                });
+            },
+            getProductosVar(token, data) {
+                const uri = 'http://localhost:8080/app/logaritmo/getProductos/';
+
+                return $http.post(uri,data, {
+
+                    headers: {
+                        'Content-Type': 'application/json;charset=utf8',
+                        Authorization: token
+                    }
+
+
+                });
+            },
+            getTransaccionesVar(token, data) {
+                return $http.post('http://localhost:8080/app/logaritmo/getTransacciones/',
+                    data, {
+                        headers: {
+                        'Content-Type': 'application/json;charset=utf8',
+                        Authorization: token
+                        }
+                    }
+                );
+            },
+
+            generarGraficaSemaforos: function(arrayContraparte, idGrafica, arrayLimiteGlobal) {
+
+                /* pie chart */
+                var pieChart = function() {
+                        var config = {
+                            type: 'pie',
+                            data: {
+                                datasets: [{
+                                    data: arrayLimiteGlobal,
+                                    backgroundColor: [
+                                        primary_100,
+                                        danger_500,
+                                        success_100,
+                                        info_100,
+                                        success_500,
+                                        danger_100,
+                                        success_500,
+                                        info_500,
+                                        primary_500
+                                    ],
+                                    label: 'My dataset' // for legend
+                                }],
+                                labels: arrayContraparte
+                            },
+                            options: {
+                                responsive: true,
+                                legend: {
+                                    display: true,
+                                    position: 'bottom',
+                                }
+                            }
+                        };
+                        new Chart($("#" + idGrafica).get(0).getContext("2d"), config);
+                    }
+                    /* pie chart -- end */
+
+                pieChart();
+
+            },
+
+            iniciarProcesoVar: function(token) {
+                var url = 'http://localhost:8080/app/logaritmo/log2';
+                //var url = 'http://localhost:8080/app/logaritmo/log2';
+                console.log(token)
+
+                return $http.post(url, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: token
+                    }
+                });
+            },
+
+            csv: function(token, data, url) {
+                console.log("entro factory");
+                const uri = 'http://localhost:8080/app/archivos/' + url + '';
+                console.log(uri);
+                console.log(data);
+                return $http.post(uri, data, {
+                    headers: {
+                        'Content-Type': 'application/json;charset=utf8',
+                        Authorization: token
+                    }
+                });
+            },
+            deleteSwapData: function(token, url) {
+                console.log("entro factory");
+                //const uri = 'http://localhost:8080/app/archivos/deleteSwap';
+                const uri = 'http://localhost:8080/app/archivos/deleteSwap';
+
+                console.log(uri);
+                return $http.post(uri, {
+                    headers: {
+                        'Content-Type': 'application/json;charset=utf8',
+                        Authorization: token
+                    }
+                });
+            },
+            deleteCurvas: function(token, url) {
+                console.log("entro factory");
+                //const uri = 'http://localhost:8080/app/archivos/deleteCurvas';
+                const uri = 'http://localhost:8080/app/archivos/deleteCurvas';
+                console.log(uri);
+                return $http.post(uri, {
+                    headers: {
+                        'Content-Type': 'application/json;charset=utf8',
+                        Authorization: token
+                    }
+                });
+            },
+            getParametros: function(token) {
+                var url = 'http://localhost:8080/app/archivos/Column/';
+                //var url = 'http://localhost:8080/app/semaforosalertas/lista/' + tipoEnvio;
+                return $http.post(url, {
+                    headers: {
+                        'Content-Type': 'application/json;charset=utf8',
+                        Authorization: token
+                    }
+                });
+            },
+
+            generarVarFactory(token) {
+                //var uri = 'http://localhost:8080/app/mercadoDeDerivadoss/swaps';
+                var uri = 'http://localhost:8080/app/mercadoDeDerivadoss/swaps';
+                return $http.post(uri, {
+                    headers: {
+                        'Content-Type': 'application/json;charset=utf8',
+                        Authorization: token
+                    }
+                });
+
+
+                /*return $http.post(uri, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: token
+                    }
+                });*/
+            }
+
+        };
+    });
+
+}).call(this);
