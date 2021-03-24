@@ -71,25 +71,6 @@
                     <div class="row">
                         <div class="col-lg-12 sortable-grid ui-sortable">
 
-                            <!-- Modal de validaciones -->
-                            <div class="modal fade" id="messageValidaVar" tabindex="-1" role="dialog" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <h5><label id="mensajeError"></h5>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
-                                    </div>
-                                </div>
-                                </div>
-                            </div>
-
                             <div id="panel-1" class="panel panel-locked panel-sortable" data-panel-lock="false" data-panel-close="false" data-panel-fullscreen="false" data-panel-collapsed="false" data-panel-color="false" data-panel-locked="true" data-panel-refresh="false" data-panel-reset="false" role="widget">
                                 
                                 <div class="panel-hdr">
@@ -146,21 +127,21 @@
                                                         </tr>
                                                         </tbody>
                                                     </table>
-                                                    <label class="position-absolute  pos-right" id="fecha"></label>
-                                                    <br>
-                                                    <br>
-                                                    <br>
-
-                                                    <label class="position-absolute  pos-right">&nbsp;&nbsp;&nbsp;VaR histórico porcentaje</label>
-                                                    <br>
-                                                    <input id="varDate" type="date">
-                                                    <select id="porcentajeSelect" class="form-control position-absolute  pos-right" style="width: 25%; display: inline-table; margin-left: 5px;" >
-                                                        <option value="99&174573759">99%</option>
-                                                        <option value="97&139659007">97%</option>
-                                                        <option value="95&49878217">95%</option>
-                                                    </select>
-                                                    <br>
-                                                    <br> <br>
+                                                    <div class="position-absolute pos-right">
+                                                        <label id="fecha"></label>
+                                                        <br/>
+                                                        <input id="varDate" type="date" class="position-absolute pos-right"/>
+                                                        <br/><br/>
+                                                        <label class="position-absolute pos-right">VaR histórico porcentaje</label>
+                                                        <br>
+                                                        <select id="porcentajeSelect" class="form-control position-absolute pos-right" style="width: 90%; display: inline-table; margin-left: 5px;" >
+                                                            <option value="99&174573759">99%</option>
+                                                            <option value="97&139659007">97%</option>
+                                                            <option value="95&49878217">95%</option>
+                                                        </select>
+                                                    </div>
+                                                    <br/><br/><br/><br/><br/><br/>
+                                                    
 
                                 <div style="margin-top: 145px; position: relative; right: 198px; margin-bottom: 7px;"  class="btn buttons-print" ></div>
 
