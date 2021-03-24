@@ -4485,35 +4485,76 @@ app.controller('csv', function($scope, functions, $window) {
 
 })
 
-
-
-app.controller('generarvar', function($scope, functions, $window) {
+app.controller('generarvar', function( $scope, functions) {
+    
+    
+    
     functions.loading();
+
+    $scope.validaGenerarVar = function(){
+        
+        $("#conntentSpinner").fadeIn();
+        var fecha = document.getElementById("varDate").value;
+        if(null==fecha || undefined==fecha || ""==fecha){
+            document.getElementById('mensajeError').innerHTML ="Por favor selecciona una fecha.";
+            $('#messageValidaVar').modal('show');
+        } else {
+            let data = {
+                fecha: fecha
+            };
+            functions.validaGenerarVarFactory(token, JSON.stringify(data)).then(function(response) {
+                console.log("### getProductosVar:: ",response);
+                var res = response.data;
+
+                if (res.status=="NO_CONTENT"){
+                    document.getElementById('mensajeError').innerHTML =res.mensaje;
+                    $('#messageValidaVar').modal('show');
+                } else if (res.status=="FOUND"){
+                    document.getElementById('mensajeConfirmacion').innerHTML =res.mensaje;
+                    $('#messageConfirmacion').modal('show');
+                } else if (res.status=="OK"){
+                    document.getElementById('mensajeError').innerHTML ="Proceso realizado correctamente.";
+                    $('#messageConfirmacion').modal('show');
+                } else {
+                    document.getElementById('mensajeError').innerHTML ="Ocurrió un problema al realizar el proceso.";
+                    $('#messageConfirmacion').modal('show');
+                }
+            });
+        }
+        $("#conntentSpinner").fadeOut();
+        
+    };
+    validaGenerarVar = $scope.validaGenerarVar;
 
     $scope.generarVar = function() {
 
         $("#conntentSpinner").fadeIn();
-
-        functions.generarVarFactory(token).then(function(response) {
-            var response = response.data;
-            console.log(response);
+        var fecha = document.getElementById("varDate").value;
+        let data = {
+            fecha: fecha
+        };
+        functions.generarVarFactory(token, JSON.stringify(data)).then(function(response) {
+            var res = response.data;
+            console.log(res);
             console.log("termino el proceso--------")
-            if (response.text == "Success") {
-                Swal.fire('Proceso realizado correctamente', '', 'success');
+            if (res.status=="OK"){
+                document.getElementById('mensajeError').innerHTML ="Proceso realizado correctamente.";
+                $('#messageConfirmacion').modal('show');
             } else {
-                Swal.fire('Ocurrió un problema al realizar el proceso', '', 'error');
+                document.getElementById('mensajeError').innerHTML ="Ocurrió un problema al realizar el proceso.";
+                $('#messageConfirmacion').modal('show');
             }
 
 
             $("#conntentSpinner").fadeOut();
-
-
-
         })
 
 
-    }
+    };
 
-    generarVar = $scope.generarVar
+
+    
+    
+    generarVar = $scope.generarVar;
 
 })

@@ -923,24 +923,35 @@
                 });
             },
 
-            generarVarFactory(token) {
+            validaGenerarVarFactory(token, data) {
                 //var uri = 'http://localhost:8080/app/mercadoDeDerivadoss/swaps';
-                var uri = 'http://localhost:8080/app/mercadoDeDerivadoss/swaps';
-                return $http.post(uri, {
+                var uri = 'http://localhost:8080/app/mercadoDeDerivadoss/validaGenerarVarFactory';
+                return $http.post(uri, data, {
                     headers: {
                         'Content-Type': 'application/json;charset=utf8',
                         Authorization: token
                     }
                 });
-
-
-                /*return $http.post(uri, {
+            },
+            generarVarFactory(token, data) {
+                //var uri = 'http://localhost:8080/app/mercadoDeDerivadoss/swaps';
+                var uri = 'http://localhost:8080/app/mercadoDeDerivadoss/generarVarFactory';
+                return $http.post(uri, data, {
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'application/json;charset=utf8',
                         Authorization: token
                     }
-                });*/
-            }
+                });
+            },
+            
+
+            
+            /*return $http.post(uri, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: token
+                }
+            });*/
 
         };
     });
