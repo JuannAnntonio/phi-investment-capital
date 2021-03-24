@@ -784,11 +784,11 @@
                 });
             },
 
-            mesaDeDerivados(token) {
+            mesaDeDerivados(token, data) {
                 const uri = 'http://localhost:8080/app/logaritmo/mesaDerivados/';
                 //const uri = 'http://localhost:8080/app/logaritmo/mesaDerivados/';
 
-                return $http.get(uri, {
+                return $http.post(uri,data, {
 
                     headers: {
                         'Content-Type': 'application/json;charset=utf8',

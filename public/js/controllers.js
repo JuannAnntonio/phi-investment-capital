@@ -478,327 +478,194 @@
         $scope.productoSelect = null;
 
         $scope.refreshTableMercados = function() {
-            functions.mesaDeDerivados(token).then(function(response) {
-                var da = response.data;
-                console.log(da);
-                const selectPorcentajePre = $('#porcentajeSelect').val();
-                const selectPorcentajeSplit = selectPorcentajePre.split('&');
-                const selectPorcentaje = selectPorcentajeSplit[0];
-                const selectPorcentajeValor = parseFloat(selectPorcentajeSplit[1]);
+            var fecha = document.getElementById("varDate").value;
+            if(null==fecha || undefined==fecha || ""==fecha){
+                document.getElementById('mensajeError').innerHTML ="Por favor selecciona una fecha.";
+                $('#messageValidaVar').modal('show');
+            } else {
+                let data = {
+                    fecha: fecha
+                };
+                functions.mesaDeDerivados(token, JSON.stringify(data)).then(function(response) {
+                    var da = response.data;
+                    console.log(da);
+                    const selectPorcentajePre = $('#porcentajeSelect').val();
+                    const selectPorcentajeSplit = selectPorcentajePre.split('&');
+                    const selectPorcentaje = selectPorcentajeSplit[0];
+                    const selectPorcentajeValor = parseFloat(selectPorcentajeSplit[1]);
 
-                if(null!=da && undefined != da){
-                    if (da['length'] > 0) {
+                    if(null!=da && undefined != da){
+                        if (da['length'] > 0) {
 
-                        let htmTableMercado = '';
-                        if (undefined != da[2]) {
-                            $('#l99').text(da[2]['var1'].toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
-                            $('#l97').text(da[2]['var2'].toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
-                            $('#l95').text(da[2]['var3'].toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
-                            $('#valuacion').text(da[2]['valuacion'].toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
-                            document.getElementById('valuacion').style.setProperty("background-color", "#faf9fc");
-                            document.getElementById('valuacionTxt').style.setProperty("background-color", "#faf9fc");
-
-
-                            var limite = da[1][0]['globalLimit'];
-                            var limite99 = da[1][0]['globalLimit'];
-                            var limite97 = da[1][0]['globalLimit'];
-                            var limite95 = da[1][0]['globalLimit'];
-
-                            $('#limite').text(limite.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
-                            $('#limite99').text(limite99.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
-                            $('#limite97').text(limite97.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
-                            $('#limite95').text(limite95.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
-                            var nivelConfianza_99 = limite -da[2]['var1'];
-                            var nivelConfianza_97 = limite -da[2]['var2'];
-                            var nivelConfianza_95 = limite -da[2]['var3'];
-                            $('#nivelConfianza_99').text(nivelConfianza_99.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
-                            $('#nivelConfianza_97').text(nivelConfianza_97.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
-                            $('#nivelConfianza_95').text(nivelConfianza_95.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
+                            let htmTableMercado = '';
+                            if (undefined != da[2]) {
+                                $('#l99').text(da[2]['var1'].toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
+                                $('#l97').text(da[2]['var2'].toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
+                                $('#l95').text(da[2]['var3'].toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
+                                $('#valuacion').text(da[2]['valuacion'].toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
+                                document.getElementById('valuacion').style.setProperty("background-color", "#faf9fc");
+                                document.getElementById('valuacionTxt').style.setProperty("background-color", "#faf9fc");
 
 
-                        } else {
-                            $('#l99').text(0.0)
-                            $('#l97').text(0.0)
-                            $('#l95').text(0.0)
-                            $('#valuacion').text(0.0)
-                        }
+                                var limite = da[1][0]['globalLimit'];
+                                var limite99 = da[1][0]['globalLimit'];
+                                var limite97 = da[1][0]['globalLimit'];
+                                var limite95 = da[1][0]['globalLimit'];
 
-                        var options = { year: "numeric", month: "long", day: "numeric" };
-                        var cellValue = da[3];
-                        var date = new Date(cellValue);
-                        $("#fecha").text("Fecha: " + date.toLocaleDateString("es-ES", options));
-
-                       /* htmTableDetalle += '<br/><table class="table" id="tableProductodetalle" style="width:100%;">';
-                        htmTableDetalle += '<thead class="p-3 mb-2 bg-dark text-white">';
-                        htmTableDetalle += '<tr>';
-                        htmTableDetalle += '<th scope="col">#</th>';
-                        htmTableDetalle += '<th scope="col">Transacción JUAN</th>';
-                        htmTableDetalle += '<th scope="col">Valuación</th>';
-                        htmTableDetalle += '<th scope="col">Var: ' + selectPorcentaje + '%</th>';
-                        htmTableDetalle += '<th scope="col">Límite</th>';
-                        htmTableDetalle += '<th scope="col">Límite - VaR</th>';
-                        htmTableDetalle += '</tr>';
-                        htmTableDetalle += '</thead>';
-                        htmTableDetalle += '<tbody>';
-
-                        let sumaValuacion = 0;
+                                $('#limite').text(limite.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
+                                $('#limite99').text(limite99.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
+                                $('#limite97').text(limite97.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
+                                $('#limite95').text(limite95.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
+                                var nivelConfianza_99 = limite -da[2]['var1'];
+                                var nivelConfianza_97 = limite -da[2]['var2'];
+                                var nivelConfianza_95 = limite -da[2]['var3'];
+                                $('#nivelConfianza_99').text(nivelConfianza_99.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
+                                $('#nivelConfianza_97').text(nivelConfianza_97.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
+                                $('#nivelConfianza_95').text(nivelConfianza_95.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
 
 
-                        for (let i = 0; i < da[0].length; i++) {
-
-                            var porcentajeNuevoBase = 0;
-                            if (selectPorcentaje == 99) {
-                                porcentajeNuevoBase = da[0][i]['var1'];
-                            } else if (selectPorcentaje == 97) {
-                                porcentajeNuevoBase = da[0][i]['var2'];
-                            } else if (selectPorcentaje == 95) {
-                                porcentajeNuevoBase = da[0][i]['var3'];
-                            }
-
-                            if (porcentajeNuevoBase == null) {
-                                porcentajeNuevoBase = 0;
-                            }
-
-                            //const calculoTempoLimite = parseFloat(da[i].limite) - porcentajeValues[i];
-                            const calculoTempoLimite = parseFloat(da[0][i].limite) - porcentajeNuevoBase;
-
-                            htmTableDetalle += '<tr style="cursor:pointer;" >';
-                            htmTableDetalle += ' <th scope="row">' + (i + 1) + '</th>';
-                            htmTableDetalle += '<td>' + da[0][i]['producto'] + '</td>';
-                            htmTableDetalle += '<td> ' + da[0][i]['valuacion'].toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>'
-                            htmTableDetalle += '<td> ' + porcentajeNuevoBase.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>';
-                            htmTableDetalle += '<td> ' + da[0][i]['limite'].toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>';
-
-                            if (calculoTempoLimite < 0) {
-                                htmTableDetalle += '<td style="color:red;"> ' + calculoTempoLimite.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>';
                             } else {
-                                htmTableDetalle += '<td style="color:green;"> ' + calculoTempoLimite.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>';
+                                $('#l99').text(0.0)
+                                $('#l97').text(0.0)
+                                $('#l95').text(0.0)
+                                $('#valuacion').text(0.0)
                             }
 
-                            htmTableDetalle += '</tr>';
+                            var options = { year: "numeric", month: "long", day: "numeric" };
+                            var cellValue = da[3];
+                            var date = new Date(cellValue);
+                            $("#fecha").text("Fecha: " + date.toLocaleDateString("es-ES", options));
 
-                            sumaValuacion += da[0][i]['valuacion'];
-
-
-                        }
-
-                        htmTableDetalle += '</tbody>';
-                        htmTableDetalle += '</table>';
-        */
-
-
-
-
-
-
-
-                        htmTableMercado += '<table class="table" id="tableMercado">';
-                        htmTableMercado += '<thead class="p-3 mb-2 bg-dark text-white">';
-                        htmTableMercado += '<tr>';
-                        htmTableMercado += '<th scope="col">Mesa Juan</th>';
-                        htmTableMercado += '<th scope="col">Valuación </th>';
-                        htmTableMercado += '<th scope="col">VaR </th>';
-                        htmTableMercado += '<th scope="col">Límite Var</th>';
-                        htmTableMercado += '<th scope="col">Límite - VaR</th>';
-                        htmTableMercado += '</tr>';
-                        htmTableMercado += '</thead>';
-                        htmTableMercado += '<tbody>';
-
-
-                        htmTableMercado += '<tr id="capital">';
-                        htmTableMercado += '<td>' + 'Mercado Capital' + '</td>';
-                        htmTableMercado += '<td>0,00</td>';
-                        htmTableMercado += '<td>0,00</td>';
-                        htmTableMercado += '<td>0,00</td>';
-                        htmTableMercado += '<td style="color:green;"> 0,00 </td>';
-                        htmTableMercado += '</tr>';
-                        globalLimitParaTablaMercados = da[1][0]['globalLimit'];
-                        $scope.limite = globalLimitParaTablaMercados;
-
-
-                        console.log("INFO_4: " ,da[4]);
-                        for (let i = 0; i < da[4].length; i++) {
-                            htmTableMercado += '<tr style="cursor:pointer;" onclick="getTableProductos('+da[4][i].cdMercado+')">';
-                            htmTableMercado += '<td>' + da[4][i].nombre + '</td>';
-                            htmTableMercado += '<td>' + da[4][i].valuacion.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>';
-
-                            var varPorcentaje = 0.0;
-                            if (selectPorcentaje == 99) {
-                                varPorcentaje = da[4][i].var1;
-                            } else if (selectPorcentaje == 97) {
-                                varPorcentaje = da[4][i].var2;
-                            } else if (selectPorcentaje == 95) {
-                                varPorcentaje = da[4][i].var3;
-                            }
-
-                            htmTableMercado += '<td>' + varPorcentaje.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' </td>';
-                            htmTableMercado += '<td>' + globalLimitParaTablaMercados.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' </td>';
-
-                            var calculoMenosVar = globalLimitParaTablaMercados - varPorcentaje;
-
-                            if (calculoMenosVar < 0) {
-                                htmTableMercado += '<td style="color:red;"> ' + calculoMenosVar.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>';
-                            } else {
-                                htmTableMercado += '<td style="color:green;"> ' + calculoMenosVar.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>';
-                            }
+                            htmTableMercado += '<table class="table" id="tableMercado">';
+                            htmTableMercado += '<thead class="p-3 mb-2 bg-dark text-white">';
+                            htmTableMercado += '<tr>';
+                            htmTableMercado += '<th scope="col">Mesa Juan</th>';
+                            htmTableMercado += '<th scope="col">Valuación </th>';
+                            htmTableMercado += '<th scope="col">VaR </th>';
+                            htmTableMercado += '<th scope="col">Límite Var</th>';
+                            htmTableMercado += '<th scope="col">Límite - VaR</th>';
                             htmTableMercado += '</tr>';
-                        }
+                            htmTableMercado += '</thead>';
+                            htmTableMercado += '<tbody>';
+                            htmTableMercado += '<tr id="capital">';
+                            htmTableMercado += '<td>' + 'Mercado Capital' + '</td>';
+                            htmTableMercado += '<td>0,00</td>';
+                            htmTableMercado += '<td>0,00</td>';
+                            htmTableMercado += '<td>0,00</td>';
+                            htmTableMercado += '<td style="color:green;"> 0,00 </td>';
+                            htmTableMercado += '</tr>';
+                            globalLimitParaTablaMercados = da[1][0]['globalLimit'];
+                            $scope.limite = globalLimitParaTablaMercados;
 
 
+                            console.log("INFO_4: " ,da[4]);
+                            for (let i = 0; i < da[4].length; i++) {
+                                htmTableMercado += '<tr style="cursor:pointer;" onclick="getTableProductos('+da[4][i].cdMercado+')">';
+                                htmTableMercado += '<td>' + da[4][i].nombre + '</td>';
+                                htmTableMercado += '<td>' + da[4][i].valuacion.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>';
 
-
-                        htmTableMercado += '<tr id="divisas">';
-                        htmTableMercado += '<td>' + 'Mercado Divisas' + '</td>';
-                        htmTableMercado += '<td> 0,00 </td>';
-                        htmTableMercado += '<td> 0,00 </td>';
-                        htmTableMercado += '<td> 0,00 </td>';
-                        htmTableMercado += '<td style="color:green;"> 0,00 </td>';
-                        htmTableMercado += '</tr>';
-
-                        /*htmTableMercado += '<tr id="capitales">';
-                        htmTableMercado += '<td>' + 'Mesa de capitales' + '</td>';
-                        htmTableMercado += '<td>0,00</td>';
-                        htmTableMercado += '<td>0,00</td>';
-                        htmTableMercado += '<td>0,00</td>';
-                        htmTableMercado += '<td style="color:green;">0,00</td>';
-                        htmTableMercado += '</tr>';*/
-
-                        htmTableMercado += '</tbody>';
-                        htmTableMercado += '</table>';
-
-
-
-
-
-        /*
-                        htmTableMercado += '<br/><table class="table" id="tableMercado" style="width:100%;">';
-                        htmTableMercado += '<thead class="p-3 mb-2 bg-dark text-white">';
-                        htmTableMercado += '<tr>';
-                        htmTableMercado += '<th scope="col">Mesa POPO</th>';
-                        htmTableMercado += '<th scope="col">Valuación </th>';
-                        htmTableMercado += '<th scope="col">VaR </th>';
-                        htmTableMercado += '<th scope="col">Límite Var</th>';
-                        htmTableMercado += '<th scope="col">Límite - VaR</th>';
-                        htmTableMercado += '</tr>';
-                        htmTableMercado += '</thead>';
-                        htmTableMercado += '<tbody>';
-
-
-                        htmTableMercado += '<tr id="dinero">';
-                        htmTableMercado += '<td>' + 'Mesa de dinero' + '</td>';
-                        htmTableMercado += '<td>0,00</td>';
-                        htmTableMercado += '<td>0,00</td>';
-                        htmTableMercado += '<td>0,00</td>';
-                        htmTableMercado += '<td style="color:green;"> 0,00 </td>';
-                        htmTableMercado += '</tr>';
-
-
-                        htmTableMercado += '<tr style="cursor:pointer;" id="derivados">';
-                        htmTableMercado += '<td>' + 'Mesa de derivados' + '</td>';
-                        htmTableMercado += '<td>' + sumaValuacion.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>';
-                        htmTableMercado += '<td>' + porcentajeParaTablaMercados.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' </td>';
-                        htmTableMercado += '<td>' + globalLimitParaTablaMercados.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' </td>';
-                        if (calculoTempoLimiteParaTablaMercados < 0) {
-                            htmTableMercado += '<td style="color:red;"> ' + calculoTempoLimiteParaTablaMercados.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>';
-                        } else {
-                            htmTableMercado += '<td style="color:green;"> ' + calculoTempoLimiteParaTablaMercados.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>';
-                        }
-
-                        htmTableMercado += '</tr>';
-
-
-                        htmTableMercado += '<tr id="divisas">';
-                        htmTableMercado += '<td>' + 'Mesa de divisas' + '</td>';
-                        htmTableMercado += '<td> 0,00 </td>';
-                        htmTableMercado += '<td> 0,00 </td>';
-                        htmTableMercado += '<td> 0,00 </td>';
-                        htmTableMercado += '<td style="color:green;"> 0,00 </td>';
-                        htmTableMercado += '</tr>';
-
-                        htmTableMercado += '<tr id="capitales">';
-                        htmTableMercado += '<td>' + 'Mesa de capitales' + '</td>';
-                        htmTableMercado += '<td>0,00</td>';
-                        htmTableMercado += '<td>0,00</td>';
-                        htmTableMercado += '<td>0,00</td>';
-                        htmTableMercado += '<td style="color:green;">0,00</td>';
-                        htmTableMercado += '</tr>';
-
-                        htmTableMercado += '</tbody>';
-                        htmTableMercado += '</table>';
-        */
-
-                        //document.getElementById('tableThird').innerHTML = htmTableDetalle;
-                        //document.getElementById('tableFirst').innerHTML = htmTableIntermedio;
-                        document.getElementById('tableSecond').innerHTML = htmTableMercado;
-
-
-
-                        $('#tableMercado').dataTable({
-
-                            "pageLength": 25,
-                            select: true,
-                            "ordering": true,
-                            responsive: true,
-                            dom: "<'row mb-3'<'col-sm-12 col-md-4 d-flex align-items-center justify-content-start'f><'col-sm-12 col-md-8 d-flex align-items-center justify-content-end'B>>" +
-                                "<'row'<'col-sm-12'tr>>" +
-                                "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
-                            //data: [ [ "Tiger Nixon", "System Architect", "Edinburgh", "5421" ],[ "Tigerr Nixon", "System Architect", "Edinburgh", "5421" ] ],
-                            buttons: [{
-                                    extend: 'pageLength',
-                                    className: 'btn-outline-default'
-                                },
-                                {
-                                    extend: 'collection',
-                                    text: 'Export',
-                                    buttons: [{ //meter librería jszip
-                                            extend: 'excelHtml5',
-                                            text: 'Excel',
-                                            orientation: 'landscape',
-                                            titleAttr: 'Generate Excel',
-                                            className: 'btn-outline-default'
-                                        },
-                                        {
-                                            extend: 'csvHtml5',
-                                            text: 'CSV',
-                                            titleAttr: 'Generate CSV',
-                                            className: 'btn-outline-default'
-                                        },
-                                        {
-                                            //se debe incluir libreria pdf maker
-                                            extend: 'pdfHtml5',
-                                            text: 'PDF',
-                                            titleAttr: 'PDF',
-                                            customize: function(doc) {
-                                                //pageMargins [left, top, right, bottom]
-                                                doc.pageMargins = [20, 20, 20, 20];
-                                            },
-                                            className: 'btn-outline-default'
-                                        }
-                                    ],
-                                    className: 'btn-outline-default'
-
-                                },
-                                {
-                                    extend: 'copyHtml5',
-                                    text: 'Copy',
-                                    titleAttr: 'Copy to clipboard',
-                                    className: 'btn-outline-default'
-                                },
-                                {
-                                    extend: 'print',
-                                    text: '<i class="fal fa-print"></i>',
-                                    titleAttr: 'Print Table',
-                                    className: 'btn-outline-default'
+                                var varPorcentaje = 0.0;
+                                if (selectPorcentaje == 99) {
+                                    varPorcentaje = da[4][i].var1;
+                                } else if (selectPorcentaje == 97) {
+                                    varPorcentaje = da[4][i].var2;
+                                } else if (selectPorcentaje == 95) {
+                                    varPorcentaje = da[4][i].var3;
                                 }
 
-                            ]
+                                htmTableMercado += '<td>' + varPorcentaje.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' </td>';
+                                htmTableMercado += '<td>' + globalLimitParaTablaMercados.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' </td>';
 
-                        });
+                                var calculoMenosVar = globalLimitParaTablaMercados - varPorcentaje;
 
+                                if (calculoMenosVar < 0) {
+                                    htmTableMercado += '<td style="color:red;"> ' + calculoMenosVar.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>';
+                                } else {
+                                    htmTableMercado += '<td style="color:green;"> ' + calculoMenosVar.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>';
+                                }
+                                htmTableMercado += '</tr>';
+                            }
+
+                            htmTableMercado += '<tr id="divisas">';
+                            htmTableMercado += '<td>' + 'Mercado Divisas' + '</td>';
+                            htmTableMercado += '<td> 0,00 </td>';
+                            htmTableMercado += '<td> 0,00 </td>';
+                            htmTableMercado += '<td> 0,00 </td>';
+                            htmTableMercado += '<td style="color:green;"> 0,00 </td>';
+                            htmTableMercado += '</tr>';
+                            htmTableMercado += '</tbody>';
+                            htmTableMercado += '</table>';
+                            document.getElementById('tableSecond').innerHTML = htmTableMercado;
+
+                            $('#tableMercado').dataTable({
+
+                                "pageLength": 25,
+                                select: true,
+                                "ordering": true,
+                                responsive: true,
+                                dom: "<'row mb-3'<'col-sm-12 col-md-4 d-flex align-items-center justify-content-start'f><'col-sm-12 col-md-8 d-flex align-items-center justify-content-end'B>>" +
+                                    "<'row'<'col-sm-12'tr>>" +
+                                    "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+                                //data: [ [ "Tiger Nixon", "System Architect", "Edinburgh", "5421" ],[ "Tigerr Nixon", "System Architect", "Edinburgh", "5421" ] ],
+                                buttons: [{
+                                        extend: 'pageLength',
+                                        className: 'btn-outline-default'
+                                    },
+                                    {
+                                        extend: 'collection',
+                                        text: 'Export',
+                                        buttons: [{ //meter librería jszip
+                                                extend: 'excelHtml5',
+                                                text: 'Excel',
+                                                orientation: 'landscape',
+                                                titleAttr: 'Generate Excel',
+                                                className: 'btn-outline-default'
+                                            },
+                                            {
+                                                extend: 'csvHtml5',
+                                                text: 'CSV',
+                                                titleAttr: 'Generate CSV',
+                                                className: 'btn-outline-default'
+                                            },
+                                            {
+                                                //se debe incluir libreria pdf maker
+                                                extend: 'pdfHtml5',
+                                                text: 'PDF',
+                                                titleAttr: 'PDF',
+                                                customize: function(doc) {
+                                                    //pageMargins [left, top, right, bottom]
+                                                    doc.pageMargins = [20, 20, 20, 20];
+                                                },
+                                                className: 'btn-outline-default'
+                                            }
+                                        ],
+                                        className: 'btn-outline-default'
+
+                                    },
+                                    {
+                                        extend: 'copyHtml5',
+                                        text: 'Copy',
+                                        titleAttr: 'Copy to clipboard',
+                                        className: 'btn-outline-default'
+                                    },
+                                    {
+                                        extend: 'print',
+                                        text: '<i class="fal fa-print"></i>',
+                                        titleAttr: 'Print Table',
+                                        className: 'btn-outline-default'
+                                    }
+
+                                ]
+
+                            });
+
+                        }
                     }
-                }
 
-            });
+                });
+
+            }
+            
         }
 
         $scope.refreshTableMercados();
@@ -1004,10 +871,6 @@
 
             });
         };
-
-
-
-
 
 
         $scope.refreshTableTransacciones = function() {
@@ -3664,6 +3527,20 @@ app.controller('csv', function($scope, functions, $window) {
             console.log(err)
         })
     }
+
+    $scope.upValidation= function() {
+        // determinas fecha X nombreArchivo
+        // tipoArchivo
+        // var tipo = document.getElementById('elements').value;
+
+
+        if(respuesta == "SUCCESS"){
+            $scope.up();
+        }{
+            //MSJ "Se reemplazaran datos?  "
+        }
+    }
+
     $scope.up = function(results) {
         $('#loader-wrapper').css('display', '');
         var xlsxflag = false;

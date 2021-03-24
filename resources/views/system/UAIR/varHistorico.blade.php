@@ -71,8 +71,27 @@
                     <div class="row">
                         <div class="col-lg-12 sortable-grid ui-sortable">
 
-                            <div id="panel-1" class="panel panel-locked panel-sortable" data-panel-lock="false" data-panel-close="false" data-panel-fullscreen="false" data-panel-collapsed="false" data-panel-color="false" data-panel-locked="true" data-panel-refresh="false" data-panel-reset="false" role="widget">
+                            <!-- Modal de validaciones -->
+                            <div class="modal fade" id="messageValidaVar" tabindex="-1" role="dialog" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <h5><label id="mensajeError"></h5>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
 
+                            <div id="panel-1" class="panel panel-locked panel-sortable" data-panel-lock="false" data-panel-close="false" data-panel-fullscreen="false" data-panel-collapsed="false" data-panel-color="false" data-panel-locked="true" data-panel-refresh="false" data-panel-reset="false" role="widget">
+                                
                                 <div class="panel-hdr">
                                     <h2 class="ui-sortable-handle">
                                         {{$title}}
@@ -134,6 +153,7 @@
 
                                                     <label class="position-absolute  pos-right">&nbsp;&nbsp;&nbsp;VaR histórico porcentaje</label>
                                                     <br>
+                                                    <input id="varDate" type="date">
                                                     <select id="porcentajeSelect" class="form-control position-absolute  pos-right" style="width: 25%; display: inline-table; margin-left: 5px;" >
                                                         <option value="99&174573759">99%</option>
                                                         <option value="97&139659007">97%</option>
@@ -829,9 +849,23 @@
             $(".contratos").css("display","none");
 
             $(document).on('change', '#porcentajeSelect', function () {
-
                 //determinar que tabla esta activa?
+                if(document.getElementById('tableSecond').style.display!="none"){// Mercado
+                    console.log("MESA_DE_DERIVADOS: ");
+                    refreshTableMercados();
+                } else if(document.getElementById('tableFirst').style.display!="none"){// Producto
+                    console.log("MESA_refreshTableProductos: ");
+                    refreshTableProductos();
+                } else {
+                    console.log("MESA_refreshTableTransacciones: ");
+                    refreshTableTransacciones();
+                }
 
+
+            });
+
+            $(document).on('change', '#varDate', function () {
+                //determinar que tabla esta activa?
                 if(document.getElementById('tableSecond').style.display!="none"){// Mercado
                     console.log("MESA_DE_DERIVADOS: ");
                     refreshTableMercados();
