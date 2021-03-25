@@ -826,40 +826,37 @@
 
                 /* pie chart */
                 var pieChart = function() {
-                        var config = {
-                            type: 'pie',
-                            data: {
-                                datasets: [{
-                                    data: arrayLimiteGlobal,
-                                    backgroundColor: [
-                                        primary_100,
-                                        danger_500,
-                                        success_100,
-                                        info_100,
-                                        success_500,
-                                        danger_100,
-                                        success_500,
-                                        info_500,
-                                        primary_500
-                                    ],
-                                    label: 'My dataset' // for legend
-                                }],
-                                labels: arrayContraparte
-                            },
-                            options: {
-                                responsive: true,
-                                legend: {
-                                    display: true,
-                                    position: 'bottom',
-                                }
+                    var config = {
+                        type: 'pie',
+                        data: {
+                            datasets: [{
+                                data: arrayLimiteGlobal,
+                                backgroundColor: [
+                                    primary_100,
+                                    danger_500,
+                                    success_100,
+                                    info_100,
+                                    success_500,
+                                    danger_100,
+                                    success_500,
+                                    info_500,
+                                    primary_500
+                                ],
+                                label: 'My dataset' // for legend
+                            }],
+                            labels: arrayContraparte
+                        },
+                        options: {
+                            responsive: true,
+                            legend: {
+                                display: true,
+                                position: 'bottom',
                             }
-                        };
-                        new Chart($("#" + idGrafica).get(0).getContext("2d"), config);
-                    }
-                    /* pie chart -- end */
-
+                        }
+                    };
+                    new Chart($("#" + idGrafica).get(0).getContext("2d"), config);
+                }
                 pieChart();
-
             },
 
             iniciarProcesoVar: function(token) {
@@ -943,8 +940,42 @@
                     }
                 });
             },
-            
+            generarGraficaDona: function(idGrafica, labels, data) {
+                console.log("generarGraficaDona_DATA:: ",data);
+                var ctx = document.getElementById(idGrafica).getContext('2d');
+                console.log("generarGraficaDona", ctx);
+                var chart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            backgroundColor: [
+                                '#505050',
+                                '#1D8348',
+                                '#EAECEE',
+                                '#F1C40F',
+                                '#154360',
 
+                                '#808B96',
+                                '#2874A6',
+                                '#4d504f'
+                            ],
+                            data: data
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,    
+                        legend: {
+                            display: true,
+                            fontSize:30,
+                            position: 'right'
+                        },
+                    }
+                });
+                console.log("generarGraficaDona", chart);
+                chart.update();
+            },
             
             /*return $http.post(uri, {
                 headers: {

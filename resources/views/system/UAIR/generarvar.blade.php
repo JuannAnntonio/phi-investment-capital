@@ -260,21 +260,11 @@
                                     <div class="panel-content border-faded border-left-0 border-right-0 border-top-0">
 
                                         <div class="row no-gutters">
-                                            <div class="col-lg-12 col-xl-12">
-                                                <div class="position-relative">
-
-
-
-
-
-
-                                                        <button onclick="validaGenerarVar()" class="btn buttons-print btn-outline-default waves-effect waves-themed">Iniciar proceso de generar Var</button>
-                                                        
-                                                        
-                                                        <input id="varDate" type="date">
-
-                                                <div>
-
+                                            <div class="col-lg-2 col-xl-2">
+                                                <button onclick="validaGenerarVar()" class="btn buttons-print btn-outline-default waves-effect waves-themed">Iniciar proceso de generar Var</button>                                              
+                                            </div>
+                                            <div class="col">
+                                                <input id="varDate" type="date" class="form-control" style="width: 13%"/>
                                             </div>
                                         </div>
                                     </div>

@@ -88,75 +88,78 @@
                                 <div class="panel-container show" role="content">
                                     <div class="panel-content border-faded border-left-0 border-right-0 border-top-0">
                                         <div class="row no-gutters">
-                                            <div class="col-lg-12 col-xl-12">
-                                                <div class="position-relative">
-
-                                                    <table style="float: left; width: auto; border: 1px solid #dee2e6; text-align: center;" class="table">
-                                                        <thead class="p-3 mb-2 bg-dark text-white">
-                                                            <tr>
-                                                                <td colspan="4">Posición Global</td>
-                                                            </tr>
-                                                        <thead>
-                                                        <tbody>
+                                            <div class="col-lg-4 col-xl-4">
+                                                <table style="float: left; width: auto; border: 1px solid #dee2e6; text-align: center;" class="table">
+                                                    <thead class="p-3 mb-2 bg-dark text-white">
                                                         <tr>
-                                                            <td>Nivel de Confianza</td>
-                                                            <td>VaR</td>
-                                                            <td>Limite</td>
-                                                            <td>Nivel de Confianza</td>
+                                                            <td colspan="4">Posición Global</td>
                                                         </tr>
-                                                        <tr>
-                                                            <td>99%</td>
-                                                            <td id="l99"></td>
-                                                            <td id="limite99"></td>
-                                                            <td id="nivelConfianza_99"></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>97%</td>
-                                                            <td id="l97"></td>
-                                                            <td id="limite97"></td>
-                                                            <td id="nivelConfianza_97"></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>95%</td>
-                                                            <td id="l95"></td>
-                                                            <td id="limite95"></td>
-                                                            <td id="nivelConfianza_95"></td>
-                                                        </tr>
-                                                            <td id="valuacionTxt">Valuación</td>
-                                                            <td colspan="3" id="valuacion"></td>
-                                                        </tr>
-                                                        </tbody>
-                                                    </table>
-                                                    <div class="position-absolute pos-right">
-                                                        <label id="fecha"></label>
-                                                        <br/>
-                                                        <input id="varDate" type="date" class="position-absolute pos-right"/>
-                                                        <br/><br/>
-                                                        <label class="position-absolute pos-right">VaR histórico porcentaje</label>
-                                                        <br>
-                                                        <select id="porcentajeSelect" class="form-control position-absolute pos-right" style="width: 90%; display: inline-table; margin-left: 5px;" >
-                                                            <option value="99&174573759">99%</option>
-                                                            <option value="97&139659007">97%</option>
-                                                            <option value="95&49878217">95%</option>
-                                                        </select>
-                                                    </div>
-                                                    <br/><br/><br/><br/><br/><br/>
-                                                    
+                                                    <thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td>Nivel de Confianza</td>
+                                                        <td>VaR</td>
+                                                        <td>Limite</td>
+                                                        <td>Nivel de Confianza</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>99%</td>
+                                                        <td id="l99"></td>
+                                                        <td id="limite99"></td>
+                                                        <td id="nivelConfianza_99"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>97%</td>
+                                                        <td id="l97"></td>
+                                                        <td id="limite97"></td>
+                                                        <td id="nivelConfianza_97"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>95%</td>
+                                                        <td id="l95"></td>
+                                                        <td id="limite95"></td>
+                                                        <td id="nivelConfianza_95"></td>
+                                                    </tr>
+                                                        <td id="valuacionTxt">Valuación</td>
+                                                        <td colspan="3" id="valuacion"></td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            
+                                            <div class="col-lg-5 col-xl-5" style="height: 10%!important">
+                                                <canvas id="graficaVarHistorico" width=270 height=280 style='width:270px!important; height:280px!important'></canvas>
+                                            </div>
 
-                                <div style="margin-top: 145px; position: relative; right: 198px; margin-bottom: 7px;"  class="btn buttons-print" ></div>
-
-                                                    <div style="text-align: center; display: none" class="table table-hover" id="tableFirst"></div>
-
-                                                    <br>
-                                                    <div style="text-align: center;" class="table table-hover" id="tableSecond"></div>
-
-                                                    <br>
-                                                    <div style="text-align: center; display: none;" class="table table-hover" id="tableThird"></div>
-
-
+                                            <div class="col-lg-3 col-xl-3">
+                                                <div class="position-absolute pos-right">
+                                                    <label id="fecha"></label>
+                                                    <br/>
+                                                    <input id="varDate" type="date" class="form-control"/>
+                                                    <br/>
+                                                    <label>VaR histórico porcentaje</label>
+                                                    <br/>
+                                                    <select id="porcentajeSelect" class="form-control" style="display: inline-table;" >
+                                                        <option value="99&174573759">99%</option>
+                                                        <option value="97&139659007">97%</option>
+                                                        <option value="95&49878217">95%</option>
+                                                    </select>
                                                 </div>
                                             </div>
                                         </div>
+
+                                        <div class="row no-gutters">
+                                            <div class="col-lg-12 col-xl-12">
+                                                    <div style="margin-top: 15px; position: relative; right: 198px; margin-bottom: 1px;"  class="btn buttons-print" >
+                                                    </div>
+                                                    <div style="text-align: center; display: none" class="table table-hover" id="tableFirst"></div>
+                                                    <div style="text-align: center;" class="table table-hover" id="tableSecond"></div>
+                                                    <div style="text-align: center; display: none;" class="table table-hover" id="tableThird"></div>
+                                            </div>
+                                        </div>
+
+
+
                                     </div>
                                 </div>
                             </div>
@@ -818,6 +821,7 @@
     <script src="{{ url('js/factory.js?v='.cache("js_version_number").'') }}"></script>
 
     <script src="{{ url('js/functions.js?v='.cache("js_version_number").'') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 
     <script>
         $(document).ready(function()
@@ -880,13 +884,14 @@
                // $("#buttonRegresar").css("display","none");
                 $("#tableFirst").css("display","none");
                 $("#tableSecond").css("display","");
-
+                console.log("### PRIMER_TABLA");
+                refreshTableMercados();
             });
             $(document).on('click', '#buttonRegresarSecond', function () {
                 $("#tableThird").css("display","none");
                 $("#tableFirst").css("display","");
-
-
+                console.log("### SEGUNDA_TABLA");
+                refreshTableProductos();
             });
         });
 

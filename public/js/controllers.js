@@ -476,7 +476,9 @@
         $scope.limite = 0.0;
         $scope.mercadoSelect = null;
         $scope.productoSelect = null;
-
+        $scope.labels = [];
+        $scope.data=[];
+        
         $scope.refreshTableMercados = function() {
             var fecha = document.getElementById("varDate").value;
             let data = {
@@ -492,26 +494,32 @@
 
                 if(null!=da && undefined != da){
                     if (da['length'] > 0) {
-
+                        $scope.labels = [];
+                        $scope.data= [];
                         let htmTableMercado = '';
                         if (undefined != da[2]) {
-                            $('#l99').text(da[2]['var1'].toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
-                            $('#l97').text(da[2]['var2'].toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
-                            $('#l95').text(da[2]['var3'].toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
+                            var var1 = da[2]['var1'];
+                            var var2 = da[2]['var2'];
+                            var var3 = da[2]['var3'];
+
+                            $('#l99').text(var1.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+                            $('#l97').text(var2.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+                            $('#l95').text(var3.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+
                             $('#valuacion').text(da[2]['valuacion'].toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
                             document.getElementById('valuacion').style.setProperty("background-color", "#faf9fc");
                             document.getElementById('valuacionTxt').style.setProperty("background-color", "#faf9fc");
 
 
                             var limite = da[1][0]['globalLimit'];
-                            var limite99 = da[1][0]['globalLimit'];
-                            var limite97 = da[1][0]['globalLimit'];
-                            var limite95 = da[1][0]['globalLimit'];
-
+                            var limite99 = da[1][0]['globalLimit'].toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                            var limite97 = da[1][0]['globalLimit'].toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                            var limite95 = da[1][0]['globalLimit'].toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                            
                             $('#limite').text(limite.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
-                            $('#limite99').text(limite99.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
-                            $('#limite97').text(limite97.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
-                            $('#limite95').text(limite95.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
+                            $('#limite99').text(limite99)
+                            $('#limite97').text(limite97)
+                            $('#limite95').text(limite95)
                             var nivelConfianza_99 = limite -da[2]['var1'];
                             var nivelConfianza_97 = limite -da[2]['var2'];
                             var nivelConfianza_95 = limite -da[2]['var3'];
@@ -529,7 +537,10 @@
 
                         var options = { year: "numeric", month: "long", day: "numeric" };
                         var cellValue = da[3];
+                        console.log("FECHA_REPSONSE",cellValue);
                         var date = new Date(cellValue);
+                        date.setDate(date.getDate() + 1);
+                        console.log("FECHA_DATE",date);
                         $("#fecha").text("Fecha: " + date.toLocaleDateString("es-ES", options));
 
                         htmTableMercado += '<table class="table" id="tableMercado">';
@@ -545,6 +556,8 @@
                         htmTableMercado += '<tbody>';
                         htmTableMercado += '<tr id="capital">';
                         htmTableMercado += '<td>' + 'Mercado Capital' + '</td>';
+                        $scope.labels.push('Mercado Capital');
+                        $scope.data.push(0.0);
                         htmTableMercado += '<td>0,00</td>';
                         htmTableMercado += '<td>0,00</td>';
                         htmTableMercado += '<td>0,00</td>';
@@ -553,11 +566,12 @@
                         globalLimitParaTablaMercados = da[1][0]['globalLimit'];
                         $scope.limite = globalLimitParaTablaMercados;
 
-
-                        console.log("INFO_4: " ,da[4]);
+                        // Límite de VaR - (suma columna VaR)
+                        var sumVar =0; 
                         for (let i = 0; i < da[4].length; i++) {
                             htmTableMercado += '<tr style="cursor:pointer;" onclick="getTableProductos('+da[4][i].cdMercado+')">';
                             htmTableMercado += '<td>' + da[4][i].nombre + '</td>';
+                            $scope.labels.push(da[4][i].nombre);
                             htmTableMercado += '<td>' + da[4][i].valuacion.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>';
 
                             var varPorcentaje = 0.0;
@@ -568,6 +582,8 @@
                             } else if (selectPorcentaje == 95) {
                                 varPorcentaje = da[4][i].var3;
                             }
+                            $scope.data.push(varPorcentaje);
+                            sumVar+=varPorcentaje
 
                             htmTableMercado += '<td>' + varPorcentaje.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' </td>';
                             htmTableMercado += '<td>' + globalLimitParaTablaMercados.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' </td>';
@@ -584,6 +600,8 @@
 
                         htmTableMercado += '<tr id="divisas">';
                         htmTableMercado += '<td>' + 'Mercado Divisas' + '</td>';
+                        $scope.labels.push('Mercado Divisas');
+                        $scope.data.push(0.0);
                         htmTableMercado += '<td> 0,00 </td>';
                         htmTableMercado += '<td> 0,00 </td>';
                         htmTableMercado += '<td> 0,00 </td>';
@@ -591,6 +609,12 @@
                         htmTableMercado += '</tr>';
                         htmTableMercado += '</tbody>';
                         htmTableMercado += '</table>';
+                        
+                        $scope.data.push(globalLimitParaTablaMercados-sumVar);
+                        $scope.labels.push("Límite - VaR");
+                        console.log("LABELS_597::",$scope.labels);
+                        console.log("DATA_598::",$scope.data);
+
                         document.getElementById('tableSecond').innerHTML = htmTableMercado;
 
                         $('#tableMercado').dataTable({
@@ -657,12 +681,15 @@
 
                     }
                 }
-
+                console.log("DATA_CONTROLLER::",$scope.data);
+                console.log("LABELS_CONTROLLER::",$scope.labels);
+                functions.generarGraficaDona('graficaVarHistorico',$scope.labels, $scope.data);
             });
             
+            
         }
-
         $scope.refreshTableMercados();
+        
 
         $scope.refreshTableProductos = function() {
             if(null!=$scope.mercadoSelect){
@@ -671,9 +698,11 @@
         }
 
         $scope.getTableProductos = function(idMercado){
+            var fecha = document.getElementById("varDate").value;
             $scope.mercadoSelect = idMercado;
             let data = {
-                idMercado: idMercado
+                idMercado: idMercado,
+                fecha: fecha
             };
             functions.getProductosVar(token, JSON.stringify(data)).then(function(response) {
                 console.log("### getProductosVar:: ",response)
@@ -699,9 +728,7 @@
                     htmTableIntermedio += '</tr>';
                     htmTableIntermedio += '</thead>';
                     htmTableIntermedio += '<tbody>';
-                    var porcentajeParaTablaMercados = 0
-                    var calculoTempoLimiteParaTablaMercados = 0
-                    var globalLimitParaTablaMercados = 0;
+                   
                     var mercados = response.data;
                     for (let i = 0; i < mercados.length; i++) {
                         htmTableIntermedio += '<tr style="cursor:pointer;" onclick="getTableTransacciones('+mercados[i].cdInstrumento+')">';
@@ -733,57 +760,6 @@
                         htmTableIntermedio += '</tr>';
                     }
                 }
-
-              /*  for (let i = 0; i < da[1].length; i++) {
-                    var porcentajeNuevoBase = 0;
-
-                    if (da[2].length > 0) {
-                        if (selectPorcentaje == 99) {
-                            porcentajeNuevoBase = da[2]['var1'];
-                        } else if (selectPorcentaje == 97) {
-                            porcentajeNuevoBase = da[2]['var2'];
-                        } else if (selectPorcentaje == 95) {
-                            porcentajeNuevoBase = da[2]['var3'];
-                        }
-                    } else {
-                        if (selectPorcentaje == 99) {
-                            porcentajeNuevoBase = 0.0;
-                        } else if (selectPorcentaje == 97) {
-                            porcentajeNuevoBase = 0.0;
-                        } else if (selectPorcentaje == 95) {
-                            porcentajeNuevoBase = 0.0;
-                        }
-
-
-                    }
-
-
-                    if (porcentajeNuevoBase == null) {
-                        porcentajeNuevoBase = 0;
-                    }
-
-                    //const calculoTempoLimite = parseFloat(da[i].limite) - porcentajeValues[i];
-                    porcentajeParaTablaMercados = porcentajeNuevoBase;
-                    const calculoTempoLimite = (parseFloat(da[1][i].globalLimit)) - (porcentajeNuevoBase);
-                    calculoTempoLimiteParaTablaMercados = calculoTempoLimite;
-                    globalLimitParaTablaMercados = da[1][i]['globalLimit'];
-
-                    htmTableIntermedio += '<tr style="cursor:pointer;" onclick="detalleProductos()">';
-                    htmTableIntermedio += ' <th scope="row">' + (i + 1) + '</th>';
-                    htmTableIntermedio += '<td>Swaps</td>';
-                    htmTableIntermedio += '<td> ' + sumaValuacion.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>'
-                    htmTableIntermedio += '<td> ' + porcentajeNuevoBase.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>';
-                    htmTableIntermedio += '<td> ' + da[1][i]['globalLimit'].toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>';
-
-                    if (calculoTempoLimite < 0) {
-                        htmTableIntermedio += '<td style="color:red;"> ' + calculoTempoLimite.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>';
-                    } else {
-                        htmTableIntermedio += '<td style="color:green;"> ' + calculoTempoLimite.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>';
-                    }
-
-                    htmTableIntermedio += '</tr>';
-
-                }*/
 
                 htmTableIntermedio += '</tbody>';
                 htmTableIntermedio += '</table>';
@@ -875,10 +851,12 @@
 
         $scope.getTableTransacciones = function(idProducto){
             console.log("ID_PRODUCTO: " + idProducto);
+            var fecha = document.getElementById("varDate").value;
             $scope.productoSelect = idProducto;
             let data = {
                 idMercado: $scope.mercadoSelect,
-                idInstrumento: idProducto
+                idInstrumento: idProducto,
+                fecha: fecha
             };
             functions.getTransaccionesVar(token, JSON.stringify(data)).then(function(response) {
                 console.log("DATA_TRANSACCIONES: ", response);
@@ -1008,7 +986,6 @@
                 }
             });
         };
-
 
         getTableProductos = $scope.getTableProductos;
         getTableTransacciones = $scope.getTableTransacciones;
