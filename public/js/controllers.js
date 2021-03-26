@@ -4473,8 +4473,7 @@ app.controller('generarvar', function( $scope, functions) {
         $("#conntentSpinner").fadeIn();
         var fecha = document.getElementById("varDate").value;
         if(null==fecha || undefined==fecha || ""==fecha){
-            document.getElementById('mensajeError').innerHTML ="Por favor selecciona una fecha.";
-            $('#messageValidaVar').modal('show');
+            Swal.fire('Por favor selecciona una fecha', '', 'warning');
         } else {
             let data = {
                 fecha: fecha
@@ -4482,19 +4481,16 @@ app.controller('generarvar', function( $scope, functions) {
             functions.validaGenerarVarFactory(token, JSON.stringify(data)).then(function(response) {
                 console.log("### getProductosVar:: ",response);
                 var res = response.data;
-
+                console.log("### STATUS_getProductosVar:: ",res.status);
                 if (res.status=="NO_CONTENT"){
-                    document.getElementById('mensajeError').innerHTML =res.mensaje;
-                    $('#messageValidaVar').modal('show');
+                    Swal.fire(res.mensaje, '', 'warning');
                 } else if (res.status=="FOUND"){
                     document.getElementById('mensajeConfirmacion').innerHTML =res.mensaje;
                     $('#messageConfirmacion').modal('show');
                 } else if (res.status=="OK"){
-                    document.getElementById('mensajeError').innerHTML ="Proceso realizado correctamente.";
-                    $('#messageConfirmacion').modal('show');
+                    Swal.fire('Datos actualizados correctamente', '', 'success');
                 } else {
-                    document.getElementById('mensajeError').innerHTML ="Ocurrió un problema al realizar el proceso.";
-                    $('#messageConfirmacion').modal('show');
+                    Swal.fire('Ocurrió un problema al realizar el proceso.', '', 'error');
                 }
             });
         }
@@ -4504,7 +4500,6 @@ app.controller('generarvar', function( $scope, functions) {
     validaGenerarVar = $scope.validaGenerarVar;
 
     $scope.generarVar = function() {
-
         $("#conntentSpinner").fadeIn();
         var fecha = document.getElementById("varDate").value;
         let data = {
@@ -4513,19 +4508,15 @@ app.controller('generarvar', function( $scope, functions) {
         functions.generarVarFactory(token, JSON.stringify(data)).then(function(response) {
             var res = response.data;
             console.log(res);
+            $("#conntentSpinner").fadeOut();
             console.log("termino el proceso--------")
             if (res.status=="OK"){
-                document.getElementById('mensajeError').innerHTML ="Proceso realizado correctamente.";
-                $('#messageConfirmacion').modal('show');
+                Swal.fire('Datos actualizados correctamente', '', 'success');
             } else {
-                document.getElementById('mensajeError').innerHTML ="Ocurrió un problema al realizar el proceso.";
-                $('#messageConfirmacion').modal('show');
+                Swal.fire('Ocurrió un problema al realizar el proceso.', '', 'error');
             }
 
-
-            $("#conntentSpinner").fadeOut();
         })
-
 
     };
 
