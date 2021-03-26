@@ -92,7 +92,7 @@
                                                 <table style="float: left; width: auto; border: 1px solid #dee2e6; text-align: center;" class="table">
                                                     <thead class="p-3 mb-2 bg-dark text-white">
                                                         <tr>
-                                                            <td colspan="4">Posición Global</td>
+                                                            <td colspan="4" id="titleGlobal"></td>
                                                         </tr>
                                                     <thead>
                                                     <tbody>
@@ -100,7 +100,7 @@
                                                         <td>Nivel de Confianza</td>
                                                         <td>VaR</td>
                                                         <td>Limite</td>
-                                                        <td>Nivel de Confianza</td>
+                                                        <td>Límite Disponible</td>
                                                     </tr>
                                                     <tr>
                                                         <td>99%</td>
@@ -127,8 +127,8 @@
                                                 </table>
                                             </div>
                                             
-                                            <div class="col-lg-5 col-xl-5" style="height: 10%!important">
-                                                <canvas id="graficaVarHistorico" width=270 height=280 style='width:270px!important; height:280px!important'></canvas>
+                                            <div id="contenedorChart" class="col-lg-5 col-xl-5" style="height: 10%!important">
+                                                <canvas id="graficaVarHistorico"></canvas>
                                             </div>
 
                                             <div class="col-lg-3 col-xl-3">

@@ -474,7 +474,9 @@
 
         functions.loading();
         $scope.limite = 0.0;
+        $scope.mercados =[];
         $scope.mercadoSelect = null;
+        $scope.productos =[];
         $scope.productoSelect = null;
         $scope.labels = [];
         $scope.data=[];
@@ -497,37 +499,28 @@
                         $scope.labels = [];
                         $scope.data= [];
                         let htmTableMercado = '';
+
+                        var cellValue = da[3];
+                        var date = new Date(cellValue);
+                        date.setDate(date.getDate() + 1);
+                        $("#fecha").text("Fecha: " + date.toLocaleDateString("es-ES", options));
+                        if(fecha===null || fecha===""){
+                            document.getElementById("varDate").value = (""+date.getUTCFullYear())+"-"+(date.getMonth()+1)+"-"+date.getDate();
+                        }
+
                         if (undefined != da[2]) {
-                            var var1 = da[2]['var1'];
-                            var var2 = da[2]['var2'];
-                            var var3 = da[2]['var3'];
+                            $scope.limite = da[1][0]['globalLimit']; 
+                            var obj = {
+                                titulo: 'Posición Global',
+                                var1: da[2]['var1'],
+                                var2: da[2]['var2'],
+                                var3: da[2]['var3'],
+                                limite: da[1][0]['globalLimit'], 
+                                valuacion: da[2]['valuacion']
+                            };
 
-                            $('#l99').text(var1.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
-                            $('#l97').text(var2.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
-                            $('#l95').text(var3.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
-
-                            $('#valuacion').text(da[2]['valuacion'].toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
-                            document.getElementById('valuacion').style.setProperty("background-color", "#faf9fc");
-                            document.getElementById('valuacionTxt').style.setProperty("background-color", "#faf9fc");
-
-
-                            var limite = da[1][0]['globalLimit'];
-                            var limite99 = da[1][0]['globalLimit'].toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                            var limite97 = da[1][0]['globalLimit'].toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                            var limite95 = da[1][0]['globalLimit'].toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                            
-                            $('#limite').text(limite.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
-                            $('#limite99').text(limite99)
-                            $('#limite97').text(limite97)
-                            $('#limite95').text(limite95)
-                            var nivelConfianza_99 = limite -da[2]['var1'];
-                            var nivelConfianza_97 = limite -da[2]['var2'];
-                            var nivelConfianza_95 = limite -da[2]['var3'];
-                            $('#nivelConfianza_99').text(nivelConfianza_99.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
-                            $('#nivelConfianza_97').text(nivelConfianza_97.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
-                            $('#nivelConfianza_95').text(nivelConfianza_95.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
-
-
+                            $scope.makeSummaryTable(obj);
+                           
                         } else {
                             $('#l99').text(0.0)
                             $('#l97').text(0.0)
@@ -536,82 +529,60 @@
                         }
 
                         var options = { year: "numeric", month: "long", day: "numeric" };
-                        var cellValue = da[3];
-                        console.log("FECHA_REPSONSE",cellValue);
-                        var date = new Date(cellValue);
-                        date.setDate(date.getDate() + 1);
-                        console.log("FECHA_DATE",date);
-                        $("#fecha").text("Fecha: " + date.toLocaleDateString("es-ES", options));
+                        
 
                         htmTableMercado += '<table class="table" id="tableMercado">';
                         htmTableMercado += '<thead class="p-3 mb-2 bg-dark text-white">';
                         htmTableMercado += '<tr>';
-                        htmTableMercado += '<th scope="col">Mesa Juan</th>';
+                        htmTableMercado += '<th scope="col">Mesa de Operación</th>';
                         htmTableMercado += '<th scope="col">Valuación </th>';
                         htmTableMercado += '<th scope="col">VaR </th>';
                         htmTableMercado += '<th scope="col">Límite Var</th>';
-                        htmTableMercado += '<th scope="col">Límite - VaR</th>';
+                        htmTableMercado += '<th scope="col">Límite Disponible</th>';
                         htmTableMercado += '</tr>';
                         htmTableMercado += '</thead>';
                         htmTableMercado += '<tbody>';
-                        htmTableMercado += '<tr id="capital">';
-                        htmTableMercado += '<td>' + 'Mercado Capital' + '</td>';
-                        $scope.labels.push('Mercado Capital');
-                        $scope.data.push(0.0);
-                        htmTableMercado += '<td>0,00</td>';
-                        htmTableMercado += '<td>0,00</td>';
-                        htmTableMercado += '<td>0,00</td>';
-                        htmTableMercado += '<td style="color:green;"> 0,00 </td>';
-                        htmTableMercado += '</tr>';
                         globalLimitParaTablaMercados = da[1][0]['globalLimit'];
                         $scope.limite = globalLimitParaTablaMercados;
 
                         // Límite de VaR - (suma columna VaR)
                         var sumVar =0; 
+                        $scope.mercados = da[4];
                         for (let i = 0; i < da[4].length; i++) {
-                            htmTableMercado += '<tr style="cursor:pointer;" onclick="getTableProductos('+da[4][i].cdMercado+')">';
+                            htmTableMercado += '<tr style="cursor:pointer;" onclick="getTableProductos('+da[4][i].cdMercado+');">';
                             htmTableMercado += '<td>' + da[4][i].nombre + '</td>';
                             $scope.labels.push(da[4][i].nombre);
-                            htmTableMercado += '<td>' + da[4][i].valuacion.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>';
+                            htmTableMercado += '<td>' + comas(dosDecimales(Number.parseFloat(da[4][i].valuacion))) + '</td>';
 
                             var varPorcentaje = 0.0;
                             if (selectPorcentaje == 99) {
                                 varPorcentaje = da[4][i].var1;
+                                varPorcentaje =  varPorcentaje * -1;
                             } else if (selectPorcentaje == 97) {
                                 varPorcentaje = da[4][i].var2;
+                                varPorcentaje =  varPorcentaje * -1;
                             } else if (selectPorcentaje == 95) {
                                 varPorcentaje = da[4][i].var3;
+                                varPorcentaje =  varPorcentaje * -1;
                             }
-                            $scope.data.push(varPorcentaje);
+                            $scope.data.push(varPorcentaje.toFixed(2));
                             sumVar+=varPorcentaje
 
-                            htmTableMercado += '<td>' + varPorcentaje.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' </td>';
-                            htmTableMercado += '<td>' + globalLimitParaTablaMercados.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' </td>';
+                            htmTableMercado += '<td>' + comas(dosDecimales(varPorcentaje)) + ' </td>';
+                            htmTableMercado += '<td>' + comas(dosDecimales(globalLimitParaTablaMercados)) + ' </td>';
 
                             var calculoMenosVar = globalLimitParaTablaMercados - varPorcentaje;
 
                             if (calculoMenosVar < 0) {
-                                htmTableMercado += '<td style="color:red;"> ' + calculoMenosVar.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>';
+                                htmTableMercado += '<td style="color:red;"> ' + comas(dosDecimales(calculoMenosVar)) + '</td>';
                             } else {
-                                htmTableMercado += '<td style="color:green;"> ' + calculoMenosVar.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>';
+                                htmTableMercado += '<td style="color:green;"> ' + comas(dosDecimales(calculoMenosVar)) + '</td>';
                             }
                             htmTableMercado += '</tr>';
                         }
-
-                        htmTableMercado += '<tr id="divisas">';
-                        htmTableMercado += '<td>' + 'Mercado Divisas' + '</td>';
-                        $scope.labels.push('Mercado Divisas');
-                        $scope.data.push(0.0);
-                        htmTableMercado += '<td> 0,00 </td>';
-                        htmTableMercado += '<td> 0,00 </td>';
-                        htmTableMercado += '<td> 0,00 </td>';
-                        htmTableMercado += '<td style="color:green;"> 0,00 </td>';
-                        htmTableMercado += '</tr>';
-                        htmTableMercado += '</tbody>';
-                        htmTableMercado += '</table>';
                         
-                        $scope.data.push(globalLimitParaTablaMercados-sumVar);
-                        $scope.labels.push("Límite - VaR");
+                        $scope.data.splice(0, 0, (globalLimitParaTablaMercados-sumVar).toFixed(2));
+                        $scope.labels.splice(0, 0,"Límite Disponible");
                         console.log("LABELS_597::",$scope.labels);
                         console.log("DATA_598::",$scope.data);
 
@@ -683,13 +654,57 @@
                 }
                 console.log("DATA_CONTROLLER::",$scope.data);
                 console.log("LABELS_CONTROLLER::",$scope.labels);
-                functions.generarGraficaDona('graficaVarHistorico',$scope.labels, $scope.data);
+                var color = 0;
+                if (globalLimitParaTablaMercados-sumVar<=0){
+                    color = 1;
+                }
+                functions.generarGraficaDona('graficaVarHistorico',$scope.labels, $scope.data,color);
             });
             
             
         }
         $scope.refreshTableMercados();
         
+        $scope.makeSummaryTable = function (obj){
+
+            console.log("OBJ",obj);
+            if (undefined != obj && obj!=null) {
+                var var1 = obj['var1'];
+                var var2 = obj['var2'];
+                var var3 = obj['var3'];
+
+                $('#titleGlobal').text(obj.titulo);
+                $('#l99').text(var1.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+                $('#l97').text(var2.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+                $('#l95').text(var3.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+
+                $('#valuacion').text(obj['valuacion'].toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
+                document.getElementById('valuacion').style.setProperty("background-color", "#faf9fc");
+                document.getElementById('valuacionTxt').style.setProperty("background-color", "#faf9fc");
+
+
+                var limite = obj.limite;
+
+                $('#limite').text(limite.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
+                $('#limite99').text(limite)
+                $('#limite97').text(limite)
+                $('#limite95').text(limite)
+
+                var nivelConfianza_99 = limite -obj['var1'];
+                var nivelConfianza_97 = limite -obj['var2'];
+                var nivelConfianza_95 = limite -obj['var3'];
+                $('#nivelConfianza_99').text(nivelConfianza_99.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
+                $('#nivelConfianza_97').text(nivelConfianza_97.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
+                $('#nivelConfianza_95').text(nivelConfianza_95.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
+
+
+            } else {
+                $('#l99').text(0.0)
+                $('#l97').text(0.0)
+                $('#l95').text(0.0)
+                $('#valuacion').text(0.0)
+            }
+        }
 
         $scope.refreshTableProductos = function() {
             if(null!=$scope.mercadoSelect){
@@ -698,6 +713,19 @@
         }
 
         $scope.getTableProductos = function(idMercado){
+            var found = $scope.mercados.find(element => element.cdMercado == idMercado);
+            var obj = {
+                titulo: found.nombre,
+                var1: found.var1,
+                var2: found.var2,
+                var3: found.var3,
+                limite: $scope.limite, 
+                valuacion: found.valuacion
+            };
+            $scope.makeSummaryTable(obj);
+            $scope.data =[];
+            $scope.labels=[];
+
             var fecha = document.getElementById("varDate").value;
             $scope.mercadoSelect = idMercado;
             let data = {
@@ -706,8 +734,6 @@
             };
             functions.getProductosVar(token, JSON.stringify(data)).then(function(response) {
                 console.log("### getProductosVar:: ",response)
-
-
 
                 let htmTableIntermedio = '';
                 const selectPorcentajePre = $('#porcentajeSelect').val();
@@ -720,41 +746,49 @@
                     htmTableIntermedio += '<thead class="p-3 mb-2 bg-dark text-white">';
                     htmTableIntermedio += '<tr>';
                     htmTableIntermedio += '<th scope="col">#</th>';
-                    htmTableIntermedio += '<th scope="col">Producto Juan BACK</th>';
+                    htmTableIntermedio += '<th scope="col">Producto</th>';
                     htmTableIntermedio += '<th scope="col">Valuación</th>';
                     htmTableIntermedio += '<th scope="col">Var: ' + selectPorcentaje + '%</th>';
                     htmTableIntermedio += '<th scope="col">Límite</th>';
-                    htmTableIntermedio += '<th scope="col">Límite - VaR</th>';
+                    htmTableIntermedio += '<th scope="col">Límite Disponible</th>';
                     htmTableIntermedio += '</tr>';
                     htmTableIntermedio += '</thead>';
                     htmTableIntermedio += '<tbody>';
-                   
+                    $scope.labels = [];
+                    $scope.data= [];
                     var mercados = response.data;
+                    $scope.productos = mercados;
+                    var sumVar=0;
                     for (let i = 0; i < mercados.length; i++) {
                         htmTableIntermedio += '<tr style="cursor:pointer;" onclick="getTableTransacciones('+mercados[i].cdInstrumento+')">';
                         htmTableIntermedio += ' <th scope="row">' + (i + 1) + '</th>';
                         htmTableIntermedio += '<td>'+mercados[i].nombre+'</td>';
-                        htmTableIntermedio += '<td> ' + mercados[i].valuacion.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>'
-
+                        $scope.labels.push(mercados[i].nombre);
+                        htmTableIntermedio += '<td> ' + comas(dosDecimales(Number.parseFloat(mercados[i].valuacion))) + '</td>'
 
                         var varPorcentaje = 0.0;
                         if (selectPorcentaje == 99) {
                             varPorcentaje = mercados[i].var1;
+                            varPorcentaje =  varPorcentaje * -1;
                         } else if (selectPorcentaje == 97) {
                             varPorcentaje = mercados[i].var2;
+                            varPorcentaje =  varPorcentaje * -1;
                         } else if (selectPorcentaje == 95) {
                             varPorcentaje = mercados[i].var3;
+                            varPorcentaje =  varPorcentaje * -1;
                         }
+			//$scope.data[i+1]=varPorcentaje;
+                        $scope.data.push(varPorcentaje.toFixed(2));
+                        sumVar+=varPorcentaje;
 
-
-                        htmTableIntermedio += '<td> ' + varPorcentaje.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>';
-                        htmTableIntermedio += '<td> ' + $scope.limite.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>';
+                        htmTableIntermedio += '<td> ' + comas(dosDecimales(varPorcentaje)) + '</td>';
+                        htmTableIntermedio += '<td> ' + comas(dosDecimales($scope.limite)) + '</td>';
 
                         var limiteMenosVar = $scope.limite -varPorcentaje;
                         if (limiteMenosVar < 0) {
-                            htmTableIntermedio += '<td style="color:red;"> ' + limiteMenosVar.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>';
+                            htmTableIntermedio += '<td style="color:red;"> ' + comas(dosDecimales(limiteMenosVar)) + '</td>';
                         } else {
-                            htmTableIntermedio += '<td style="color:green;"> ' + limiteMenosVar.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>';
+                            htmTableIntermedio += '<td style="color:green;"> ' + comas(dosDecimales(limiteMenosVar)) + '</td>';
                         }
 
                         htmTableIntermedio += '</tr>';
@@ -763,6 +797,11 @@
 
                 htmTableIntermedio += '</tbody>';
                 htmTableIntermedio += '</table>';
+
+                $scope.data.splice(0, 0,($scope.limite-sumVar).toFixed(2));
+                $scope.labels.splice(0, 0,"Límite Disponible");
+		
+		
 
                 document.getElementById('tableFirst').innerHTML = htmTableIntermedio;
 
@@ -833,12 +872,17 @@
                     ]
 
                 });
-
                 $("#tableFirst").css("display","");
                 $("#buttonRegresar").css("display","");
                 $("#tableSecond").css("display","none");
 
-
+                console.log("DATA_CONTROLLER_869::",$scope.data);
+                console.log("LABELS_CONTROLLER_869::",$scope.labels);
+                var color = 0;
+                if ($scope.limite-sumVar<=0){
+                    color = 1;
+                }
+                functions.generarGraficaDona('graficaVarHistorico',$scope.labels, $scope.data, color);
             });
         };
 
@@ -850,7 +894,18 @@
         }
 
         $scope.getTableTransacciones = function(idProducto){
-            console.log("ID_PRODUCTO: " + idProducto);
+            console.log("PRODUCTOS", $scope.productos);
+            var found = $scope.productos.find(element => element.cdInstrumento == idProducto);
+            var obj = {
+                titulo: found.nombre,
+                var1: found.var1,
+                var2: found.var2,
+                var3: found.var3,
+                limite: $scope.limite, 
+                valuacion: found.valuacion
+            };
+            $scope.makeSummaryTable(obj);
+            
             var fecha = document.getElementById("varDate").value;
             $scope.productoSelect = idProducto;
             let data = {
@@ -868,48 +923,58 @@
                     htmTableDetalle += '<thead class="p-3 mb-2 bg-dark text-white">';
                     htmTableDetalle += '<tr>';
                     htmTableDetalle += '<th scope="col">#</th>';
-                    htmTableDetalle += '<th scope="col">Transacción JUAN</th>';
+                    htmTableDetalle += '<th scope="col">Transacción</th>';
                     htmTableDetalle += '<th scope="col">Valuación</th>';
                     htmTableDetalle += '<th scope="col">Var: ' + selectPorcentaje + '%</th>';
                     htmTableDetalle += '<th scope="col">Límite</th>';
-                    htmTableDetalle += '<th scope="col">Límite - VaR</th>';
+                    htmTableDetalle += '<th scope="col">Límite Disponible</th>';
                     htmTableDetalle += '</tr>';
                     htmTableDetalle += '</thead>';
                     htmTableDetalle += '<tbody>';
 
+                    $scope.labels = [];
+                    $scope.data= [];
                     var transacciones = response.data;
+                    var sumVar =0;
                     for (let i = 0; i < transacciones.length; i++) {
                         htmTableDetalle += '<tr style="cursor:pointer;" >';
                         htmTableDetalle += '<td scope="row">' + (i + 1) + '</td>';
                         htmTableDetalle += '<td>' + transacciones[i].cdTransaccion + '</td>';
-                        htmTableDetalle += '<td> ' + transacciones[i].valuacion.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>'
+                        $scope.labels.push(transacciones[i].cdTransaccion);
+                        htmTableDetalle += '<td> ' + comas(dosDecimales(Number.parseFloat(transacciones[i].valuacion))) + '</td>'
 
                         var varPorcentaje = 0.0;
                         if (selectPorcentaje == 99) {
                             varPorcentaje = transacciones[i].var1;
+                            varPorcentaje =  varPorcentaje * -1;
                         } else if (selectPorcentaje == 97) {
                             varPorcentaje = transacciones[i].var2;
+                            varPorcentaje =  varPorcentaje * -1;
                         } else if (selectPorcentaje == 95) {
                             varPorcentaje = transacciones[i].var3;
+                            varPorcentaje =  varPorcentaje * -1;
                         }
+                        $scope.data.push(varPorcentaje);
+                        sumVar+=varPorcentaje;
 
-                        htmTableDetalle += '<td> ' + varPorcentaje.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>';
-                        htmTableDetalle += '<td> ' + $scope.limite.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>';
+                        htmTableDetalle += '<td> ' + comas(dosDecimales(varPorcentaje)) + '</td>';
+                        htmTableDetalle += '<td> ' + comas(dosDecimales($scope.limite)) + '</td>';
 
                         var limiteMenosVar = $scope.limite - varPorcentaje;
 
                         if (limiteMenosVar < 0) {
-                            htmTableDetalle += '<td style="color:red;"> ' + limiteMenosVar.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>';
+                            htmTableDetalle += '<td style="color:red;"> ' + comas(dosDecimales(limiteMenosVar)) + '</td>';
                         } else {
-                            htmTableDetalle += '<td style="color:green;"> ' + limiteMenosVar.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '</td>';
+                            htmTableDetalle += '<td style="color:green;"> ' + comas(dosDecimales(limiteMenosVar)) + '</td>';
                         }
 
                         htmTableDetalle += '</tr>';
                     }
-
-
                     htmTableDetalle += '</tbody>';
                     htmTableDetalle += '</table>';
+                    
+		            $scope.data.splice(0, 0,$scope.limite-sumVar);
+                    $scope.labels.splice(0, 0,"Límite Disponible");
                     document.getElementById('tableThird').innerHTML = htmTableDetalle;
 
                     $('#tableProductodetalle').dataTable({
@@ -983,15 +1048,75 @@
 
                     $("#tableFirst").css("display", "none");
                     $("#tableThird").css("display", "");
+
+                    console.log("DATA_CONTROLLER_1052::",$scope.data);
+                    console.log("LABELS_CONTROLLER_1053::",$scope.labels);
+                    var color = 0;
+                    if ($scope.limite-sumVar<=0){
+                        color = 1;
+                    }
+                    functions.generarGraficaDona('graficaVarHistorico',$scope.labels, $scope.data,color);
                 }
             });
         };
 
+        makeSummaryTable = $scope.makeSummaryTable;
         getTableProductos = $scope.getTableProductos;
         getTableTransacciones = $scope.getTableTransacciones;
         refreshTableProductos = $scope.refreshTableProductos;
         refreshTableMercados = $scope.refreshTableMercados;
         refreshTableTransacciones = $scope.refreshTableTransacciones;
+        
+        comas = function numberWithCommas(x) {
+            x = x.toString();
+            var pattern = /(-?\d+)(\d{3})/;
+            while (pattern.test(x))
+                x = x.replace(pattern, "$1,$2");
+            return x;
+        }
+
+        CeroDecimales = function(numero) {
+            var numeroOriginal = numero;
+            var signo = 1;
+            if (numero < 0){
+                numeroOriginal = numeroOriginal * -1;
+                signo = -1;
+            }
+            let t = numeroOriginal.toString();
+            let regex = /(\d*.\d{0,0})/;
+            var vreturn = t.match(regex)[0];
+            vreturn = vreturn * signo
+            return vreturn;
+        }
+
+
+        cuatroDecimales = function(numero) {
+            var numeroOriginal = numero;
+            var signo = 1;
+            if (numero < 0){
+                numeroOriginal = numeroOriginal * -1;
+                signo = -1;
+            }
+            let t = numeroOriginal.toString();
+            let regex = /(\d*.\d{0,4})/;
+            var vreturn = t.match(regex)[0];
+            vreturn = vreturn * signo
+            return vreturn;
+        }
+
+        dosDecimales = function(numero) {
+            var numeroOriginal = numero;
+            var signo = 1;
+            if (numero < 0){
+                numeroOriginal = numeroOriginal * -1;
+                signo = -1;
+            }
+            let t = numeroOriginal.toString();
+            let regex = /(\d*.\d{0,2})/;
+            var vreturn = t.match(regex)[0];
+            vreturn = vreturn * signo
+            return vreturn;
+        }
 
 
     }); //fin controller varHistorico
@@ -3564,7 +3689,7 @@ app.controller('csv', function($scope, functions, $window) {
         var columns = header(jsondata);
         var conteo = 0;
 
-        if (tipo == "1") {
+        if (tipo == "1") { // H_Curvas
             for (var c = 0; c < columns.length; c++) {
                 var rv = {};
                 var arrayRows = rows[c].split('|');
@@ -3622,7 +3747,7 @@ app.controller('csv', function($scope, functions, $window) {
                     return
                 })
             }
-        } else if (tipo == "2") {
+        } else if (tipo == "2") { //CURVAS
             return new Promise((resolve, reject) => {
                 functions.deleteSwapData(token).then(function(response) {
                     var response = response.data;
@@ -3694,7 +3819,7 @@ app.controller('csv', function($scope, functions, $window) {
                 })
             })
 
-        } else if (tipo == "5") {
+        } else if (tipo == "5") { // SWAPS
             return new Promise((resolve, reject) => {
                 functions.deleteSwapData(token).then(function(response) {
                     var response = response.data;
@@ -3818,6 +3943,7 @@ app.controller('csv', function($scope, functions, $window) {
             for (var i = 0; i < jsondata.length; i++) {
                 var rv = {};
                 switch (tipo) {
+                    //CAPS
                     case "3":
                         url = 'decapsfloor';
                         if (columns.length == 10) {
@@ -3922,6 +4048,7 @@ app.controller('csv', function($scope, functions, $window) {
                             return;
                         }
                         break;
+                    // FLUJO DE CAPS
                     case "4":
 
                         url = 'flujoscapsfloor';
@@ -4033,6 +4160,7 @@ app.controller('csv', function($scope, functions, $window) {
                             return;
                         }
                         break;
+                    // FLUJO DE SWAPS
                     case "6":
                         url = 'flujosSwap';
 
@@ -4139,6 +4267,7 @@ app.controller('csv', function($scope, functions, $window) {
                             return;
                         }
                         break;
+                    // FUTUROS
                     case "7":
                         url = 'deFuturos';
 

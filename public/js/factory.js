@@ -940,9 +940,25 @@
                     }
                 });
             },
-            generarGraficaDona: function(idGrafica, labels, data) {
+            generarGraficaDona: function(idGrafica, labels, data, color) {
                 console.log("generarGraficaDona_DATA:: ",data);
-                var ctx = document.getElementById(idGrafica).getContext('2d');
+
+                document.getElementById(idGrafica).remove();
+                var canvas = document.createElement("canvas");
+                canvas.id = idGrafica; 
+                canvas.height=280; 
+                document.getElementById("contenedorChart").appendChild(canvas);
+
+                var color1 = '#EAECEE';
+                if (undefined!= color && null!= color){
+                    if(color==0){
+                        color1 ='#18fd03';
+                    }else {
+                        color1 ='red';
+                    }
+                }
+                
+                var ctx = document.getElementById(idGrafica).getContext("2d");
                 console.log("generarGraficaDona", ctx);
                 var chart = new Chart(ctx, {
                     type: 'doughnut',
@@ -950,15 +966,20 @@
                         labels: labels,
                         datasets: [{
                             backgroundColor: [
-                                '#505050',
-                                '#1D8348',
-                                '#EAECEE',
-                                '#F1C40F',
-                                '#154360',
-
-                                '#808B96',
-                                '#2874A6',
-                                '#4d504f'
+                                color1,
+                                '#ffe7c9',
+                                '#92ddea',
+                                '#d1ebff',
+                                '#be9ddf',
+                                '#f9ffc9',
+                                '#d3ffd4',
+                                '#d6d8b2',
+                                '#ffd2d9',
+                                '#a7d2c4',
+                                '#dbb8b8',
+                                '#ffa5d8',
+                                '#d3ffd4',
+                                '#9579d1'
                             ],
                             data: data
                         }]
@@ -971,11 +992,21 @@
                             fontSize:30,
                             position: 'right'
                         },
+                        plugins: {
+                            datalabels: {
+                              formatter: (value) => {
+                                  console.log("VAL", value.toString().split('').reverse().join('').replace(/(?=\d*\.?)(\d{3})/g,'$1.'));
+                                value = value.toString().split('').reverse().join('').replace(/(?=\d*\.?)(\d{3})/g,'$1.');
+                                return  value.split('').reverse().join('').replace(/^[\.]/,'');
+                              }
+                            }
+                          }
                     }
                 });
                 console.log("generarGraficaDona", chart);
                 chart.update();
             },
+            
             
             /*return $http.post(uri, {
                 headers: {

@@ -259,12 +259,12 @@
                                 <div class="panel-container show" role="content">
                                     <div class="panel-content border-faded border-left-0 border-right-0 border-top-0">
 
-                                        <div class="row no-gutters">
-                                            <div class="col-lg-2 col-xl-2">
+                                        <div class="row">
+                                            <div class="col-xl-3 col-lg-5 col-md-4">
                                                 <button onclick="validaGenerarVar()" class="btn buttons-print btn-outline-default waves-effect waves-themed">Iniciar proceso de generar Var</button>                                              
                                             </div>
-                                            <div class="col">
-                                                <input id="varDate" type="date" class="form-control" style="width: 13%"/>
+                                            <div class="col-xl-9 col-lg-7 col-md-2">
+                                                <input id="varDate" type="date" class="form-control" style="width: 210px"/>
                                             </div>
                                         </div>
                                     </div>
