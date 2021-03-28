@@ -482,22 +482,34 @@
         $scope.data=[];
         
         $scope.refreshTableMercados = function() {
+            const selectPorcentajePre = $('#porcentajeSelect').val();
+            const selectPorcentajeSplit = selectPorcentajePre.split('&');
+            const selectPorcentaje = selectPorcentajeSplit[0];
+
+            var tpPercentil =0;
+            if (selectPorcentaje == 99) {
+                tpPercentil = 1;
+            } else if (selectPorcentaje == 97) {
+                tpPercentil = 2;
+            } else if (selectPorcentaje == 95) {
+                tpPercentil = 3;
+            }
+
             var fecha = document.getElementById("varDate").value;
             let data = {
+                tpPercentil: tpPercentil,
                 fecha: fecha
             };
             functions.mesaDeDerivados(token, JSON.stringify(data)).then(function(response) {
                 var da = response.data;
                 console.log(da);
-                const selectPorcentajePre = $('#porcentajeSelect').val();
-                const selectPorcentajeSplit = selectPorcentajePre.split('&');
-                const selectPorcentaje = selectPorcentajeSplit[0];
+                console.log("### DATA_CHART::" , da[0]);
+                
                 const selectPorcentajeValor = parseFloat(selectPorcentajeSplit[1]);
 
                 if(null!=da && undefined != da){
                     if (da['length'] > 0) {
-                        $scope.labels = [];
-                        $scope.data= [];
+                        
                         let htmTableMercado = '';
 
                         var cellValue = da[3];
@@ -509,12 +521,16 @@
                         }
 
                         if (undefined != da[2]) {
-                            $scope.limite = da[1][0]['globalLimit']; 
+                            $scope.limite = da[1][0]['globalLimit'];
+                            var var1 = da[2]['var1'];
+                            var var2 = da[2]['var2'];
+                            var var3 = da[2]['var3'];
+                            
                             var obj = {
                                 titulo: 'Posición Global',
-                                var1: da[2]['var1'],
-                                var2: da[2]['var2'],
-                                var3: da[2]['var3'],
+                                var1: var1,
+                                var2: var2,
+                                var3: var3,
                                 limite: da[1][0]['globalLimit'], 
                                 valuacion: da[2]['valuacion']
                             };
@@ -522,10 +538,10 @@
                             $scope.makeSummaryTable(obj);
                            
                         } else {
-                            $('#l99').text(0.0)
-                            $('#l97').text(0.0)
-                            $('#l95').text(0.0)
-                            $('#valuacion').text(0.0)
+                            $('#l99').text(0.0);
+                            $('#l97').text(0.0);
+                            $('#l95').text(0.0);
+                            $('#valuacion').text(0.0);
                         }
 
                         var options = { year: "numeric", month: "long", day: "numeric" };
@@ -545,13 +561,11 @@
                         globalLimitParaTablaMercados = da[1][0]['globalLimit'];
                         $scope.limite = globalLimitParaTablaMercados;
 
-                        // Límite de VaR - (suma columna VaR)
-                        var sumVar =0; 
                         $scope.mercados = da[4];
                         for (let i = 0; i < da[4].length; i++) {
                             htmTableMercado += '<tr style="cursor:pointer;" onclick="getTableProductos('+da[4][i].cdMercado+');">';
                             htmTableMercado += '<td>' + da[4][i].nombre + '</td>';
-                            $scope.labels.push(da[4][i].nombre);
+                            
                             htmTableMercado += '<td>' + comas(dosDecimales(Number.parseFloat(da[4][i].valuacion))) + '</td>';
 
                             var varPorcentaje = 0.0;
@@ -565,26 +579,22 @@
                                 varPorcentaje = da[4][i].var3;
                                 varPorcentaje =  varPorcentaje * -1;
                             }
-                            $scope.data.push(varPorcentaje.toFixed(2));
-                            sumVar+=varPorcentaje
-
+                        
                             htmTableMercado += '<td>' + comas(dosDecimales(varPorcentaje)) + ' </td>';
-                            htmTableMercado += '<td>' + comas(dosDecimales(globalLimitParaTablaMercados)) + ' </td>';
+                            htmTableMercado += '<td>' + comas(dosDecimales($scope.limite)) + ' </td>';
 
-                            var calculoMenosVar = globalLimitParaTablaMercados - varPorcentaje;
+                            var calculoMenosVar = $scope.limite - varPorcentaje;
+                            var porcentajeUtilizado = calculoMenosVar/$scope.limite ;
 
-                            if (calculoMenosVar < 0) {
-                                htmTableMercado += '<td style="color:red;"> ' + comas(dosDecimales(calculoMenosVar)) + '</td>';
-                            } else {
-                                htmTableMercado += '<td style="color:green;"> ' + comas(dosDecimales(calculoMenosVar)) + '</td>';
+                            if (calculoMenosVar <= 0) {
+                                htmTableMercado += '<td style="color:red; font-weight:bold;"> ' + comas(dosDecimales(calculoMenosVar)) + '</td>';
+                            } else if (porcentajeUtilizado >0.10) {
+                                htmTableMercado += '<td style="color:green; font-weight:bold;"> ' + comas(dosDecimales(calculoMenosVar)) + '</td>';
+                            }else if (0.10>= porcentajeUtilizado > 0) {
+                                htmTableMercado += '<td style="color:orange; font-weight:bold;"> ' + comas(dosDecimales(calculoMenosVar)) + '</td>';
                             }
                             htmTableMercado += '</tr>';
                         }
-                        
-                        $scope.data.splice(0, 0, (globalLimitParaTablaMercados-sumVar).toFixed(2));
-                        $scope.labels.splice(0, 0,"Límite Disponible");
-                        console.log("LABELS_597::",$scope.labels);
-                        console.log("DATA_598::",$scope.data);
 
                         document.getElementById('tableSecond').innerHTML = htmTableMercado;
 
@@ -650,15 +660,14 @@
 
                         });
 
+                        if (undefined != da[0] && null!= da[0]) {
+                            $scope.makeChart(da[0]);
+                        }
+
                     }
                 }
-                console.log("DATA_CONTROLLER::",$scope.data);
-                console.log("LABELS_CONTROLLER::",$scope.labels);
-                var color = 0;
-                if (globalLimitParaTablaMercados-sumVar<=0){
-                    color = 1;
-                }
-                functions.generarGraficaDona('graficaVarHistorico',$scope.labels, $scope.data,color);
+                
+                
             });
             
             
@@ -672,30 +681,71 @@
                 var var1 = obj['var1'];
                 var var2 = obj['var2'];
                 var var3 = obj['var3'];
+                var1 = var1 * -1;
+                var2 = var2 * -1;
+                var3 = var3 * -1;
 
                 $('#titleGlobal').text(obj.titulo);
-                $('#l99').text(var1.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
-                $('#l97').text(var2.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
-                $('#l95').text(var3.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+                $('#l99').text(comas(dosDecimales(var1)));
+                $('#l97').text(comas(dosDecimales(var2)));
+                $('#l95').text(comas(dosDecimales(var3)));
 
-                $('#valuacion').text(obj['valuacion'].toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
-                document.getElementById('valuacion').style.setProperty("background-color", "#faf9fc");
-                document.getElementById('valuacionTxt').style.setProperty("background-color", "#faf9fc");
+                $('#valuacion').text(comas(dosDecimales(obj['valuacion'])));
+                document.getElementById('valuacion').style.setProperty("background-color", "#f4f3f3");
+                document.getElementById('valuacionTxt').style.setProperty("background-color", "#f4f3f3");
+                document.getElementById('valuacion').style.setProperty("font-weight", "bold");
+                document.getElementById('valuacionTxt').style.setProperty("font-weight", "bold");
 
 
                 var limite = obj.limite;
 
-                $('#limite').text(limite.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
-                $('#limite99').text(limite)
-                $('#limite97').text(limite)
-                $('#limite95').text(limite)
+                $('#limite').text(limite);
+                $('#limite99').text(comas(dosDecimales(limite)));
+                $('#limite97').text(comas(dosDecimales(limite)));
+                $('#limite95').text(comas(dosDecimales(limite)));
 
-                var nivelConfianza_99 = limite -obj['var1'];
-                var nivelConfianza_97 = limite -obj['var2'];
-                var nivelConfianza_95 = limite -obj['var3'];
-                $('#nivelConfianza_99').text(nivelConfianza_99.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
-                $('#nivelConfianza_97').text(nivelConfianza_97.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
-                $('#nivelConfianza_95').text(nivelConfianza_95.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
+                var nivelConfianza_99 = limite - var1;
+                var nivelConfianza_97 = limite - var2;
+                var nivelConfianza_95 = limite - var3;
+                var porcentajeUtilizado_99 = nivelConfianza_99/limite;
+                var porcentajeUtilizado_97 = nivelConfianza_97/limite;
+                var porcentajeUtilizado_95 = nivelConfianza_95/limite;
+                
+                if(nivelConfianza_99<=0){
+                    document.getElementById('nivelConfianza_99').style.setProperty("color", "red");
+                }else if(0.10>=porcentajeUtilizado_99>0){
+                    document.getElementById('nivelConfianza_99').style.setProperty("color", "orange");
+                }else if (porcentajeUtilizado_99>0.10){
+                    document.getElementById('nivelConfianza_99').style.setProperty("color", "green");
+                }
+
+                if (nivelConfianza_97<=0){
+                    document.getElementById('nivelConfianza_97').style.setProperty("color", "red");
+
+                }else if(0.10>=porcentajeUtilizado_97>0){
+                    document.getElementById('nivelConfianza_97').style.setProperty("color", "orange");
+
+                }else if (porcentajeUtilizado_97>0.10){
+                    document.getElementById('nivelConfianza_97').style.setProperty("color", "green"); 
+                }
+
+                if (nivelConfianza_95<=0){
+                    document.getElementById('nivelConfianza_95').style.setProperty("color", "red");
+                }else if(0.10>=porcentajeUtilizado_95>0){
+                    document.getElementById('nivelConfianza_95').style.setProperty("color", "orange");
+
+                }else if (porcentajeUtilizado_95>0.10){
+                    document.getElementById('nivelConfianza_95').style.setProperty("color", "green");
+                }
+
+                
+                document.getElementById('nivelConfianza_99').style.setProperty("font-weight", "bold");
+                document.getElementById('nivelConfianza_97').style.setProperty("font-weight", "bold");
+                document.getElementById('nivelConfianza_95').style.setProperty("font-weight", "bold");
+                
+                $('#nivelConfianza_99').text(comas(dosDecimales(nivelConfianza_99)));
+                $('#nivelConfianza_97').text(comas(dosDecimales(nivelConfianza_97)));
+                $('#nivelConfianza_95').text(comas(dosDecimales(nivelConfianza_95)));
 
 
             } else {
@@ -704,16 +754,56 @@
                 $('#l95').text(0.0)
                 $('#valuacion').text(0.0)
             }
-        }
+        };
+
+        $scope.makeChart = function (data){
+            console.log("DATA_CHART_FUNCTION",data);
+            $scope.labels = [];
+            $scope.data= [];
+
+            var sumVar =0;
+            for (let i = 0; i < data.length; i++) {
+                $scope.labels.push(data[i].nbSerie);
+                $scope.data.push(data[i].nuDiferencia.toFixed(2));
+                sumVar+=data[i].nuDiferencia;
+            }
+
+            $scope.data.splice(0, 0, ($scope.limite-sumVar).toFixed(2));
+            $scope.labels.splice(0, 0,"Límite Disponible");
+            console.log("CHART_LABELS::",$scope.labels);
+            console.log("CHART_DATA::",$scope.data);
+
+            var color = 0;
+            if (globalLimitParaTablaMercados-sumVar<=0){
+                color = 1;
+            }else if(0.10>=1-sumVar/globalLimitParaTablaMercados>0){
+                color = 2;
+            }
+            functions.generarGraficaDona('graficaVarHistorico',$scope.labels, $scope.data,color,$scope.limite);
+
+        };
 
         $scope.refreshTableProductos = function() {
             if(null!=$scope.mercadoSelect){
                 $scope.getTableProductos($scope.mercadoSelect);
             }
-        }
+        };
 
         $scope.getTableProductos = function(idMercado){
             var found = $scope.mercados.find(element => element.cdMercado == idMercado);
+            const selectPorcentajePre = $('#porcentajeSelect').val();
+            const selectPorcentajeSplit = selectPorcentajePre.split('&');
+            const selectPorcentaje = selectPorcentajeSplit[0];
+
+            var tpPercentil =0;
+            if (selectPorcentaje == 99) {
+                tpPercentil = 1;
+            } else if (selectPorcentaje == 97) {
+                tpPercentil = 2;
+            } else if (selectPorcentaje == 95) {
+                tpPercentil = 3;
+            }
+
             var obj = {
                 titulo: found.nombre,
                 var1: found.var1,
@@ -723,22 +813,18 @@
                 valuacion: found.valuacion
             };
             $scope.makeSummaryTable(obj);
-            $scope.data =[];
-            $scope.labels=[];
 
             var fecha = document.getElementById("varDate").value;
             $scope.mercadoSelect = idMercado;
             let data = {
                 idMercado: idMercado,
+                tpPercentil: tpPercentil,
                 fecha: fecha
             };
             functions.getProductosVar(token, JSON.stringify(data)).then(function(response) {
                 console.log("### getProductosVar:: ",response)
 
                 let htmTableIntermedio = '';
-                const selectPorcentajePre = $('#porcentajeSelect').val();
-                const selectPorcentajeSplit = selectPorcentajePre.split('&');
-                const selectPorcentaje = selectPorcentajeSplit[0];
 
                 if(response.status==200){
 
@@ -754,16 +840,14 @@
                     htmTableIntermedio += '</tr>';
                     htmTableIntermedio += '</thead>';
                     htmTableIntermedio += '<tbody>';
-                    $scope.labels = [];
-                    $scope.data= [];
-                    var mercados = response.data;
+
+                    var mercados = response.data[0];
                     $scope.productos = mercados;
-                    var sumVar=0;
+                    
                     for (let i = 0; i < mercados.length; i++) {
                         htmTableIntermedio += '<tr style="cursor:pointer;" onclick="getTableTransacciones('+mercados[i].cdInstrumento+')">';
                         htmTableIntermedio += ' <th scope="row">' + (i + 1) + '</th>';
                         htmTableIntermedio += '<td>'+mercados[i].nombre+'</td>';
-                        $scope.labels.push(mercados[i].nombre);
                         htmTableIntermedio += '<td> ' + comas(dosDecimales(Number.parseFloat(mercados[i].valuacion))) + '</td>'
 
                         var varPorcentaje = 0.0;
@@ -777,18 +861,17 @@
                             varPorcentaje = mercados[i].var3;
                             varPorcentaje =  varPorcentaje * -1;
                         }
-			//$scope.data[i+1]=varPorcentaje;
-                        $scope.data.push(varPorcentaje.toFixed(2));
-                        sumVar+=varPorcentaje;
 
                         htmTableIntermedio += '<td> ' + comas(dosDecimales(varPorcentaje)) + '</td>';
                         htmTableIntermedio += '<td> ' + comas(dosDecimales($scope.limite)) + '</td>';
 
                         var limiteMenosVar = $scope.limite -varPorcentaje;
-                        if (limiteMenosVar < 0) {
-                            htmTableIntermedio += '<td style="color:red;"> ' + comas(dosDecimales(limiteMenosVar)) + '</td>';
-                        } else {
-                            htmTableIntermedio += '<td style="color:green;"> ' + comas(dosDecimales(limiteMenosVar)) + '</td>';
+                        if (limiteMenosVar <= 0) {
+                            htmTableIntermedio += '<td style="color:red; font-weight:bold;"> ' + comas(dosDecimales(limiteMenosVar)) + '</td>';
+                        } else if(0.10>= limiteMenosVar/$scope.limite >0) {
+                            htmTableIntermedio += '<td style="color:orange; font-weight:bold;"> ' + comas(dosDecimales(limiteMenosVar)) + '</td>';
+                        }else {
+                            htmTableIntermedio += '<td style="color:green; font-weight:bold;"> ' + comas(dosDecimales(limiteMenosVar)) + '</td>';
                         }
 
                         htmTableIntermedio += '</tr>';
@@ -797,11 +880,6 @@
 
                 htmTableIntermedio += '</tbody>';
                 htmTableIntermedio += '</table>';
-
-                $scope.data.splice(0, 0,($scope.limite-sumVar).toFixed(2));
-                $scope.labels.splice(0, 0,"Límite Disponible");
-		
-		
 
                 document.getElementById('tableFirst').innerHTML = htmTableIntermedio;
 
@@ -876,13 +954,10 @@
                 $("#buttonRegresar").css("display","");
                 $("#tableSecond").css("display","none");
 
-                console.log("DATA_CONTROLLER_869::",$scope.data);
-                console.log("LABELS_CONTROLLER_869::",$scope.labels);
-                var color = 0;
-                if ($scope.limite-sumVar<=0){
-                    color = 1;
+
+                if (undefined != response.data[1] && null!= response.data[1]) {
+                    $scope.makeChart(response.data[1]);
                 }
-                functions.generarGraficaDona('graficaVarHistorico',$scope.labels, $scope.data, color);
             });
         };
 
@@ -894,8 +969,21 @@
         }
 
         $scope.getTableTransacciones = function(idProducto){
-            console.log("PRODUCTOS", $scope.productos);
             var found = $scope.productos.find(element => element.cdInstrumento == idProducto);
+            
+            const selectPorcentajePre = $('#porcentajeSelect').val();
+            const selectPorcentajeSplit = selectPorcentajePre.split('&');
+            const selectPorcentaje = selectPorcentajeSplit[0];
+
+            var tpPercentil =0;
+            if (selectPorcentaje == 99) {
+                tpPercentil = 1;
+            } else if (selectPorcentaje == 97) {
+                tpPercentil = 2;
+            } else if (selectPorcentaje == 95) {
+                tpPercentil = 3;
+            }
+
             var obj = {
                 titulo: found.nombre,
                 var1: found.var1,
@@ -911,14 +999,12 @@
             let data = {
                 idMercado: $scope.mercadoSelect,
                 idInstrumento: idProducto,
+                tpPercentil: tpPercentil,
                 fecha: fecha
             };
             functions.getTransaccionesVar(token, JSON.stringify(data)).then(function(response) {
                 console.log("DATA_TRANSACCIONES: ", response);
                 if(response.status==200){
-                    const selectPorcentajePre = $('#porcentajeSelect').val();
-                    const selectPorcentajeSplit = selectPorcentajePre.split('&');
-                    const selectPorcentaje = selectPorcentajeSplit[0];
                     let htmTableDetalle = '<br/><table class="table" id="tableProductodetalle" style="width:100%;">';
                     htmTableDetalle += '<thead class="p-3 mb-2 bg-dark text-white">';
                     htmTableDetalle += '<tr>';
@@ -932,15 +1018,11 @@
                     htmTableDetalle += '</thead>';
                     htmTableDetalle += '<tbody>';
 
-                    $scope.labels = [];
-                    $scope.data= [];
-                    var transacciones = response.data;
-                    var sumVar =0;
+                    var transacciones = response.data[0];
                     for (let i = 0; i < transacciones.length; i++) {
                         htmTableDetalle += '<tr style="cursor:pointer;" >';
                         htmTableDetalle += '<td scope="row">' + (i + 1) + '</td>';
                         htmTableDetalle += '<td>' + transacciones[i].cdTransaccion + '</td>';
-                        $scope.labels.push(transacciones[i].cdTransaccion);
                         htmTableDetalle += '<td> ' + comas(dosDecimales(Number.parseFloat(transacciones[i].valuacion))) + '</td>'
 
                         var varPorcentaje = 0.0;
@@ -954,18 +1036,18 @@
                             varPorcentaje = transacciones[i].var3;
                             varPorcentaje =  varPorcentaje * -1;
                         }
-                        $scope.data.push(varPorcentaje);
-                        sumVar+=varPorcentaje;
 
                         htmTableDetalle += '<td> ' + comas(dosDecimales(varPorcentaje)) + '</td>';
                         htmTableDetalle += '<td> ' + comas(dosDecimales($scope.limite)) + '</td>';
 
                         var limiteMenosVar = $scope.limite - varPorcentaje;
 
-                        if (limiteMenosVar < 0) {
-                            htmTableDetalle += '<td style="color:red;"> ' + comas(dosDecimales(limiteMenosVar)) + '</td>';
-                        } else {
-                            htmTableDetalle += '<td style="color:green;"> ' + comas(dosDecimales(limiteMenosVar)) + '</td>';
+                        if (limiteMenosVar <= 0) {
+                            htmTableDetalle += '<td style="color:red; font-weight:bold;"> ' + comas(dosDecimales(limiteMenosVar)) + '</td>';
+                        } else if(0.10>= limiteMenosVar/$scope.limite>0){
+                            htmTableDetalle += '<td style="color:orange; font-weight:bold;"> ' + comas(dosDecimales(limiteMenosVar)) + '</td>';
+                        }else {
+                            htmTableDetalle += '<td style="color:green; font-weight:bold;"> ' + comas(dosDecimales(limiteMenosVar)) + '</td>';
                         }
 
                         htmTableDetalle += '</tr>';
@@ -973,8 +1055,6 @@
                     htmTableDetalle += '</tbody>';
                     htmTableDetalle += '</table>';
                     
-		            $scope.data.splice(0, 0,$scope.limite-sumVar);
-                    $scope.labels.splice(0, 0,"Límite Disponible");
                     document.getElementById('tableThird').innerHTML = htmTableDetalle;
 
                     $('#tableProductodetalle').dataTable({
@@ -1049,18 +1129,15 @@
                     $("#tableFirst").css("display", "none");
                     $("#tableThird").css("display", "");
 
-                    console.log("DATA_CONTROLLER_1052::",$scope.data);
-                    console.log("LABELS_CONTROLLER_1053::",$scope.labels);
-                    var color = 0;
-                    if ($scope.limite-sumVar<=0){
-                        color = 1;
+                    if (undefined != response.data[1] && null!= response.data[1]) {
+                        $scope.makeChart(response.data[1]);
                     }
-                    functions.generarGraficaDona('graficaVarHistorico',$scope.labels, $scope.data,color);
                 }
             });
         };
 
         makeSummaryTable = $scope.makeSummaryTable;
+        makeChart = $scope.makeChart;
         getTableProductos = $scope.getTableProductos;
         getTableTransacciones = $scope.getTableTransacciones;
         refreshTableProductos = $scope.refreshTableProductos;
@@ -4470,7 +4547,7 @@ app.controller('generarvar', function( $scope, functions) {
 
     $scope.validaGenerarVar = function(){
         
-        $("#conntentSpinner").fadeIn();
+        
         var fecha = document.getElementById("varDate").value;
         if(null==fecha || undefined==fecha || ""==fecha){
             Swal.fire('Por favor selecciona una fecha', '', 'warning');
@@ -4478,6 +4555,7 @@ app.controller('generarvar', function( $scope, functions) {
             let data = {
                 fecha: fecha
             };
+            $("#conntentSpinner").fadeIn();
             functions.validaGenerarVarFactory(token, JSON.stringify(data)).then(function(response) {
                 console.log("### getProductosVar:: ",response);
                 var res = response.data;
@@ -4492,9 +4570,10 @@ app.controller('generarvar', function( $scope, functions) {
                 } else {
                     Swal.fire('Ocurrió un problema al realizar el proceso.', '', 'error');
                 }
+                $("#conntentSpinner").fadeOut();
             });
         }
-        $("#conntentSpinner").fadeOut();
+        
         
     };
     validaGenerarVar = $scope.validaGenerarVar;

@@ -921,7 +921,6 @@
             },
 
             validaGenerarVarFactory(token, data) {
-                //var uri = 'http://localhost:8080/app/mercadoDeDerivadoss/swaps';
                 var uri = 'http://localhost:8080/app/mercadoDeDerivadoss/validaGenerarVarFactory';
                 return $http.post(uri, data, {
                     headers: {
@@ -931,7 +930,6 @@
                 });
             },
             generarVarFactory(token, data) {
-                //var uri = 'http://localhost:8080/app/mercadoDeDerivadoss/swaps';
                 var uri = 'http://localhost:8080/app/mercadoDeDerivadoss/generarVarFactory';
                 return $http.post(uri, data, {
                     headers: {
@@ -940,7 +938,7 @@
                     }
                 });
             },
-            generarGraficaDona: function(idGrafica, labels, data, color) {
+            generarGraficaDona: function(idGrafica, labels, data, color, limite) {
                 console.log("generarGraficaDona_DATA:: ",data);
 
                 document.getElementById(idGrafica).remove();
@@ -953,7 +951,9 @@
                 if (undefined!= color && null!= color){
                     if(color==0){
                         color1 ='#18fd03';
-                    }else {
+                    } else if (color==2) {
+                        color1 ='#effe00'
+                    } else {
                         color1 ='red';
                     }
                 }
@@ -967,7 +967,9 @@
                         datasets: [{
                             backgroundColor: [
                                 color1,
-                                '#ffe7c9',
+                                '#abc8f8',
+                                '#d7abf8',
+                                '#f88e86',
                                 '#92ddea',
                                 '#d1ebff',
                                 '#be9ddf',
@@ -979,7 +981,9 @@
                                 '#dbb8b8',
                                 '#ffa5d8',
                                 '#d3ffd4',
-                                '#9579d1'
+                                '#9579d1',
+                                '#ffe7c9',
+                                '#f8abde'
                             ],
                             data: data
                         }]
@@ -992,19 +996,71 @@
                             fontSize:30,
                             position: 'right'
                         },
-                        plugins: {
-                            datalabels: {
-                              formatter: (value) => {
-                                  console.log("VAL", value.toString().split('').reverse().join('').replace(/(?=\d*\.?)(\d{3})/g,'$1.'));
-                                value = value.toString().split('').reverse().join('').replace(/(?=\d*\.?)(\d{3})/g,'$1.');
-                                return  value.split('').reverse().join('').replace(/^[\.]/,'');
-                              }
+                        tooltips: {
+                            enabled: true,
+                            mode: 'single',
+                            labelAlign:'left',
+                            afterLabelAlign:'left',
+                            callbacks: {
+                                
+                                label: function(tooltipItem, data) {
+                                    var label = comas(dosDecimales(data.datasets[0].data[tooltipItem.index]));
+                                    var titulo = data.labels[tooltipItem.index];
+                                    var dataset = data['datasets'][0];
+                                    var percent = dosDecimales((dataset['data'][tooltipItem['index']] / limite) * 100)
+                                    return " " +titulo + ": " + label  ;
+                                },
+                                afterLabel: function(tooltipItem, data) {
+                                    var label = data.datasets[0].data[tooltipItem.index];
+                                    var titulo = data.labels[tooltipItem.index];
+                                    var dataset = data['datasets'][0];
+                                    var percent = dosDecimales((dataset['data'][tooltipItem['index']] / limite) * 100)
+                                    percent = Math.abs(percent);
+                                    if(titulo=="Límite Disponible"){
+                                        if(color==0){
+                                            return "Límite de VaR Dispible " +  + comas(dosDecimales(percent)) + '%';
+                                        }else if(color==1) {
+                                            return "Límite de VaR Sobrepasado en " + + comas(dosDecimales(percent)) + '%';
+                                        }else if(color==2) {
+                                            return "Límite de VaR Disponible en Nivel de Alerta: " +  + comas(dosDecimales(percent)) + '%';
+                                        };
+                                    }
+                                    else if(label>=0){
+                                        return "P&L de " + titulo +"  Negativo, Consume Límite en " +   comas(dosDecimales(percent)) + '%';
+                                    }else {
+                                        return "P&L de " + titulo +" Positivo, Aporta a Límite en " +   comas(dosDecimales(percent)) + '%';
+                                    };
+                                   
+                                },
+                                
                             }
-                          }
+                        }
                     }
                 });
                 console.log("generarGraficaDona", chart);
                 chart.update();
+
+                comas = function numberWithCommas(x) {
+                    x = x.toString();
+                    var pattern = /(-?\d+)(\d{3})/;
+                    while (pattern.test(x))
+                        x = x.replace(pattern, "$1,$2");
+                    return x;
+                };
+        
+                dosDecimales = function(numero) {
+                    var numeroOriginal = numero;
+                    var signo = 1;
+                    if (numero < 0){
+                        numeroOriginal = numeroOriginal * -1;
+                        signo = -1;
+                    }
+                    let t = numeroOriginal.toString();
+                    let regex = /(\d*.\d{0,2})/;
+                    var vreturn = t.match(regex)[0];
+                    vreturn = vreturn * signo
+                    return vreturn;
+                };
             },
             
             
