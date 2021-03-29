@@ -952,7 +952,7 @@
                     if(color==0){
                         color1 ='#18fd03';
                     } else if (color==2) {
-                        color1 ='#effe00'
+                        color1 = 'orange'
                     } else {
                         color1 ='red';
                     }
@@ -967,6 +967,15 @@
                         datasets: [{
                             backgroundColor: [
                                 color1,
+                                '#34495E',
+                                '#808B96',
+                                '#154360',
+                                '#95A5A6',
+                                '#7D6608',
+                                '#17202A',
+                                '#512E5F',
+                                '#090249 ',
+                                '#641E16',
                                 '#abc8f8',
                                 '#d7abf8',
                                 '#f88e86',
@@ -988,6 +997,44 @@
                             data: data
                         }]
                     },
+                    plugins: [{
+                            id: 'prueba',
+                            beforeDraw: function(chart){
+                                var w = chart.chart.width;
+                                var h = chart.chart.height;
+                                var c = chart.chart.ctx;
+                                var c1 = chart.chart.ctx;
+                                var c2 = chart.chart.ctx;
+                                c.restore();
+                                var f = (h/200).toFixed(2);
+                                c.font = 'bold ' + f + 'em sans-serif';
+                                c.textBaseline = 'midle';
+                                var t='Hola';
+                                var a = Math.round((w-3.5*c.measureText(t).width)/2);
+                                t='Nivel de Límite de VaR: '
+                                if(color==0){
+                                    var imagen = document.getElementById("botonVerde");
+                                    var t1='Estable';
+                                    color1= 'green'
+                                }else if(color==1) {
+                                    var imagen = document.getElementById("botonRojo");
+                                    var t1='Excedido';
+                                    
+                                }else if(color==2) {
+                                    var imagen = document.getElementById("botonNaranja");
+                                    var t1='Alerta';
+                                    
+                                };
+                                c.fillText(t,a*1.7,h/1.3);
+                                c.save();
+                                c2.drawImage(imagen,a/1.18,h/2.4,50,50);
+                                c2.save();
+                                var f = (h/190).toFixed(2);
+                                c1.font = 'bold ' + f + 'em sans-serif';
+                                c1.fillStyle = color1;
+                                c1.fillText(t1,a+a*.9,h/1.1,150,150);
+                            }
+                    }],
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,    
@@ -996,18 +1043,25 @@
                             fontSize:30,
                             position: 'right'
                         },
+                        animation :{
+                          animateScale: true,
+                          animateRotate: true  
+                        },
                         tooltips: {
                             enabled: true,
                             mode: 'single',
                             labelAlign:'left',
                             afterLabelAlign:'left',
                             callbacks: {
-                                
                                 label: function(tooltipItem, data) {
-                                    var label = comas(dosDecimales(data.datasets[0].data[tooltipItem.index]));
+                                    var label = data.datasets[0].data[tooltipItem.index];
                                     var titulo = data.labels[tooltipItem.index];
                                     var dataset = data['datasets'][0];
                                     var percent = dosDecimales((dataset['data'][tooltipItem['index']] / limite) * 100)
+                                    if(titulo!="Límite Disponible"){
+                                        label = Math.abs(label);
+                                    }
+                                    label = comas(dosDecimales(label));
                                     return " " +titulo + ": " + label  ;
                                 },
                                 afterLabel: function(tooltipItem, data) {
@@ -1016,13 +1070,14 @@
                                     var dataset = data['datasets'][0];
                                     var percent = dosDecimales((dataset['data'][tooltipItem['index']] / limite) * 100)
                                     percent = Math.abs(percent);
+                                    
                                     if(titulo=="Límite Disponible"){
                                         if(color==0){
-                                            return "Límite de VaR Dispible " +  + comas(dosDecimales(percent)) + '%';
+                                            return "Límite de VaR Dispible " +   comas(dosDecimales(percent)) + '%';
                                         }else if(color==1) {
-                                            return "Límite de VaR Sobrepasado en " + + comas(dosDecimales(percent)) + '%';
+                                            return "Límite de VaR Excedido en " +  comas(dosDecimales(percent)) + '%';
                                         }else if(color==2) {
-                                            return "Límite de VaR Disponible en Nivel de Alerta: " +  + comas(dosDecimales(percent)) + '%';
+                                            return "Límite de VaR Disponible en Nivel de Alerta: " +   comas(dosDecimales(percent)) + '%';
                                         };
                                     }
                                     else if(label>=0){

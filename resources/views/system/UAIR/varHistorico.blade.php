@@ -129,6 +129,9 @@
                                             
                                             <div id="contenedorChart" class="col-lg-5 col-xl-5" style="height: 10%!important">
                                                 <canvas id="graficaVarHistorico"></canvas>
+                                                <img id="botonRojo" src="{{ url('img/palomaRoja.png') }}" style="display:none;"/>
+                                                <img id="botonVerde" src="{{ url('img/palomaVerde.png') }}" style="display:none;"/>
+                                                <img id="botonNaranja" src="{{ url('img/palomaNaraja.png') }}" style="display:none;"/>
                                             </div>
 
                                             <div class="col-lg-3 col-xl-3">
