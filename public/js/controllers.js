@@ -865,12 +865,12 @@
                         }
 
                         htmTableIntermedio += '<td> ' + comas(dosDecimales(varPorcentaje)) + '</td>';
-                        htmTableIntermedio += '<td> ' + comas(dosDecimales($scope.limite)) + '</td>';
+                        htmTableIntermedio += '<td> ' + comas(dosDecimales(mercados[i].limite)) + '</td>';
 
-                        var limiteMenosVar = $scope.limite -varPorcentaje;
+                        var limiteMenosVar = mercados[i].limite -varPorcentaje;
                         if (limiteMenosVar <= 0) {
                             htmTableIntermedio += '<td style="color:red; font-weight:bold;"> ' + comas(dosDecimales(limiteMenosVar)) + '</td>';
-                        } else if(0.10>= limiteMenosVar/$scope.limite >0) {
+                        } else if(0.10>= limiteMenosVar/mercados[i].limite >0) {
                             htmTableIntermedio += '<td style="color:orange; font-weight:bold;"> ' + comas(dosDecimales(limiteMenosVar)) + '</td>';
                         }else {
                             htmTableIntermedio += '<td style="color:green; font-weight:bold;"> ' + comas(dosDecimales(limiteMenosVar)) + '</td>';
@@ -991,9 +991,10 @@
                 var1: found.var1,
                 var2: found.var2,
                 var3: found.var3,
-                limite: $scope.limite, 
+                limite: found.limite, 
                 valuacion: found.valuacion
             };
+            $scope.limite = found.limite
             $scope.makeSummaryTable(obj);
             
             var fecha = document.getElementById("varDate").value;
@@ -1040,13 +1041,13 @@
                         }
 
                         htmTableDetalle += '<td> ' + comas(dosDecimales(varPorcentaje)) + '</td>';
-                        htmTableDetalle += '<td> ' + comas(dosDecimales($scope.limite)) + '</td>';
+                        htmTableDetalle += '<td> ' + comas(dosDecimales(transacciones[i].limite)) + '</td>';
 
-                        var limiteMenosVar = $scope.limite - varPorcentaje;
+                        var limiteMenosVar = transacciones[i].limite - varPorcentaje;
 
                         if (limiteMenosVar <= 0) {
                             htmTableDetalle += '<td style="color:red; font-weight:bold;"> ' + comas(dosDecimales(limiteMenosVar)) + '</td>';
-                        } else if(0.10>= limiteMenosVar/$scope.limite>0){
+                        } else if(0.10>= limiteMenosVar/transacciones[i].limite>0){
                             htmTableDetalle += '<td style="color:orange; font-weight:bold;"> ' + comas(dosDecimales(limiteMenosVar)) + '</td>';
                         }else {
                             htmTableDetalle += '<td style="color:green; font-weight:bold;"> ' + comas(dosDecimales(limiteMenosVar)) + '</td>';
@@ -1211,132 +1212,168 @@ app.controller('limites', function($scope, functions, $window) {
     functions.loading();
     divisaGlobal = '';
     $scope.consultarLimites = function(tipo) {
-        if (tipo == "contraparte") {
-            tipoEnvio = 0;
-        } else if (tipo == "operador") {
+        if (tipo == "mercado") {
             tipoEnvio = 1;
         } else if (tipo == "varLimite") {
             tipoEnvio = 2;
-        } else if (tipo == "mercadoLimite") {
-            tipoEnvio = 3;
-        }
+        } 
 
-        if (tipoEnvio == 0 || tipoEnvio == 1) {
-
-
-            functions.postLimitesLineas(token, tipoEnvio).then(function(response) {
+        if (tipoEnvio == 1) {
+            console.log("selecciono 1");
+          
+            functions.getLimitesVarMercado(token).then(function(response) {
                 var da = response.data;
                 console.log(da);
+                $("#conteTable").empty();
 
+                $("#conteTable").append('<table class="table table-striped" id="limites" style=\'width: 1295px;\'>' +
+                    '<thead class="bg-dark text-white">' +
+                    '<tr>' +
+                    '<th style=\'text-align: center;\'>Mercado</th>' +
+                    '<th> Limite del Mercado</th>' +
+                    '<th style=\'text-align: center; width: 140px;\'></th>' +
+                    '<th style=\'text-align: center; width: 140px;\'></th>' +
+                    '</tr>' +
+                    '</thead>' +
+                    '<tbody id="tableLimites">' +
 
-                $("#conteTable").empty()
+                    '</tbody>' +
+                    '</table>');
+                for (var i = 0; i < da.length; i++) {
 
-                if (tipo == "contraparte") {
+                    var globalLimitConverted = (parseFloat(da[i].limite));
 
-                    $("#conteTable").append('<table class="table table-striped" id="limites" >' +
-                        '<thead class="bg-warning-200">' +
-                        '<tr>' +
-                        '<th>Contraparte</th>' +
-                        '<th>Limite Global</th>' +
-                        '<th>Límite Operaciones Directo</th>' +
-                        '<th>Límite Operaciones en Reporto</th>' +
-                        '<th>Límite por Operción</th>' +
-                        '<th>Límite Mercado de Cambios</th>' +
-                        '<th>Límite por Operción Mercado de Cambios</th>' +
-                        '<th></th>' +
-                        '<th></th>' +
-                        '</tr>' +
-                        '</thead>' +
-                        '<tbody id="tableLimites">' +
+                    $("#tableLimites").append('<tr  id="' + da[i].idMercado + '">' +
+                        '<td>' + da[i].nombre + '</td>' +
 
-                        '</tbody>' +
-                        '</table>');
-                    for (var i = 0; i < da.length; i++) {
+                        '<td><span>' + formatDollar(parseFloat(globalLimitConverted.toFixed(2))) + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="number" value="' + globalLimitConverted.toFixed(2) + '" step="0.01"></td>' +
 
-                        var globalLimitConverted = ((parseFloat(da[i]['globalLimit'])) * (parseFloat(divisaValor))) / 1;
+                        "<td><a class=\"btn btn-danger btn-xs\" style=\"color: white\" onclick=\"deleteqMercadoVarLimite('" + da[i].idMercado + "','mercado')\">Eliminar</a></td>" +
+                        "<td><a id=\"button_modi_" + i + "\" class=\"btn btn-update btn-xs\" style=\"color: white\" onclick=\"modificar('" + da[i].nombre + "','" + i + "')\">Modificar</a>" +
+                        "<a id=\"button_guar_" + i + "\" class=\"btn btn-save btn-xs\" style=\"color: white; width: 80px; margin-bottom: 3px; display:none;\" onclick=\"guardarModiMercadoVarLimite('" + da[i].idMercado + "','" + i + "','mercado','" + da[i]['mercado'] + "')\">Guardar</a>" +
+                        "<a id=\"button_cancel_" + i + "\" class=\"btn btn-cancel btn-xs\" style=\"color: white; width: 80px; display:none;\" onclick=\"cancelModi('" + da[i].idMercado + "','" + i + "')\">Cancelar</a>" +
+                        "</td>" +
+                        '</tr>');
+                } //fin for
 
-                        var directOperationLimit = ((parseFloat(da[i]['directOperationLimit'])) * (parseFloat(divisaValor))) / 1;
-                        var reportoOperationLimit = ((parseFloat(da[i]['reportoOperationLimit'])) * (parseFloat(divisaValor))) / 1;
-                        var operationLimitMoneyMarket = ((parseFloat(da[i]['operationLimitMoneyMarket'])) * (parseFloat(divisaValor))) / 1;
-                        var exchangeMarketLimit = ((parseFloat(da[i]['exchangeMarketLimit'])) * (parseFloat(divisaValor))) / 1;
-                        var limitOperationExchangeMarket = ((parseFloat(da[i]['limitOperationExchangeMarket'])) * (parseFloat(divisaValor))) / 1;
+                $('#limites').dataTable({
 
+                    "pageLength": 25,
+                    select: true,
+                    "ordering": false,
+                    responsive: true,
+                    dom: "<'row mb-3'<'col-sm-12 col-md-6 d-flex align-items-center justify-content-start'f><'col-sm-12 col-md-4 d-flex justify-content-end'B>>" +
+                        "<'row'<'col-sm-12'tr>>" +
+                        "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+                    //data: [ [ "Tiger Nixon", "System Architect", "Edinburgh", "5421" ],[ "Tigerr Nixon", "System Architect", "Edinburgh", "5421" ] ],
+                    buttons: [{
+                            extend: 'pageLength',
+                            className: 'btn-outline-default'
+                        },
+                        {
+                            extend: 'colvis',
+                            text: 'Column Visibility',
+                            titleAttr: 'Col visibility',
+                            className: 'btn-outline-default'
+                        },
+                        {
+                            extend: 'collection',
+                            text: 'Export',
+                            buttons: [{ //meter librería jszip
+                                    extend: 'excelHtml5',
+                                    text: 'Excel',
+                                    orientation: 'landscape',
+                                    titleAttr: 'Generate Excel',
+                                    className: 'btn-outline-default'
+                                },
+                                {
+                                    extend: 'csvHtml5',
+                                    text: 'CSV',
+                                    titleAttr: 'Generate CSV',
+                                    className: 'btn-outline-default'
+                                },
+                                {
+                                    //se debe incluir libreria pdf maker
+                                    extend: 'pdfHtml5',
+                                    text: 'PDF',
+                                    titleAttr: 'PDF',
+                                    customize: function(doc) {
+                                        //pageMargins [left, top, right, bottom]
+                                        doc.pageMargins = [20, 20, 20, 20];
+                                    },
+                                    className: 'btn-outline-default'
+                                }
+                            ],
+                            className: 'btn-outline-default'
 
-                        $("#tableLimites").append('<tr  id="' + da[i]['contraparte'] + '">' +
-                            '<td>' + da[i]['contraparte'] + '</td>' +
+                        },
+                        {
+                            extend: 'copyHtml5',
+                            text: 'Copy',
+                            titleAttr: 'Copy to clipboard',
+                            className: 'btn-outline-default'
+                        },
+                        {
+                            extend: 'print',
+                            text: '<i class="fal fa-print"></i>',
+                            titleAttr: 'Print Table',
+                            className: 'btn-outline-default'
+                        }
 
-                            '<td><span>' + formatDollar(parseFloat(globalLimitConverted.toFixed(2))) + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="number" id="" name="" value="' + globalLimitConverted.toFixed(2) + '" step="0.01"></td>' +
-                            '<td><span>' + formatDollar(parseFloat(directOperationLimit.toFixed(2))) + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="number" id="" name="" value="' + directOperationLimit.toFixed(2) + '" step="0.01"></td>' +
-                            '<td><span>' + formatDollar(parseFloat(reportoOperationLimit.toFixed(2))) + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="number" id="" name="" value="' + reportoOperationLimit.toFixed(2) + '" step="0.01"></td>' +
-                            '<td><span>' + formatDollar(parseFloat(operationLimitMoneyMarket.toFixed(2))) + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="number" id="" name="" value="' + operationLimitMoneyMarket.toFixed(2) + '" step="0.01"></td>' +
-                            '<td><span>' + formatDollar(parseFloat(exchangeMarketLimit.toFixed(2))) + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="number" id="" name="" value="' + exchangeMarketLimit.toFixed(2) + '" step="0.01"></td>' +
-                            '<td><span>' + formatDollar(parseFloat(limitOperationExchangeMarket.toFixed(2))) + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="number" id="" name="" value="' + limitOperationExchangeMarket.toFixed(2) + '" step="0.01"></td>' +
+                    ]
 
+                }); //fin table library
 
-                            "<td><a class=\"btn btn-danger btn-xs\" style=\"color: white\" onclick=\"deleteq('" + da[i]['contraparte'] + "')\">Eliminar</a></td>" +
-                            "<td><a id=\"button_modi_" + i + "\" class=\"btn btn-danger btn-xs\" style=\"color: white\" onclick=\"modificar('" + da[i]['contraparte'] + "','" + i + "')\">Modificar</a>" +
-                            "<a id=\"button_guar_" + i + "\" class=\"btn btn-primary btn-xs\" style=\"color: white; display:none;\" onclick=\"guardarModi('" + da[i]['contraparte'] + "','" + i + "')\">Guardar</a>" +
-                            "<a id=\"button_cancel_" + i + "\" class=\"btn btn-danger btn-xs\" style=\"color: white; display:none;\" onclick=\"cancelModi('" + da[i]['contraparte'] + "','" + i + "')\">Cancelar</a>" +
-                            "</td>" +
+            }); //fin fincion al controller
 
-                            '</tr>');
+        } else if (tipoEnvio == 2 ) {
+            console.log("selecciono 2");
 
+            functions.getLimitesVarMd(token).then(function(response) {
+                var da = response.data;
+                console.log(da);
+                $("#conteTable").empty();
+                $("#conteTable").append('<table class="table table-striped" id="limites" >' +
+                    '<thead class="bg-dark text-white">' +
+                    '<tr>' +
+                    '<th>Producto</th>' +
+                    //'<th>Limite Global</th>' +
+                    //'<th>Límite Operaciones Directo</th>' +
+                    //'<th>Límite Operaciones en Reporto</th>' +
+                    '<th>Límite por Instrumento</th>' +
+                    '<th>Límite por Operción</th>' +
+                    '<th>Mercado</th>' + //nuevo 27_09_2020
+                    //'<th>Límite Mercado de Cambios</th>' +
+                    //'<th>Límite por Operción Mercado de Cambios</th>' +
+                    '<th></th>' +
+                    '<th></th>' +
+                    '</tr>' +
+                    '</thead>' +
+                    '<tbody id="tableLimites">' +
 
+                    '</tbody>' +
+                    '</table>');
+                for (var i = 0; i < da.length; i++) {
 
-                    }
+                    var instrumentLimitConverted = parseFloat(da[i].limiteInstrumento);
+                    var operationLimitMoneyMarket = parseFloat(da[i].limiteOperacion);
+                    
 
+                    $("#tableLimites").append('<tr  id="' + da[i].idInstrumento + '">' +
+                        '<td>' + da[i].producto  + '</td>' +
 
-
-
-                } else if (tipo == "operador") {
-
-                    $("#conteTable").append('<table class="table table-striped" id="limites" >' +
-                        '<thead class="bg-warning-200">' +
-                        '<tr>' +
-                        '<th>Operador</th>' +
-                        '<th>Limite Global</th>' +
-                        '<th>Límite Operaciones Directo</th>' +
-                        '<th>Límite Operaciones en Reporto</th>' +
-                        '<th>Límite por Operción</th>' +
-                        '<th>Límite Mercado de Cambios</th>' +
-                        '<th>Límite por Operción Mercado de Cambios</th>' +
-                        '<th></th>' +
-                        '<th></th>' +
-                        '</tr>' +
-                        '</thead>' +
-                        '<tbody id="tableLimites">' +
-
-                        '</tbody>' +
-                        '</table>');
-                    for (var i = 0; i < da.length; i++) {
-
-                        var globalLimitConverted = ((parseFloat(da[i]['globalLimit'])) * (parseFloat(divisaValor))) / 1;
-
-                        var directOperationLimit = ((parseFloat(da[i]['directOperationLimit'])) * (parseFloat(divisaValor))) / 1;
-                        var reportoOperationLimit = ((parseFloat(da[i]['reportoOperationLimit'])) * (parseFloat(divisaValor))) / 1;
-                        var operationLimitMoneyMarket = ((parseFloat(da[i]['operationLimitMoneyMarket'])) * (parseFloat(divisaValor))) / 1;
-                        var exchangeMarketLimit = ((parseFloat(da[i]['exchangeMarketLimit'])) * (parseFloat(divisaValor))) / 1;
-                        var limitOperationExchangeMarket = ((parseFloat(da[i]['limitOperationExchangeMarket'])) * (parseFloat(divisaValor))) / 1;
-
-
-                        $("#tableLimites").append('<tr  id="' + da[i]['contraparte'] + '">' +
-                            '<td>' + da[i]['contraparte'] + '</td>' +
-
-                            '<td><span>' + formatDollar(parseFloat(globalLimitConverted.toFixed(2))) + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="number" id="" name="" value="' + globalLimitConverted.toFixed(2) + '" step="0.01"></td>' +
-                            '<td><span>' + formatDollar(parseFloat(directOperationLimit.toFixed(2))) + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="number" id="" name="" value="' + directOperationLimit.toFixed(2) + '" step="0.01"></td>' +
-                            '<td><span>' + formatDollar(parseFloat(reportoOperationLimit.toFixed(2))) + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="number" id="" name="" value="' + reportoOperationLimit.toFixed(2) + '" step="0.01"></td>' +
-                            '<td><span>' + formatDollar(parseFloat(operationLimitMoneyMarket.toFixed(2))) + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="number" id="" name="" value="' + operationLimitMoneyMarket.toFixed(2) + '" step="0.01"></td>' +
-                            '<td><span>' + formatDollar(parseFloat(exchangeMarketLimit.toFixed(2))) + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="number" id="" name="" value="' + exchangeMarketLimit.toFixed(2) + '" step="0.01"></td>' +
-                            '<td><span>' + formatDollar(parseFloat(limitOperationExchangeMarket.toFixed(2))) + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="number" id="" name="" value="' + limitOperationExchangeMarket.toFixed(2) + '" step="0.01"></td>' +
-
-                            "<td><a class=\"btn btn-danger btn-xs\" style=\"color: white\" onclick=\"deleteq('" + da[i]['contraparte'] + "')\">Eliminar</a></td>" +
-                            "<td><a id=\"button_modi_" + i + "\" class=\"btn btn-danger btn-xs\" style=\"color: white\" onclick=\"modificar('" + da[i]['contraparte'] + "','" + i + "')\">Modificar</a>" +
-                            "<a id=\"button_guar_" + i + "\" class=\"btn btn-primary btn-xs\" style=\"color: white; display:none;\" onclick=\"guardarModi('" + da[i]['contraparte'] + "','" + i + "')\">Guardar</a>" +
-                            "<a id=\"button_cancel_" + i + "\" class=\"btn btn-danger btn-xs\" style=\"color: white; display:none;\" onclick=\"cancelModi('" + da[i]['contraparte'] + "','" + i + "')\">Cancelar</a>" +
-                            "</td>" +
-                            '</tr>');
-                    } //fin for
-                } //fin if
+                        '<td><span>' + formatDollar(parseFloat(instrumentLimitConverted.toFixed(2))) + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="number" value="' + instrumentLimitConverted.toFixed(2) + '" step="0.01"></td>' +
+                        
+                        '<td><span>' + formatDollar(parseFloat(operationLimitMoneyMarket.toFixed(2))) + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="number" value="' + operationLimitMoneyMarket.toFixed(2) + '" step="0.01"></td>' +
+                        '<td><span>' + da[i].mercado + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="text" value="' + da[i].mercado + '" ></td>' + //nuevo 27_09_2020
+                        
+                        "<td><a class=\"btn btn-danger btn-xs\" style=\"color: white\" onclick=\"deleteqMercadoVarLimite('" + da[i].idInstrumento + "','varMd')\">Eliminar</a></td>" +
+                        "<td><a id=\"button_modi_" + i + "\" class=\"btn btn-update btn-xs\" style=\"color: white\" onclick=\"modificar('" + da[i].producto + "','" + i + "')\">Modificar</a>" +
+                        "<a id=\"button_guar_" + i + "\" class=\"btn btn-save btn-xs\" style=\"color: white; width: 80px; margin-bottom: 3px; display:none;\" onclick=\"guardarModiMercadoVarLimite('" + da[i].idInstrumento + "','" + i + "','varMd','" + da[i].limiteInstrumento + "&" + da[i].producto + "')\">Guardar</a>" +
+                        "<a id=\"button_cancel_" + i + "\" class=\"btn btn-cancel btn-xs\" style=\"color: white; width: 80px; display:none;\" onclick=\"cancelModi('" + da[i].idInstrumento + "','" + i + "')\">Cancelar</a>" +
+                        "</td>" +
+                        '</tr>');
+                } //fin for
 
                 $('#limites').dataTable({
 
@@ -1406,288 +1443,9 @@ app.controller('limites', function($scope, functions, $window) {
 
                 }); //fin table library
 
-
-            }); //fin fucion al controller
-
-
-
-        } else if (tipoEnvio == 2 || tipoEnvio == 3) {
-
-            console.log("selecciono 2 o 3");
-
-            if (tipoEnvio == 2) {
-
-
-                functions.getLimitesVarMd(token).then(function(response) {
-                    var da = response.data;
-                    console.log(da);
-                    $("#conteTable").empty();
-                    $("#conteTable").append('<table class="table table-striped" id="limites" >' +
-                        '<thead class="bg-dark text-white">' +
-                        '<tr>' +
-                        '<th>Producto</th>' +
-                        //'<th>Limite Global</th>' +
-                        //'<th>Límite Operaciones Directo</th>' +
-                        //'<th>Límite Operaciones en Reporto</th>' +
-                        '<th>Límite por Instrumento</th>' +
-                        '<th>Límite por Operción</th>' +
-                        '<th>Mercado</th>' + //nuevo 27_09_2020
-                        //'<th>Límite Mercado de Cambios</th>' +
-                        //'<th>Límite por Operción Mercado de Cambios</th>' +
-                        '<th></th>' +
-                        '<th></th>' +
-                        '</tr>' +
-                        '</thead>' +
-                        '<tbody id="tableLimites">' +
-
-                        '</tbody>' +
-                        '</table>');
-                    for (var i = 0; i < da.length; i++) {
-
-                        //var globalLimitConverted = ((parseFloat(da[i].limiteGlobal)) * (parseFloat(divisaValor))) / 1;
-                        var instrumentLimitConverted = parseFloat(da[i].limiteInstrumento);
-
-                        //var directOperationLimit = ((parseFloat(da[i]['directOperationLimit'])) * (parseFloat(divisaValor))) / 1;
-                        //var reportoOperationLimit = ((parseFloat(da[i]['reportoOperationLimit'])) * (parseFloat(divisaValor))) / 1;
-                        var operationLimitMoneyMarket = parseFloat(da[i].limiteOperacion);
-                        //var exchangeMarketLimit = ((parseFloat(da[i]['exchangeMarketLimit'])) * (parseFloat(divisaValor))) / 1;
-                        //var limitOperationExchangeMarket = ((parseFloat(da[i]['limitOperationExchangeMarket'])) * (parseFloat(divisaValor))) / 1;
-
-
-                        /*var mercadoNuevo = "";
-                        if (da[i]['market'] != null) {
-                            mercadoNuevo = da[i]['market'];
-                        }
-                        var productoVistaValidacion = "";
-
-                        if (da[i]['producto'] == 2) {
-                            productoVistaValidacion = "Swaps"
-                        } else {
-                            productoVistaValidacion = da[i]['producto']
-                        }*/
-
-                        $("#tableLimites").append('<tr  id="' + da[i].idInstrumento + '">' +
-                            '<td>' + da[i].producto  + '</td>' +
-
-                            //'<td><span>' + formatDollar(parseFloat(globalLimitConverted.toFixed(2))) + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="number" id="" name="" value="' + globalLimitConverted.toFixed(2) + '" step="0.01"></td>' +
-                            '<td><span>' + formatDollar(parseFloat(instrumentLimitConverted.toFixed(2))) + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="number" value="' + instrumentLimitConverted.toFixed(2) + '" step="0.01"></td>' +
-                            
-                            //'<td><span>' + formatDollar(parseFloat(directOperationLimit.toFixed(2))) + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="number" id="" name="" value="' + directOperationLimit.toFixed(2) + '" step="0.01"></td>' +
-                            //'<td><span>' + formatDollar(parseFloat(reportoOperationLimit.toFixed(2))) + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="number" id="" name="" value="' + reportoOperationLimit.toFixed(2) + '" step="0.01"></td>' +
-                            '<td><span>' + formatDollar(parseFloat(operationLimitMoneyMarket.toFixed(2))) + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="number" value="' + operationLimitMoneyMarket.toFixed(2) + '" step="0.01"></td>' +
-                            '<td><span>' + da[i].mercado + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="text" value="' + da[i].mercado + '" ></td>' + //nuevo 27_09_2020
-                            //'<td><span>' + formatDollar(parseFloat(exchangeMarketLimit.toFixed(2))) + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="number" id="" name="" value="' + exchangeMarketLimit.toFixed(2) + '" step="0.01"></td>' +
-                            //'<td><span>' + formatDollar(parseFloat(limitOperationExchangeMarket.toFixed(2))) + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="number" id="" name="" value="' + limitOperationExchangeMarket.toFixed(2) + '" step="0.01"></td>' +
-
-                            "<td><a class=\"btn btn-danger btn-xs\" style=\"color: white\" onclick=\"deleteqMercadoVarLimite('" + da[i].idInstrumento + "','varMd')\">Eliminar</a></td>" +
-                            "<td><a id=\"button_modi_" + i + "\" class=\"btn btn-update btn-xs\" style=\"color: white\" onclick=\"modificar('" + da[i].producto + "','" + i + "')\">Modificar</a>" +
-                            "<a id=\"button_guar_" + i + "\" class=\"btn btn-save btn-xs\" style=\"color: white; width: 80px; margin-bottom: 3px; display:none;\" onclick=\"guardarModiMercadoVarLimite('" + da[i].idInstrumento + "','" + i + "','varMd','" + da[i].limiteInstrumento + "&" + da[i].producto + "')\">Guardar</a>" +
-                            "<a id=\"button_cancel_" + i + "\" class=\"btn btn-cancel btn-xs\" style=\"color: white; width: 80px; display:none;\" onclick=\"cancelModi('" + da[i].idInstrumento + "','" + i + "')\">Cancelar</a>" +
-                            "</td>" +
-                            '</tr>');
-                    } //fin for
-
-                    $('#limites').dataTable({
-
-                        "pageLength": 25,
-                        select: true,
-                        "ordering": false,
-                        responsive: true,
-                        dom: "<'row mb-3'<'col-sm-12 col-md-4 d-flex align-items-center justify-content-start'f><'col-sm-12 col-md-8 d-flex align-items-center justify-content-end'B>>" +
-                            "<'row'<'col-sm-12'tr>>" +
-                            "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
-                        //data: [ [ "Tiger Nixon", "System Architect", "Edinburgh", "5421" ],[ "Tigerr Nixon", "System Architect", "Edinburgh", "5421" ] ],
-                        buttons: [{
-                                extend: 'pageLength',
-                                className: 'btn-outline-default'
-                            },
-                            {
-                                extend: 'colvis',
-                                text: 'Column Visibility',
-                                titleAttr: 'Col visibility',
-                                className: 'btn-outline-default'
-                            },
-                            {
-                                extend: 'collection',
-                                text: 'Export',
-                                buttons: [{ //meter librería jszip
-                                        extend: 'excelHtml5',
-                                        text: 'Excel',
-                                        orientation: 'landscape',
-                                        titleAttr: 'Generate Excel',
-                                        className: 'btn-outline-default'
-                                    },
-                                    {
-                                        extend: 'csvHtml5',
-                                        text: 'CSV',
-                                        titleAttr: 'Generate CSV',
-                                        className: 'btn-outline-default'
-                                    },
-                                    {
-                                        //se debe incluir libreria pdf maker
-                                        extend: 'pdfHtml5',
-                                        text: 'PDF',
-                                        titleAttr: 'PDF',
-                                        customize: function(doc) {
-                                            //pageMargins [left, top, right, bottom]
-                                            doc.pageMargins = [20, 20, 20, 20];
-                                        },
-                                        className: 'btn-outline-default'
-                                    }
-                                ],
-                                className: 'btn-outline-default'
-
-                            },
-                            {
-                                extend: 'copyHtml5',
-                                text: 'Copy',
-                                titleAttr: 'Copy to clipboard',
-                                className: 'btn-outline-default'
-                            },
-                            {
-                                extend: 'print',
-                                text: '<i class="fal fa-print"></i>',
-                                titleAttr: 'Print Table',
-                                className: 'btn-outline-default'
-                            }
-
-                        ]
-
-                    }); //fin table library
-
-                }); // fin funcion al controller
-
-            } else if (tipoEnvio == 3) {
-
-                functions.getLimitesVarMercado(token).then(function(response) {
-                    var da = response.data;
-                    console.log(da);
-                    $("#conteTable").empty();
-
-                    $("#conteTable").append('<table class="table table-striped" id="limites" >' +
-                        '<thead class="bg-warning-200">' +
-                        '<tr>' +
-                        '<th>Mercado</th>' +
-                        '<th>Limite Global</th>' +
-                        '<th>Límite Operaciones Directo</th>' +
-                        '<th>Límite Operaciones en Reporto</th>' +
-                        '<th>Límite por Operción</th>' +
-                        '<th>Límite Mercado de Cambios</th>' +
-                        '<th>Límite por Operción Mercado de Cambios</th>' +
-                        '<th></th>' +
-                        '<th></th>' +
-                        '</tr>' +
-                        '</thead>' +
-                        '<tbody id="tableLimites">' +
-
-                        '</tbody>' +
-                        '</table>');
-                    for (var i = 0; i < da.length; i++) {
-
-                        var globalLimitConverted = ((parseFloat(da[i]['globalLimit'])) * (parseFloat(divisaValor))) / 1;
-
-                        var directOperationLimit = ((parseFloat(da[i]['directOperationLimit'])) * (parseFloat(divisaValor))) / 1;
-                        var reportoOperationLimit = ((parseFloat(da[i]['reportoOperationLimit'])) * (parseFloat(divisaValor))) / 1;
-                        var operationLimitMoneyMarket = ((parseFloat(da[i]['operationLimitMoneyMarket'])) * (parseFloat(divisaValor))) / 1;
-                        var exchangeMarketLimit = ((parseFloat(da[i]['exchangeMarketLimit'])) * (parseFloat(divisaValor))) / 1;
-                        var limitOperationExchangeMarket = ((parseFloat(da[i]['limitOperationExchangeMarket'])) * (parseFloat(divisaValor))) / 1;
-
-
-                        $("#tableLimites").append('<tr  id="' + da[i]['contraparte'] + '">' +
-                            '<td>' + da[i]['mercado'] + '</td>' +
-
-                            '<td><span>' + formatDollar(parseFloat(globalLimitConverted.toFixed(2))) + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="number" id="" name="" value="' + globalLimitConverted.toFixed(2) + '" step="0.01"></td>' +
-                            '<td><span>' + formatDollar(parseFloat(directOperationLimit.toFixed(2))) + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="number" id="" name="" value="' + directOperationLimit.toFixed(2) + '" step="0.01"></td>' +
-                            '<td><span>' + formatDollar(parseFloat(reportoOperationLimit.toFixed(2))) + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="number" id="" name="" value="' + reportoOperationLimit.toFixed(2) + '" step="0.01"></td>' +
-                            '<td><span>' + formatDollar(parseFloat(operationLimitMoneyMarket.toFixed(2))) + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="number" id="" name="" value="' + operationLimitMoneyMarket.toFixed(2) + '" step="0.01"></td>' +
-                            '<td><span>' + formatDollar(parseFloat(exchangeMarketLimit.toFixed(2))) + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="number" id="" name="" value="' + exchangeMarketLimit.toFixed(2) + '" step="0.01"></td>' +
-                            '<td><span>' + formatDollar(parseFloat(limitOperationExchangeMarket.toFixed(2))) + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="number" id="" name="" value="' + limitOperationExchangeMarket.toFixed(2) + '" step="0.01"></td>' +
-
-                            "<td><a class=\"btn btn-danger btn-xs\" style=\"color: white\" onclick=\"deleteqMercadoVarLimite('" + da[i]['mercado'] + "','mercado')\">Eliminar</a></td>" +
-                            "<td><a id=\"button_modi_" + i + "\" class=\"btn btn-danger btn-xs\" style=\"color: white\" onclick=\"modificar('" + da[i]['mercado'] + "','" + i + "')\">Modificar</a>" +
-                            "<a id=\"button_guar_" + i + "\" class=\"btn btn-primary btn-xs\" style=\"color: white; display:none;\" onclick=\"guardarModiMercadoVarLimite('" + da[i]['mercado'] + "','" + i + "','mercado','" + da[i]['mercado'] + "')\">Guardar</a>" +
-                            "<a id=\"button_cancel_" + i + "\" class=\"btn btn-danger btn-xs\" style=\"color: white; display:none;\" onclick=\"cancelModi('" + da[i]['mercado'] + "','" + i + "')\">Cancelar</a>" +
-                            "</td>" +
-                            '</tr>');
-                    } //fin for
-
-                    $('#limites').dataTable({
-
-                        "pageLength": 25,
-                        select: true,
-                        "ordering": false,
-                        responsive: true,
-                        dom: "<'row mb-3'<'col-sm-12 col-md-4 d-flex align-items-center justify-content-start'f><'col-sm-12 col-md-8 d-flex align-items-center justify-content-end'B>>" +
-                            "<'row'<'col-sm-12'tr>>" +
-                            "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
-                        //data: [ [ "Tiger Nixon", "System Architect", "Edinburgh", "5421" ],[ "Tigerr Nixon", "System Architect", "Edinburgh", "5421" ] ],
-                        buttons: [{
-                                extend: 'pageLength',
-                                className: 'btn-outline-default'
-                            },
-                            {
-                                extend: 'colvis',
-                                text: 'Column Visibility',
-                                titleAttr: 'Col visibility',
-                                className: 'btn-outline-default'
-                            },
-                            {
-                                extend: 'collection',
-                                text: 'Export',
-                                buttons: [{ //meter librería jszip
-                                        extend: 'excelHtml5',
-                                        text: 'Excel',
-                                        orientation: 'landscape',
-                                        titleAttr: 'Generate Excel',
-                                        className: 'btn-outline-default'
-                                    },
-                                    {
-                                        extend: 'csvHtml5',
-                                        text: 'CSV',
-                                        titleAttr: 'Generate CSV',
-                                        className: 'btn-outline-default'
-                                    },
-                                    {
-                                        //se debe incluir libreria pdf maker
-                                        extend: 'pdfHtml5',
-                                        text: 'PDF',
-                                        titleAttr: 'PDF',
-                                        customize: function(doc) {
-                                            //pageMargins [left, top, right, bottom]
-                                            doc.pageMargins = [20, 20, 20, 20];
-                                        },
-                                        className: 'btn-outline-default'
-                                    }
-                                ],
-                                className: 'btn-outline-default'
-
-                            },
-                            {
-                                extend: 'copyHtml5',
-                                text: 'Copy',
-                                titleAttr: 'Copy to clipboard',
-                                className: 'btn-outline-default'
-                            },
-                            {
-                                extend: 'print',
-                                text: '<i class="fal fa-print"></i>',
-                                titleAttr: 'Print Table',
-                                className: 'btn-outline-default'
-                            }
-
-                        ]
-
-                    }); //fin table library
-
-                }); //fin fincion al controller
-
-            }
+            }); // fin funcion al controller
 
         } //FIN IF NUEVO
-
-
-
-
     }
 
     $scope.cambio = function() {
@@ -1696,32 +1454,22 @@ app.controller('limites', function($scope, functions, $window) {
     }
 
     $scope.add = function() {
-        $('#btnAgregar').slideUp('fast');
-        $('#add').css('display', 'block');
-
         if ($('#selectTipo').val() == "varLimite") {
+            $('#btnAgregar').slideUp('fast');
+            $('#add').css('display', 'block');
+            
             $('#inputsFromLimitesVar').css('display', '');
-            $('#contraparte').attr("placeholder", "limite");
-
-            $('#inputsNormal1').css('display', 'none');
-            $('#inputsNormal2').css('display', 'none');
-            $('#limitOperationExchangeMarket').css('display', 'none');
             $('#inputsFromLimitesVar2').css('display', '');
 
+            $('#inputsMercados').css('display', 'none');
+        } else if ($('#selectTipo').val() == "mercado") {
+            $('#btnAgregar').slideUp('fast');
+            $('#add').css('display', 'block');
+            
+            $('#inputsMercados').css('display', '');
 
-
-
-
-        } else if ($('#selectTipo').val() == "mercadoLimite") {
-
-            //$('#contraparte').placeholder = "";
-            $('#contraparte').attr("placeholder", "Mercado");
-
-        } else if ($('#selectTipo').val() == "operador") {
-
-            //$('#contraparte').placeholder = "";
-            $('#contraparte').attr("placeholder", "Operador");
-
+            $('#inputsFromLimitesVar').css('display', 'none');
+            $('#inputsFromLimitesVar2').css('display', 'none');
         }
     }
 
@@ -1751,71 +1499,122 @@ app.controller('limites', function($scope, functions, $window) {
 
     $scope.insert = function() {
 
-        var nombreProducto = $('#newNameProducto').val();
-        var idMercado = $('#mercadoSelect').val();
-        var limiteInstrumento= $('#instrumentLimitNuevo').val();
-        var limiteTransaccion = $('#operationLimitNuevo').val();
+        var tipo = $('#selectTipo').val();
+        if(tipo=="mercado"){
+            
+            var nameMarket = $('#newNameMarket').val();
+            var limiteMarket= $('#newMarketLimit').val();
 
-        console.log("NOMBRE_PRODUCTO",nombreProducto);
-        console.log("ID_MERCADO_SELECT",idMercado);
-        console.log("LIMITE_PRODUCTO",limiteInstrumento);
-        console.log("LIMITE_X_OPERACION",limiteTransaccion);
+            console.log("nameMarket",nameMarket);
+            console.log("limiteMarket",limiteMarket);
+            var mensjeError='';
+            if(nameMarket==null || nameMarket==undefined || nameMarket=="" || nameMarket.length==0){
+                mensjeError = 'Por Favor Ingrese el Nombre del Mercado'; 
+            } else if(limiteMarket==null || limiteMarket==undefined || limiteMarket==0){
+                mensjeError = 'Por Favor Ingrese el Límite del Mercado';
+            } 
+            if(mensjeError!=''){
+                Swal.fire({
+                    title: mensjeError,
+                    text: '',
+                    icon: 'warning',
+                    confirmButtonColor: '#47FFAB',
+                    confirmButtonText: 'OK',
+                    reverseButtons: true
+                }).then((result) => {});
+            } else {
 
-        var mensjeError='';
-        if(nombreProducto==null || nombreProducto==undefined || nombreProducto=="" || nombreProducto.length==0){
-            mensjeError = 'Por favor ingrese el nombre del producto'; 
-        } else if(idMercado==0){
-            mensjeError = 'Por Favor Seleccione un Mercado';
-        } else if(limiteInstrumento==null || limiteInstrumento==undefined || limiteInstrumento==0){
-            mensjeError = 'Por Favor Ingrese el Límite por Instrumento';
-        } else if(limiteTransaccion==null || limiteTransaccion==undefined || limiteTransaccion==0){
-            mensjeError = 'Por Favor Ingrese el Límite por Operación';
+                var data={
+                    nombre: nameMarket,
+                    cdActivo: 1,
+                    limite: limiteMarket                
+                };
+
+                functions.addLimitesMercado(token, data).then(function(response) {
+
+                    $('#newNameMarket').val('');
+                    $('#newMarketLimit').val('');
+                    
+                    $('#add').css('display', 'none');
+                    $('#btnAgregar').slideDown('fast');
+                    
+                    var tipo = $('#selectTipo').val();
+                    consultarLimites(tipo);
+
+                    Swal.fire('Se registro correctamente', '', 'success'); 
+                });
+            }
+
+        }else{
+            var nombreProducto = $('#newNameProducto').val();
+            var idMercado = $('#mercadoSelect').val();
+            var limiteInstrumento= $('#instrumentLimitNuevo').val();
+            var limiteTransaccion = $('#operationLimitNuevo').val();
+
+            console.log("NOMBRE_PRODUCTO",nombreProducto);
+            console.log("ID_MERCADO_SELECT",idMercado);
+            console.log("LIMITE_PRODUCTO",limiteInstrumento);
+            console.log("LIMITE_X_OPERACION",limiteTransaccion);
+
+            var mensjeError='';
+            if(nombreProducto==null || nombreProducto==undefined || nombreProducto=="" || nombreProducto.length==0){
+                mensjeError = 'Por Favor Ingrese el Nombre del Producto'; 
+            } else if(idMercado==0){
+                mensjeError = 'Por Favor Seleccione un Mercado';
+            } else if(limiteInstrumento==null || limiteInstrumento==undefined || limiteInstrumento==0){
+                mensjeError = 'Por Favor Ingrese el Límite por Instrumento';
+            } else if(limiteTransaccion==null || limiteTransaccion==undefined || limiteTransaccion==0){
+                mensjeError = 'Por Favor Ingrese el Límite por Operación';
+            }
+            
+            if(mensjeError!=''){
+                Swal.fire({
+                    title: mensjeError,
+                    text: '',
+                    icon: 'warning',
+                    confirmButtonColor: '#47FFAB',
+                    confirmButtonText: 'OK',
+                    reverseButtons: true
+                }).then((result) => {});
+            } else {
+
+                var data={
+                    nombre: nombreProducto,
+                    idMercado: idMercado,
+                    cdActivo: 1,
+                    limiteInstrumento: limiteInstrumento,
+                    limiteTransaccion: limiteTransaccion
+                };
+
+                functions.addLimitesVarMd(token, data).then(function(response) {
+
+                    $('#contraparte').val('');
+                    $('#productoVarLimite').val('');
+                    $('#globalLimit').val('');
+                    $('#directOperationLimit').val('');
+                    $('#reportoOperationLimit').val('');
+                    $('#operationLimitMoneyMarket').val('');
+                    $('#exchangeMarketLimit').val('');
+                    $('#limitOperationExchangeMarket').val('');
+                    $('#add').css('display', 'none');
+                    $('#btnAgregar').slideDown('fast');
+                    
+                    $('#productoSelect').val('0');
+                    $('#mercadoSelect').val('0');
+                    $('#globalLimitNuevo').val('');
+                    $('#operationLimitMoneyMarketNuevo').val('');
+    
+                    var tipo = $('#selectTipo').val();
+                    consultarLimites(tipo);
+
+                    Swal.fire('Se registro correctamente', '', 'success'); 
+                });
+
+            }          
         }
         
-        if(mensjeError!=''){
-            Swal.fire({
-                title: mensjeError,
-                text: '',
-                icon: 'warning',
-                confirmButtonColor: '#47FFAB',
-                confirmButtonText: 'OK',
-                reverseButtons: true
-            }).then((result) => {});
-        }else{
 
-            var data={
-                nombre: nombreProducto,
-                idMercado: idMercado,
-                cdActivo: 1,
-                limiteInstrumento: limiteInstrumento,
-                limiteTransaccion: limiteTransaccion
-            };
-
-            functions.addLimitesVarMd(token, data).then(function(response) {
-
-                $('#contraparte').val('');
-                $('#productoVarLimite').val('');
-                $('#globalLimit').val('');
-                $('#directOperationLimit').val('');
-                $('#reportoOperationLimit').val('');
-                $('#operationLimitMoneyMarket').val('');
-                $('#exchangeMarketLimit').val('');
-                $('#limitOperationExchangeMarket').val('');
-                $('#add').css('display', 'none');
-                $('#btnAgregar').slideDown('fast');
-                
-                $('#productoSelect').val('0');
-                $('#mercadoSelect').val('0');
-                $('#globalLimitNuevo').val('');
-                $('#operationLimitMoneyMarketNuevo').val('');
-   
-                var tipo = $('#selectTipo').val();
-                consultarLimites(tipo);
-
-                Swal.fire('Se registro correctamente', '', 'success'); 
-            });
-
-        }               
+             
     } //fin metodo
 
 
@@ -1848,12 +1647,11 @@ app.controller('limites', function($scope, functions, $window) {
 
         var tituloMensaTempo = "";
         if (tipo == "mercado") {
-            tituloMensaTempo = "¿Esta seguro de querer eliminar el mercado?"
+            tituloMensaTempo = "¿Esta seguro de Querer Eliminar el Mercado?"
         } else {
             tituloMensaTempo = "¿Esta Seguro de Querer Eliminar el Limite VaR?"
 
         }
-
         Swal.fire({
             title: tituloMensaTempo,
             text: '',
@@ -1866,7 +1664,8 @@ app.controller('limites', function($scope, functions, $window) {
             if (result.value) {
                 if (tipo == "mercado") {
                     functions.deleteMercado(token, id).then(function(response) {
-                        //TODO: REFRESH
+                        var tipo = $('#selectTipo').val();
+                        consultarLimites(tipo);
                     })
 
                 } else {
@@ -1908,9 +1707,9 @@ app.controller('limites', function($scope, functions, $window) {
 
             }
 
-        } else {
+        } else if ($('#selectTipo').val() == "mercado") {
 
-            for (var i = 0; i < 7; i++) {
+            for (var i = 0; i < 2; i++) {
                 var valueTd = valueTr.getElementsByTagName('td')[i]
 
                 if (i != 0) {
@@ -1956,16 +1755,16 @@ app.controller('limites', function($scope, functions, $window) {
 
             }
 
-        } else {
+        } else if ($('#selectTipo').val() == "mercado"){
 
-            for (var i = 0; i < 7; i++) {
+            for (var i = 0; i < 2; i++) {
                 var valueTd = valueTr.getElementsByTagName('td')[i]
 
                 if (i != 0) {
                     var span = valueTd.getElementsByTagName("span")
                     span[0].style.display = "block";
                     var input = valueTd.getElementsByTagName("input")
-                        //input[0].value=""
+                    //input[0].value="0.00";
                     input[0].style.display = "none";
                 }
 
@@ -2117,26 +1916,17 @@ app.controller('limites', function($scope, functions, $window) {
                     var input = valueTd.getElementsByTagName("input")
                     var valueInput = input[0].value;
                     valoresColumna.push(valueInput);
-                    //input[0].value=""
-                    //input[0].style.display="none";
                 }
 
             }
+        } else if (tipo == "mercado") {
 
-
-
-        } else {
-
-            for (var i = 0; i < 7; i++) {
+            for (var i = 0; i < 2; i++) {
                 var valueTd = valueTr.getElementsByTagName('td')[i]
-
                 if (i != 0) {
-
                     var input = valueTd.getElementsByTagName("input")
                     var valueInput = input[0].value;
                     valoresColumna.push(valueInput);
-                    //input[0].value=""
-                    //input[0].style.display="none";
                 }
 
             }
@@ -2144,94 +1934,23 @@ app.controller('limites', function($scope, functions, $window) {
         }
 
 
-
-        console.log(valoresColumna);
-        /*
-          valoresColumna[0]=globalLimit
-          valoresColumna[1]=directOperationLimit
-          valoresColumna[2]=reportoOperationLimit
-          valoresColumna[3]=operationLimitMoneyMarket
-          valoresColumna[4]=exchangeMarketLimit
-          valoresColumna[5]=limitOperationExchangeMarket
-        */
-
-        /*var validacionLimiteGlobal = (parseInt(valoresColumna[1])) + (parseInt(valoresColumna[2])) + (parseInt(valoresColumna[4]));
-        console.log(validacionLimiteGlobal);
-        var validacionOperacionMercadoMoney = (parseInt(valoresColumna[1])) + (parseInt(valoresColumna[2]));
-        console.log(validacionOperacionMercadoMoney);
-        var validacionOperacionMercadoCambios = (parseInt(valoresColumna[4]));
-        console.log(validacionOperacionMercadoCambios);
-
-
-        if (valoresColumna[0] == '') {
-            toastr["error"]("Campo limite global es necesario", "");
-
-        } else if (valoresColumna[1] == '') {
-            toastr["error"]("Campo limite operaciones directo es necesario", "");
-
-        } else if (valoresColumna[2] == '') {
-            toastr["error"]("Campo limite operaciones reporto es necesario", "");
-
-        } else if (valoresColumna[3] == '') {
-            toastr["error"]("Campo limite por operacion es necesario", "");
-
-        } else if (valoresColumna[4] == '') {
-            toastr["error"]("Campo limite mercado es necesario", "");
-
-        } else if (valoresColumna[5] == '') {
-            toastr["error"]("Campo limite por operacion mercado es necesario", "");
-
-        } else if (parseInt(valoresColumna[0]) < validacionLimiteGlobal) {
-
-            //$('#globalLimit').focus();
-            toastr["error"]("El campo limite global debe ser mayor", "");
-
-        } else if (parseInt(valoresColumna[3]) > validacionOperacionMercadoMoney) {
-
-            //$('#operationLimitMoneyMarket').focus();
-            toastr["error"]("El campo limite por operación debe ser menor", "");
-
-        } else if (parseInt(valoresColumna[5]) > validacionOperacionMercadoCambios) {
-
-            //$('#limitOperationExchangeMarket').focus();
-            toastr["error"]("El campo limite por operación mercado de cambios debe ser menor", "");
-
-        } else {*/
-
-        /*
-          valoresColumna[0]=globalLimit
-          valoresColumna[1]=directOperationLimit
-          valoresColumna[2]=reportoOperationLimit
-          valoresColumna[3]=operationLimitMoneyMarket
-          valoresColumna[4]=exchangeMarketLimit
-          valoresColumna[5]=limitOperationExchangeMarket
-        */
-
-
-
+        console.log("VALORES_NUEVOS_ID:",id);
+        console.log("VALORES_NUEVOS_COLUMNAS:",valoresColumna);
+       
         if (tipo == "mercado") {
 
             const data = JSON.stringify({
-                mercado: otro,
-                globalLimit: valoresColumna[0],
-                directOperationLimit: valoresColumna[1],
-                reportoOperationLimit: valoresColumna[2],
-                operationLimitMoneyMarket: valoresColumna[3],
-                exchangeMarketLimit: valoresColumna[4],
-                limitOperationExchangeMarket: valoresColumna[5],
-                status: '1',
-
-                //mercado: 'mexicano',
-                //usuario : "Roberto"
+                idMercado: id,
+                limite: valoresColumna[0]
             });
 
             functions.updateLimitesMercado(token, data, id).then(function(response) {
-
+                var tipo = $('#selectTipo').val();
+                consultarLimites(tipo);
                 Swal.fire('Datos actualizados correctamente', '', 'success');
-                //TODO: REFRESH
-            })
-
-        } else {
+            });
+        } else if (tipo == "varMd") {
+            
             const data = JSON.stringify({
                 idInstrumento: id,
                 limiteInstrumento: valoresColumna[0],
@@ -2240,13 +1959,9 @@ app.controller('limites', function($scope, functions, $window) {
 
             console.log("DATA_UPDATE:", data);
             functions.updateLimitesVarMd(token, data, id).then(function(response) {
-
-                Swal.fire({
-                    title: 'Datos Actualizados Correctamente',
-                    text: '',
-                    icon: 'success',
-                    confirmButtonText: 'Aceptar'
-                }).then((result) => {});
+                var tipo = $('#selectTipo').val();
+                consultarLimites(tipo);
+                Swal.fire('Datos actualizados correctamente', '', 'success');
             });
         }
 

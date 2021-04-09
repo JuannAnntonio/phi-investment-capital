@@ -190,7 +190,8 @@
                             <!--option value="contraparte">Contraparte</option>
                             <option value="mercadoLimite">Mercado</option>
                             <option value="operador">Operador</option-->
-                            <option value="null">-- Selecciona --</option>
+                            <option value="0">-- Selecciona --</option>
+                            <option value="mercado">Mercados</option>
                             <option value="varLimite">Limite Var</option>
                        </select>
                        
@@ -207,8 +208,6 @@
                                                             <br>
 
                                                                 <div class="form-group row" id="inputsFromLimitesVar" style="display: none;">
-
-
                                                                     <input  class="form-control col-sm-3" placeholder="Nombre del Producto" id="newNameProducto" >
                                                                     <div class="col-sm-1"> </div>
 
@@ -221,12 +220,7 @@
                                                                       <option value="5">Mercado Derivado</option>
                                                                     </select>
                                                                     <div class="col-sm-1"> </div>
-
-
-
                                                                 </div>
-
-
                                                                 <div id="inputsFromLimitesVar2" class="form-group row">
 
                                                                     <input class="form-control col-sm-3" type="number" placeholder="Limite por Instrumento"  id="instrumentLimitNuevo">
@@ -234,38 +228,19 @@
                                                                     <input class="form-control col-sm-3" type="number" placeholder="Límite por Operción" id="operationLimitNuevo" >
                                                                     <div class="col-sm-1"> </div>
                                                                     <div class="col-sm-1" > </div>
-
                                                                 </div>
 
 
 
-                                                                 <div id="inputsNormal1" class="form-group row">
-
-                                                                    <input class="form-control col-sm-3" type="text" placeholder="Contraparte"  id="contraparte">
+                                                                 <div id="inputsMercados" class="form-group row">
+                                                                    <input class="form-control col-sm-3" type="text" placeholder="Nombre del Mercado"  id="newNameMarket">
                                                                     <div class="col-sm-1"> </div>
-                                                                    <input class="form-control col-sm-3" type="number" placeholder="Limite Global"  id="globalLimit" >
+                                                                    <input class="form-control col-sm-3" type="number" placeholder="Limite del Mercado"  id="newMarketLimit" >
                                                                     <div class="col-sm-1"> </div>
-                                                                    <input  class="form-control col-sm-3" type="number" placeholder="Límite Operaciones Directo" id="directOperationLimit" >
-                                                                    <div class="col-sm-1" > </div>
                                                                 </div>
-                                                                <div id="inputsNormal2" class="form-group row">
-
-                                                                    <input class="form-control col-sm-3" type="number" placeholder="Límite Operaciones en Reporto" id="reportoOperationLimit" >
-                                                                    <div class="col-sm-1"> </div>
-                                                                    <input class="form-control col-sm-3" type="number" placeholder="Límite por Operción" id="operationLimitMoneyMarket" >
-                                                                    <div class="col-sm-1"> </div>
-                                                                    <input  class="form-control col-sm-3" type="number" placeholder="Límite Mercado de Cambios" id="exchangeMarketLimit" >
-                                                                    <div class="col-sm-1"> </div>
-
-                                                                </div>
-
-
-
-
+                                                                
 
                                                                 <div class="form-group row">
-
-                                                                    <input class="form-control col-sm-3" type="number" placeholder="Límite por Operción Mercado de Cambios" id="limitOperationExchangeMarket" >
                                                                     <div class=" col-sm-1"> </div>
                                                                     <div col-sm-3>
                                                                     <button class="btn btn-save btn-xs " onclick = "insert()">Registrar</button>

@@ -564,11 +564,6 @@
 
             deleteMercado: function(token, id) {
                 var url = 'http://localhost:8080/app/limitesMercado/' + id;
-                //var url = 'http://localhost:8080/app/limitesMercado/' + id;
-
-
-                console.log(token)
-
                 return $http.delete(url, {
                     headers: {
                         'Content-Type': 'application/json',
@@ -644,14 +639,7 @@
             },
 
             updateLimitesMercado: function(token, data, id) {
-
-                //var url = 'http://localhost:8080/app/limiteslineas/' + id;
-                //var url = 'http://localhost:8080/app/limitesMercado/' + id;
                 var url = 'http://localhost:8080/app/limitesMercado/' + id;
-
-
-                console.log(token)
-
                 return $http.put(url, data, {
                     headers: {
                         'Content-Type': 'application/json',
@@ -738,11 +726,6 @@
             },
             getLimitesVarMercado: function(token) {
                 var url = 'http://localhost:8080/app/limitesMercado/findAll';
-                //var url = 'http://localhost:8080/app/limitesMercado/findAll';
-
-
-                console.log(token)
-
                 return $http.get(url, {
 
                     headers: {
