@@ -578,11 +578,6 @@
             },
             deletelimiteVar: function(token, id) {
                 var url = 'http://localhost:8080/app/limitesVarMd/' + id;
-                //var url = 'http://localhost:8080/app/limitesVarMd/' + id;
-
-
-                console.log(token)
-
                 return $http.delete(url, {
                     headers: {
                         'Content-Type': 'application/json',
@@ -874,7 +869,7 @@
 
             csv: function(token, data, url) {
                 console.log("entro factory");
-                const uri = 'http://localhost:8080/app/archivos/' + url + '';
+                const uri = 'http://localhost:8080/app/archivos/' + url;
                 console.log(uri);
                 console.log(data);
                 return $http.post(uri, data, {

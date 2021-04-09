@@ -521,20 +521,17 @@
                         }
 
                         if (undefined != da[2]) {
-                            $scope.limite = da[1][0]['globalLimit'];
-                            var var1 = da[2]['var1'];
-                            var var2 = da[2]['var2'];
-                            var var3 = da[2]['var3'];
-                            
                             var obj = {
                                 titulo: 'Posición Global',
-                                var1: var1,
-                                var2: var2,
-                                var3: var3,
-                                limite: da[1][0]['globalLimit'], 
-                                valuacion: da[2]['valuacion']
+                                var1: da[2].var1,
+                                var2: da[2].var2,
+                                var3: da[2].var3,
+                                limite: da[2].limite,
+                                valuacion: da[2].valuacion
                             };
 
+                            //globalLimitParaTablaMercados = da[1][0]['globalLimit'];
+                            $scope.limite = da[2].limite;
                             $scope.makeSummaryTable(obj);
                            
                         } else {
@@ -558,10 +555,9 @@
                         htmTableMercado += '</tr>';
                         htmTableMercado += '</thead>';
                         htmTableMercado += '<tbody>';
-                        globalLimitParaTablaMercados = da[1][0]['globalLimit'];
-                        $scope.limite = globalLimitParaTablaMercados;
 
                         $scope.mercados = da[4];
+                        console.log("### MERCADOS", $scope.mercados);
                         for (let i = 0; i < da[4].length; i++) {
                             htmTableMercado += '<tr style="cursor:pointer;" onclick="getTableProductos('+da[4][i].cdMercado+');">';
                             htmTableMercado += '<td>' + da[4][i].nombre + '</td>';
@@ -581,10 +577,14 @@
                             }
                         
                             htmTableMercado += '<td>' + comas(dosDecimales(varPorcentaje)) + ' </td>';
-                            htmTableMercado += '<td>' + comas(dosDecimales($scope.limite)) + ' </td>';
+                            
+                            var limite = da[4][i].limite;
+                            var calculoMenosVar = limite - varPorcentaje;
+                            var porcentajeUtilizado = calculoMenosVar/limite ;
 
-                            var calculoMenosVar = $scope.limite - varPorcentaje;
-                            var porcentajeUtilizado = calculoMenosVar/$scope.limite ;
+
+                            //htmTableMercado += '<td>' + comas(dosDecimales($scope.limite)) + ' </td>';
+                            htmTableMercado += '<td>' + comas(dosDecimales(limite)) + ' </td>';
 
                             if (calculoMenosVar <= 0) {
                                 htmTableMercado += '<td style="color:red; font-weight:bold;"> ' + comas(dosDecimales(calculoMenosVar)) + '</td>';
@@ -690,7 +690,7 @@
                 $('#l97').text(comas(dosDecimales(var2)));
                 $('#l95').text(comas(dosDecimales(var3)));
 
-                $('#valuacion').text(comas(dosDecimales(obj['valuacion'])));
+                $('#valuacion').text(comas(dosDecimales(obj.limite)));
                 document.getElementById('valuacion').style.setProperty("background-color", "#f4f3f3");
                 document.getElementById('valuacionTxt').style.setProperty("background-color", "#f4f3f3");
                 document.getElementById('valuacion').style.setProperty("font-weight", "bold");
@@ -774,9 +774,9 @@
             console.log("CHART_DATA::",$scope.data);
 
             var color = 0;
-            if (globalLimitParaTablaMercados-sumVar<=0){
+            if ($scope.limite-sumVar<=0){
                 color = 1;
-            }else if(0.10>=1-sumVar/globalLimitParaTablaMercados>0){
+            }else if(0.10>=1-sumVar/$scope.limite>0){
                 color = 2;
             }
             functions.generarGraficaDona('graficaVarHistorico',$scope.labels, $scope.data,color,$scope.limite);
@@ -791,6 +791,7 @@
 
         $scope.getTableProductos = function(idMercado){
             var found = $scope.mercados.find(element => element.cdMercado == idMercado);
+            console.log("getTableProductos", found);
             const selectPorcentajePre = $('#porcentajeSelect').val();
             const selectPorcentajeSplit = selectPorcentajePre.split('&');
             const selectPorcentaje = selectPorcentajeSplit[0];
@@ -809,9 +810,10 @@
                 var1: found.var1,
                 var2: found.var2,
                 var3: found.var3,
-                limite: $scope.limite, 
+                limite: found.limite, 
                 valuacion: found.valuacion
             };
+            $scope.limite = obj.limite;
             $scope.makeSummaryTable(obj);
 
             var fecha = document.getElementById("varDate").value;
@@ -1208,7 +1210,7 @@ app.controller('limites', function($scope, functions, $window) {
 
     functions.loading();
     divisaGlobal = '';
-    $scope.consultarLimites = function(tipo, divisaValor) {
+    $scope.consultarLimites = function(tipo) {
         if (tipo == "contraparte") {
             tipoEnvio = 0;
         } else if (tipo == "operador") {
@@ -1421,12 +1423,13 @@ app.controller('limites', function($scope, functions, $window) {
                     console.log(da);
                     $("#conteTable").empty();
                     $("#conteTable").append('<table class="table table-striped" id="limites" >' +
-                        '<thead class="bg-warning-200">' +
+                        '<thead class="bg-dark text-white">' +
                         '<tr>' +
                         '<th>Producto</th>' +
-                        '<th>Limite Global</th>' +
+                        //'<th>Limite Global</th>' +
                         //'<th>Límite Operaciones Directo</th>' +
                         //'<th>Límite Operaciones en Reporto</th>' +
+                        '<th>Límite por Instrumento</th>' +
                         '<th>Límite por Operción</th>' +
                         '<th>Mercado</th>' + //nuevo 27_09_2020
                         //'<th>Límite Mercado de Cambios</th>' +
@@ -1441,16 +1444,17 @@ app.controller('limites', function($scope, functions, $window) {
                         '</table>');
                     for (var i = 0; i < da.length; i++) {
 
-                        var globalLimitConverted = ((parseFloat(da[i]['globalLimit'])) * (parseFloat(divisaValor))) / 1;
+                        //var globalLimitConverted = ((parseFloat(da[i].limiteGlobal)) * (parseFloat(divisaValor))) / 1;
+                        var instrumentLimitConverted = parseFloat(da[i].limiteInstrumento);
 
-                        var directOperationLimit = ((parseFloat(da[i]['directOperationLimit'])) * (parseFloat(divisaValor))) / 1;
-                        var reportoOperationLimit = ((parseFloat(da[i]['reportoOperationLimit'])) * (parseFloat(divisaValor))) / 1;
-                        var operationLimitMoneyMarket = ((parseFloat(da[i]['operationLimitMoneyMarket'])) * (parseFloat(divisaValor))) / 1;
-                        var exchangeMarketLimit = ((parseFloat(da[i]['exchangeMarketLimit'])) * (parseFloat(divisaValor))) / 1;
-                        var limitOperationExchangeMarket = ((parseFloat(da[i]['limitOperationExchangeMarket'])) * (parseFloat(divisaValor))) / 1;
+                        //var directOperationLimit = ((parseFloat(da[i]['directOperationLimit'])) * (parseFloat(divisaValor))) / 1;
+                        //var reportoOperationLimit = ((parseFloat(da[i]['reportoOperationLimit'])) * (parseFloat(divisaValor))) / 1;
+                        var operationLimitMoneyMarket = parseFloat(da[i].limiteOperacion);
+                        //var exchangeMarketLimit = ((parseFloat(da[i]['exchangeMarketLimit'])) * (parseFloat(divisaValor))) / 1;
+                        //var limitOperationExchangeMarket = ((parseFloat(da[i]['limitOperationExchangeMarket'])) * (parseFloat(divisaValor))) / 1;
 
 
-                        var mercadoNuevo = "";
+                        /*var mercadoNuevo = "";
                         if (da[i]['market'] != null) {
                             mercadoNuevo = da[i]['market'];
                         }
@@ -1460,23 +1464,25 @@ app.controller('limites', function($scope, functions, $window) {
                             productoVistaValidacion = "Swaps"
                         } else {
                             productoVistaValidacion = da[i]['producto']
-                        }
+                        }*/
 
-                        $("#tableLimites").append('<tr  id="' + da[i]['contraparte'] + '">' +
-                            '<td>' + productoVistaValidacion + '</td>' +
+                        $("#tableLimites").append('<tr  id="' + da[i].idInstrumento + '">' +
+                            '<td>' + da[i].producto  + '</td>' +
 
-                            '<td><span>' + formatDollar(parseFloat(globalLimitConverted.toFixed(2))) + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="number" id="" name="" value="' + globalLimitConverted.toFixed(2) + '" step="0.01"></td>' +
+                            //'<td><span>' + formatDollar(parseFloat(globalLimitConverted.toFixed(2))) + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="number" id="" name="" value="' + globalLimitConverted.toFixed(2) + '" step="0.01"></td>' +
+                            '<td><span>' + formatDollar(parseFloat(instrumentLimitConverted.toFixed(2))) + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="number" value="' + instrumentLimitConverted.toFixed(2) + '" step="0.01"></td>' +
+                            
                             //'<td><span>' + formatDollar(parseFloat(directOperationLimit.toFixed(2))) + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="number" id="" name="" value="' + directOperationLimit.toFixed(2) + '" step="0.01"></td>' +
                             //'<td><span>' + formatDollar(parseFloat(reportoOperationLimit.toFixed(2))) + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="number" id="" name="" value="' + reportoOperationLimit.toFixed(2) + '" step="0.01"></td>' +
-                            '<td><span>' + formatDollar(parseFloat(operationLimitMoneyMarket.toFixed(2))) + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="number" id="" name="" value="' + operationLimitMoneyMarket.toFixed(2) + '" step="0.01"></td>' +
-                            '<td><span>' + mercadoNuevo + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="text" id="" name="" value="' + mercadoNuevo + '" ></td>' + //nuevo 27_09_2020
+                            '<td><span>' + formatDollar(parseFloat(operationLimitMoneyMarket.toFixed(2))) + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="number" value="' + operationLimitMoneyMarket.toFixed(2) + '" step="0.01"></td>' +
+                            '<td><span>' + da[i].mercado + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="text" value="' + da[i].mercado + '" ></td>' + //nuevo 27_09_2020
                             //'<td><span>' + formatDollar(parseFloat(exchangeMarketLimit.toFixed(2))) + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="number" id="" name="" value="' + exchangeMarketLimit.toFixed(2) + '" step="0.01"></td>' +
                             //'<td><span>' + formatDollar(parseFloat(limitOperationExchangeMarket.toFixed(2))) + '</span><input style="display:none; width: 90%; border: solid 1px silver; border-radius: 5px;" type="number" id="" name="" value="' + limitOperationExchangeMarket.toFixed(2) + '" step="0.01"></td>' +
 
-                            "<td><a class=\"btn btn-danger btn-xs\" style=\"color: white\" onclick=\"deleteqMercadoVarLimite('" + da[i]['idVarLimiteMd'] + "','varMd')\">Eliminar</a></td>" +
-                            "<td><a id=\"button_modi_" + i + "\" class=\"btn btn-danger btn-xs\" style=\"color: white\" onclick=\"modificar('" + da[i]['idVarLimiteMd'] + "','" + i + "')\">Modificar</a>" +
-                            "<a id=\"button_guar_" + i + "\" class=\"btn btn-primary btn-xs\" style=\"color: white; display:none;\" onclick=\"guardarModiMercadoVarLimite('" + da[i]['idVarLimiteMd'] + "','" + i + "','varMd','" + da[i]['limite'] + "&" + da[i]['producto'] + "')\">Guardar</a>" +
-                            "<a id=\"button_cancel_" + i + "\" class=\"btn btn-danger btn-xs\" style=\"color: white; display:none;\" onclick=\"cancelModi('" + da[i]['idVarLimiteMd'] + "','" + i + "')\">Cancelar</a>" +
+                            "<td><a class=\"btn btn-danger btn-xs\" style=\"color: white\" onclick=\"deleteqMercadoVarLimite('" + da[i].idInstrumento + "','varMd')\">Eliminar</a></td>" +
+                            "<td><a id=\"button_modi_" + i + "\" class=\"btn btn-update btn-xs\" style=\"color: white\" onclick=\"modificar('" + da[i].producto + "','" + i + "')\">Modificar</a>" +
+                            "<a id=\"button_guar_" + i + "\" class=\"btn btn-save btn-xs\" style=\"color: white; width: 80px; margin-bottom: 3px; display:none;\" onclick=\"guardarModiMercadoVarLimite('" + da[i].idInstrumento + "','" + i + "','varMd','" + da[i].limiteInstrumento + "&" + da[i].producto + "')\">Guardar</a>" +
+                            "<a id=\"button_cancel_" + i + "\" class=\"btn btn-cancel btn-xs\" style=\"color: white; width: 80px; display:none;\" onclick=\"cancelModi('" + da[i].idInstrumento + "','" + i + "')\">Cancelar</a>" +
                             "</td>" +
                             '</tr>');
                     } //fin for
@@ -1684,33 +1690,10 @@ app.controller('limites', function($scope, functions, $window) {
 
     }
 
-
-
-    $scope.cambioDivisasMethod = function(tipo) {
-
-        var tipoDivisas = $('#selectDivisas').val();
-        var divisaValor = '';
-        console.log(tipoDivisas);
-
-        if (tipoDivisas == 'MXN') {
-            divisaValor = '1';
-        } else if (tipoDivisas == 'US') {
-            divisaValor = '0.053';
-        }
-
-        this.divisaGlobal = divisaValor;
-
-        consultarLimites(tipo, divisaValor);
-
-
-    };
-
-
     $scope.cambio = function() {
         var tipo = $('#selectTipo').val();
-        cambioDivisasMethod(tipo);
+        consultarLimites(tipo)
     }
-
 
     $scope.add = function() {
         $('#btnAgregar').slideUp('fast');
@@ -1768,554 +1751,72 @@ app.controller('limites', function($scope, functions, $window) {
 
     $scope.insert = function() {
 
-
-            /*var validacionLimiteGlobal = (parseInt($('#directOperationLimit').val())) + (parseInt($('#reportoOperationLimit').val())) + (parseInt($('#exchangeMarketLimit').val()));
-            console.log(validacionLimiteGlobal);
-            var validacionOperacionMercadoMoney = (parseInt($('#directOperationLimit').val())) + (parseInt($('#reportoOperationLimit').val()));
-            console.log(validacionOperacionMercadoMoney);
-            var validacionOperacionMercadoCambios = (parseInt($('#exchangeMarketLimit').val()));
-            console.log(validacionOperacionMercadoCambios);
-
-            var uno = $('#contraparte').val();
-
-            if ($('#contraparte').val() == '') {
-                toastr["error"]("Campo contraparte es necesario", "");
-
-            } else if ($('#selectTipo').val()=="varLimite" && $('#productoVarLimite').val() == ''){
-                toastr["error"]("Campo producto es necesario", "");
-
-            }else if ($('#globalLimit').val() == '') {
-                toastr["error"]("Campo limite global es necesario", "");
-
-            } else if ($('#directOperationLimit').val() == '') {
-                toastr["error"]("Campo limite operaciones directo es necesario", "");
-
-            } else if ($('#reportoOperationLimit').val() == '') {
-                toastr["error"]("Campo limite operaciones reporto es necesario", "");
-
-            } else if ($('#operationLimitMoneyMarket').val() == '') {
-                toastr["error"]("Campo limite por operacion es necesario", "");
-
-            } else if ($('#exchangeMarketLimit').val() == '') {
-                toastr["error"]("Campo limite mercado es necesario", "");
-
-            } else if ($('#limitOperationExchangeMarket').val() == '') {
-                toastr["error"]("Campo limite por operacion mercado es necesario", "");
-
-            } else if (parseInt($('#globalLimit').val()) < validacionLimiteGlobal) {
-
-                $('#globalLimit').focus();
-                toastr["error"]("El campo limite global debe ser mayor", "");
-
-            } else if (parseInt($('#operationLimitMoneyMarket').val()) > validacionOperacionMercadoMoney) {
-
-                $('#operationLimitMoneyMarket').focus();
-                toastr["error"]("El campo limite por operación debe ser menor", "");
-
-            } else if (parseInt($('#limitOperationExchangeMarket').val()) > validacionOperacionMercadoCambios) {
-
-                $('#limitOperationExchangeMarket').focus();
-                toastr["error"]("El campo limite por operación mercado de cambios debe ser menor", "");
-
-            } else {*/
-
-            if ($('#selectTipo').val() != "varLimite" && $('#selectTipo').val() != "mercadoLimite") {
-
-
-
-                var contraparte = $('#contraparte').val();
-                contraparte = contraparte.toString().toUpperCase();
-
-                var globalLimit;
-                var directOperationLimit;
-                var reportoOperationLimit;
-                var operationLimitMoneyMarket;
-                var exchangeMarketLimit;
-                var limitOperationExchangeMarket;
-                var estatus;
-
-
-                const swalWithBootstrapButtons = Swal.mixin({
-                    customClass: {
-                        confirmButton: 'btn btn-success',
-                        cancelButton: 'btn btn-danger'
-                    },
-                    buttonsStyling: false
-                });
-
-                Swal.fire({
-                    title: '¿Desea registrar el limite como contraparte o como operador?',
-                    text: '',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#47FFAB',
-                    cancelButtonColor: '#47C2FF',
-                    confirmButtonText: 'Contraparte',
-                    cancelButtonText: 'Operador',
-                    reverseButtons: true
-                }).then((result) => {
-
-                    if (result.value) {
-
-
-                        const estatus = 0;
-
-                        if ($('#selectDivisas').val() != 'MXN') {
-
-                            Swal.fire({
-                                title: 'El valor serà convertido a pesos mexicanos!',
-                                text: '',
-                                icon: 'warning',
-                                showCancelButton: true,
-                                confirmButtonColor: '#3085d6',
-                                cancelButtonColor: '#d33',
-                                confirmButtonText: 'Aceptar'
-                            }).then((result) => {
-                                if (result.value) {
-
-                                    globalLimit = ((parseFloat($('#globalLimit').val())) * (1)) / parseFloat(this.divisaGlobal);
-                                    directOperationLimit = ((parseFloat($('#directOperationLimit').val())) * (1)) / parseFloat(this.divisaGlobal);
-                                    reportoOperationLimit = ((parseFloat($('#reportoOperationLimit').val())) * (1)) / parseFloat(this.divisaGlobal);
-                                    operationLimitMoneyMarket = ((parseFloat($('#operationLimitMoneyMarket').val())) * (1)) / parseFloat(this.divisaGlobal);
-                                    exchangeMarketLimit = ((parseFloat($('#exchangeMarketLimit').val())) * (1)) / parseFloat(this.divisaGlobal);
-                                    limitOperationExchangeMarket = ((parseFloat($('#limitOperationExchangeMarket').val())) * (1)) / parseFloat(this.divisaGlobal);
-
-                                    const data = JSON.stringify({
-                                        contraparte: contraparte,
-                                        globalLimit: globalLimit,
-                                        directOperationLimit: directOperationLimit,
-                                        reportoOperationLimit: reportoOperationLimit,
-                                        operationLimitMoneyMarket: operationLimitMoneyMarket,
-                                        exchangeMarketLimit: exchangeMarketLimit,
-                                        limitOperationExchangeMarket: limitOperationExchangeMarket,
-                                        mercado: 'mexicano',
-                                        //usuario : "Roberto",
-                                        estatus: estatus
-                                    });
-
-
-                                    functions.addLimites(token, data).then(function(response) {
-                                        $('#contraparte').val('');
-                                        $('#globalLimit').val('');
-                                        $('#directOperationLimit').val('');
-                                        $('#reportoOperationLimit').val('');
-                                        $('#operationLimitMoneyMarket').val('');
-                                        $('#exchangeMarketLimit').val('');
-                                        $('#limitOperationExchangeMarket').val('');
-                                        $('#add').css('display', 'none');
-                                        $('#btnAgregar').slideDown('slow');
-                                        Swal.fire('La contraparte se registro correctamente', '', 'success');
-                                        cambioDivisasMethod($('#selectTipo').val());
-
-                                    })
-                                }
-                            });
-
-                        } else {
-
-                            globalLimit = $('#globalLimit').val();
-                            directOperationLimit = $('#directOperationLimit').val();
-                            reportoOperationLimit = $('#reportoOperationLimit').val();
-                            operationLimitMoneyMarket = $('#operationLimitMoneyMarket').val();
-                            exchangeMarketLimit = $('#exchangeMarketLimit').val();
-                            limitOperationExchangeMarket = $('#limitOperationExchangeMarket').val();
-
-                            const data = JSON.stringify({
-                                contraparte: contraparte,
-                                globalLimit: globalLimit,
-                                directOperationLimit: directOperationLimit,
-                                reportoOperationLimit: reportoOperationLimit,
-                                operationLimitMoneyMarket: operationLimitMoneyMarket,
-                                exchangeMarketLimit: exchangeMarketLimit,
-                                limitOperationExchangeMarket: limitOperationExchangeMarket,
-                                mercado: 'mexicano',
-                                //usuario : "Roberto",
-                                estatus: estatus
-                            });
-
-                            functions.addLimites(token, data).then(function(response) {
-                                $('#contraparte').val('');
-                                $('#globalLimit').val('');
-                                $('#directOperationLimit').val('');
-                                $('#reportoOperationLimit').val('');
-                                $('#operationLimitMoneyMarket').val('');
-                                $('#exchangeMarketLimit').val('');
-                                $('#limitOperationExchangeMarket').val('');
-                                $('#add').css('display', 'none');
-                                $('#btnAgregar').slideDown('slow');
-                                Swal.fire('La contraparte se registro correctamente', '', 'success');
-                                cambioDivisasMethod($('#selectTipo').val());
-
-
-                            })
-
-                        }
-
-                    } else if (
-                        /* Read more about handling dismissals below */
-                        result.dismiss === Swal.DismissReason.cancel
-                    ) {
-                        const estatus = 1;
-
-                        if ($('#selectDivisas').val() != 'MXN') {
-
-
-                            Swal.fire({
-                                title: 'El valor serà convertido a pesos mexicanos!',
-                                text: '',
-                                icon: 'warning',
-                                showCancelButton: true,
-                                confirmButtonColor: '#3085d6',
-                                cancelButtonColor: '#d33',
-                                confirmButtonText: 'Aceptar'
-                            }).then((result) => {
-                                if (result.value) {
-
-                                    globalLimit = ((parseFloat($('#globalLimit').val())) * (1)) / parseFloat(this.divisaGlobal);
-                                    directOperationLimit = ((parseFloat($('#directOperationLimit').val())) * (1)) / parseFloat(this.divisaGlobal);
-                                    reportoOperationLimit = ((parseFloat($('#reportoOperationLimit').val())) * (1)) / parseFloat(this.divisaGlobal);
-                                    operationLimitMoneyMarket = ((parseFloat($('#operationLimitMoneyMarket').val())) * (1)) / parseFloat(this.divisaGlobal);
-                                    exchangeMarketLimit = ((parseFloat($('#exchangeMarketLimit').val())) * (1)) / parseFloat(this.divisaGlobal);
-                                    limitOperationExchangeMarket = ((parseFloat($('#limitOperationExchangeMarket').val())) * (1)) / parseFloat(this.divisaGlobal);
-
-
-                                    const data = JSON.stringify({
-                                        contraparte: contraparte,
-                                        globalLimit: globalLimit,
-                                        directOperationLimit: directOperationLimit,
-                                        reportoOperationLimit: reportoOperationLimit,
-                                        operationLimitMoneyMarket: operationLimitMoneyMarket,
-                                        exchangeMarketLimit: exchangeMarketLimit,
-                                        limitOperationExchangeMarket: limitOperationExchangeMarket,
-                                        mercado: 'mexicano',
-                                        //usuario : "Roberto",
-                                        estatus: estatus
-                                    });
-
-                                    functions.addLimites(token, data).then(function(response) {
-
-                                        $('#contraparte').val('');
-                                        $('#globalLimit').val('');
-                                        $('#directOperationLimit').val('');
-                                        $('#reportoOperationLimit').val('');
-                                        $('#operationLimitMoneyMarket').val('');
-                                        $('#exchangeMarketLimit').val('');
-                                        $('#limitOperationExchangeMarket').val('');
-                                        $('#add').css('display', 'none');
-                                        $('#btnAgregar').slideDown('slow');
-                                        Swal.fire('La contraparte se registro correctamente', '', 'success');
-                                        cambioDivisasMethod($('#selectTipo').val());
-
-                                    })
-                                }
-                            });
-
-                        } else {
-
-
-                            globalLimit = $('#globalLimit').val();
-                            directOperationLimit = $('#directOperationLimit').val();
-                            reportoOperationLimit = $('#reportoOperationLimit').val();
-                            operationLimitMoneyMarket = $('#operationLimitMoneyMarket').val();
-                            exchangeMarketLimit = $('#exchangeMarketLimit').val();
-                            limitOperationExchangeMarket = $('#limitOperationExchangeMarket').val();
-
-                            const data = JSON.stringify({
-                                contraparte: contraparte,
-                                globalLimit: globalLimit,
-                                directOperationLimit: directOperationLimit,
-                                reportoOperationLimit: reportoOperationLimit,
-                                operationLimitMoneyMarket: operationLimitMoneyMarket,
-                                exchangeMarketLimit: exchangeMarketLimit,
-                                limitOperationExchangeMarket: limitOperationExchangeMarket,
-                                mercado: 'mexicano',
-                                //usuario : "Roberto",
-                                estatus: estatus
-                            });
-
-                            functions.addLimites(token, data).then(function(response) {
-                                $('#contraparte').val('');
-                                $('#globalLimit').val('');
-                                $('#directOperationLimit').val('');
-                                $('#reportoOperationLimit').val('');
-                                $('#operationLimitMoneyMarket').val('');
-                                $('#exchangeMarketLimit').val('');
-                                $('#limitOperationExchangeMarket').val('');
-                                $('#add').css('display', 'none');
-                                $('#btnAgregar').slideDown('slow');
-
-                                Swal.fire('La contraparte se registro correctamente', '', 'success');
-                                cambioDivisasMethod($('#selectTipo').val());
-
-
-                            })
-
-                        }
-                    }
-
-                });
-
-            } else {
-
-                console.log("el select est en 2 o 3")
-
-                var contraparte = $('#contraparte').val();
-                contraparte = contraparte.toString();
-
-                var globalLimit;
-                var directOperationLimit;
-                var reportoOperationLimit;
-                var operationLimitMoneyMarket;
-                var exchangeMarketLimit;
-                var limitOperationExchangeMarket;
-                var estatus = 1;
-
-                if ($('#selectDivisas').val() != 'MXN') {
-
-
-                    Swal.fire({
-                        title: 'El valor serà convertido a pesos mexicanos!',
-                        text: '',
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Aceptar'
-                    }).then((result) => {
-                        if (result.value) {
-
-                            globalLimit = ((parseFloat($('#globalLimit').val())) * (1)) / parseFloat(this.divisaGlobal);
-                            directOperationLimit = ((parseFloat($('#directOperationLimit').val())) * (1)) / parseFloat(this.divisaGlobal);
-                            reportoOperationLimit = ((parseFloat($('#reportoOperationLimit').val())) * (1)) / parseFloat(this.divisaGlobal);
-                            operationLimitMoneyMarket = ((parseFloat($('#operationLimitMoneyMarket').val())) * (1)) / parseFloat(this.divisaGlobal);
-                            exchangeMarketLimit = ((parseFloat($('#exchangeMarketLimit').val())) * (1)) / parseFloat(this.divisaGlobal);
-                            limitOperationExchangeMarket = ((parseFloat($('#limitOperationExchangeMarket').val())) * (1)) / parseFloat(this.divisaGlobal);
-
-                            if ($('#selectTipo').val() == "varLimite") {
-
-                                /* var producto=$('#productoVarLimite').val()
-
-                                 const data = JSON.stringify({
-                                     limite: contraparte,
-                                     producto: producto,
-                                     globalLimit: globalLimit,
-                                     directOperationLimit: directOperationLimit,
-                                     reportoOperationLimit: reportoOperationLimit,
-                                     operationLimitMoneyMarket: operationLimitMoneyMarket,
-                                     exchangeMarketLimit: exchangeMarketLimit,
-                                     limitOperationExchangeMarket: limitOperationExchangeMarket,
-                                     //mercado: 'mexicano',
-                                     //usuario : "Roberto",
-                                     status: "1"
-                                 });*/
-
-
-                                //nuevo 27_09_2020
-                                var productoSelectValor = $('#productoSelect').val();
-                                var mercadoSelectValor = $('#mercadoSelect').val();
-                                globalLimit = ((parseFloat($('#globalLimitNuevo').val())) * (1)) / parseFloat(this.divisaGlobal);
-                                operationLimitMoneyMarket = ((parseFloat($('#operationLimitMoneyMarketNuevo').val())) * (1)) / parseFloat(this.divisaGlobal);
-
-
-                                const data = JSON.stringify({
-                                        limite: 0,
-                                        producto: productoSelectValor,
-                                        globalLimit: globalLimit,
-                                        directOperationLimit: 0,
-                                        reportoOperationLimit: 0,
-                                        operationLimitMoneyMarket: operationLimitMoneyMarket,
-                                        exchangeMarketLimit: 0,
-                                        limitOperationExchangeMarket: 0,
-                                        //mercado: 'mexicano',
-                                        //usuario : "Roberto",
-                                        status: "1",
-                                        market: mercadoSelectValor
-                                    })
-                                    //-------
-
-                                functions.addLimitesVarMd(token, data).then(function(response) {
-
-                                    $('#contraparte').val('');
-                                    $('#productoVarLimite').val('');
-                                    $('#globalLimit').val('');
-                                    $('#directOperationLimit').val('');
-                                    $('#reportoOperationLimit').val('');
-                                    $('#operationLimitMoneyMarket').val('');
-                                    $('#exchangeMarketLimit').val('');
-                                    $('#limitOperationExchangeMarket').val('');
-                                    $('#add').css('display', 'none');
-                                    $('#btnAgregar').slideDown('fast');
-                                    Swal.fire('El limite var se registro correctamente', '', 'success');
-                                    cambioDivisasMethod($('#selectTipo').val());
-
-                                    //nuevo 27_09_2020
-                                    $('#productoSelect').val('0');
-                                    $('#mercadoSelect').val('0');
-                                    $('#globalLimitNuevo').val('');
-                                    $('#operationLimitMoneyMarketNuevo').val('');
-
-                                    //---------
-                                })
-
-                            } else if ($('#selectTipo').val() == "mercadoLimite") {
-
-                                const data = JSON.stringify({
-                                    mercado: contraparte,
-                                    globalLimit: globalLimit,
-                                    directOperationLimit: directOperationLimit,
-                                    reportoOperationLimit: reportoOperationLimit,
-                                    operationLimitMoneyMarket: operationLimitMoneyMarket,
-                                    exchangeMarketLimit: exchangeMarketLimit,
-                                    limitOperationExchangeMarket: limitOperationExchangeMarket,
-                                    //mercado: 'mexicano',
-                                    //usuario : "Roberto",
-                                    status: "1"
-                                });
-
-                                functions.addLimitesMercado(token, data).then(function(response) {
-
-                                    $('#contraparte').val('');
-                                    $('#globalLimit').val('');
-                                    $('#directOperationLimit').val('');
-                                    $('#reportoOperationLimit').val('');
-                                    $('#operationLimitMoneyMarket').val('');
-                                    $('#exchangeMarketLimit').val('');
-                                    $('#limitOperationExchangeMarket').val('');
-                                    $('#add').css('display', 'none');
-                                    $('#btnAgregar').slideDown('slow');
-                                    Swal.fire('El mercado se registro correctamente', '', 'success');
-                                    cambioDivisasMethod($('#selectTipo').val());
-
-                                })
-                            } // fin if tipo select
-
-
-
-
-                        }
-                    });
-
-                } else {
-
-
-                    globalLimit = $('#globalLimit').val();
-                    directOperationLimit = $('#directOperationLimit').val();
-                    reportoOperationLimit = $('#reportoOperationLimit').val();
-                    operationLimitMoneyMarket = $('#operationLimitMoneyMarket').val();
-                    exchangeMarketLimit = $('#exchangeMarketLimit').val();
-                    limitOperationExchangeMarket = $('#limitOperationExchangeMarket').val();
-
-                    if ($('#selectTipo').val() == "varLimite") {
-                        /*
-                        var producto=$('#productoVarLimite').val()
-
-                        const data = JSON.stringify({
-                            limite: contraparte,
-                            producto: producto,
-                            globalLimit: globalLimit,
-                            directOperationLimit: directOperationLimit,
-                            reportoOperationLimit: reportoOperationLimit,
-                            operationLimitMoneyMarket: operationLimitMoneyMarket,
-                            exchangeMarketLimit: exchangeMarketLimit,
-                            limitOperationExchangeMarket: limitOperationExchangeMarket,
-                            //mercado: 'mexicano',
-                            //usuario : "Roberto",
-                            status: "1"
-                        });*/
-
-                        //nuevo 27_09_2020
-                        var productoSelectValor = $('#productoSelect').val();
-                        var mercadoSelectValor = $('#mercadoSelect').val();
-                        globalLimit = $('#globalLimitNuevo').val();
-                        operationLimitMoneyMarket = $('#operationLimitMoneyMarketNuevo').val();
-
-
-                        const data = JSON.stringify({
-                            limite: 0,
-                            producto: productoSelectValor,
-                            globalLimit: globalLimit,
-                            directOperationLimit: 0,
-                            reportoOperationLimit: 0,
-                            operationLimitMoneyMarket: operationLimitMoneyMarket,
-                            exchangeMarketLimit: 0,
-                            limitOperationExchangeMarket: 0,
-                            //mercado: 'mexicano',
-                            //usuario : "Roberto",
-                            status: "1",
-                            market: mercadoSelectValor
-                        })
-
-
-                        //-------
-
-                        functions.addLimitesVarMd(token, data).then(function(response) {
-
-                            $('#contraparte').val('');
-                            $('#productoVarLimite').val('');
-                            $('#globalLimit').val('');
-                            $('#directOperationLimit').val('');
-                            $('#reportoOperationLimit').val('');
-                            $('#operationLimitMoneyMarket').val('');
-                            $('#exchangeMarketLimit').val('');
-                            $('#limitOperationExchangeMarket').val('');
-                            $('#add').css('display', 'none');
-                            $('#btnAgregar').slideDown('fast');
-                            Swal.fire('El limite var se registro correctamente', '', 'success');
-                            cambioDivisasMethod($('#selectTipo').val());
-
-
-                            //nuevo 27_09_2020
-                            $('#productoSelect').val('0');
-                            $('#mercadoSelect').val('0');
-                            $('#globalLimitNuevo').val('');
-                            $('#operationLimitMoneyMarketNuevo').val('');
-
-                            //---------
-
-
-                        })
-
-                    } else if ($('#selectTipo').val() == "mercadoLimite") {
-
-                        const data = JSON.stringify({
-                            mercado: contraparte,
-                            globalLimit: globalLimit,
-                            directOperationLimit: directOperationLimit,
-                            reportoOperationLimit: reportoOperationLimit,
-                            operationLimitMoneyMarket: operationLimitMoneyMarket,
-                            exchangeMarketLimit: exchangeMarketLimit,
-                            limitOperationExchangeMarket: limitOperationExchangeMarket,
-                            //mercado: 'mexicano',
-                            //usuario : "Roberto",
-                            status: "1"
-                        });
-
-                        functions.addLimitesMercado(token, data).then(function(response) {
-
-                            $('#contraparte').val('');
-                            $('#globalLimit').val('');
-                            $('#directOperationLimit').val('');
-                            $('#reportoOperationLimit').val('');
-                            $('#operationLimitMoneyMarket').val('');
-                            $('#exchangeMarketLimit').val('');
-                            $('#limitOperationExchangeMarket').val('');
-                            $('#add').css('display', 'none');
-                            $('#btnAgregar').slideDown('slow');
-                            Swal.fire('El mercado se registro correctamente', '', 'success');
-                            cambioDivisasMethod($('#selectTipo').val());
-
-                        })
-                    } // fin if tipo select
-
-
-                } //fin if de divisas
-
-            } //fin if del tipo 2 y 3
-
-            //}//fin if validaciones
-
-
-        } //fin metodo
+        var nombreProducto = $('#newNameProducto').val();
+        var idMercado = $('#mercadoSelect').val();
+        var limiteInstrumento= $('#instrumentLimitNuevo').val();
+        var limiteTransaccion = $('#operationLimitNuevo').val();
+
+        console.log("NOMBRE_PRODUCTO",nombreProducto);
+        console.log("ID_MERCADO_SELECT",idMercado);
+        console.log("LIMITE_PRODUCTO",limiteInstrumento);
+        console.log("LIMITE_X_OPERACION",limiteTransaccion);
+
+        var mensjeError='';
+        if(nombreProducto==null || nombreProducto==undefined || nombreProducto=="" || nombreProducto.length==0){
+            mensjeError = 'Por favor ingrese el nombre del producto'; 
+        } else if(idMercado==0){
+            mensjeError = 'Por Favor Seleccione un Mercado';
+        } else if(limiteInstrumento==null || limiteInstrumento==undefined || limiteInstrumento==0){
+            mensjeError = 'Por Favor Ingrese el Límite por Instrumento';
+        } else if(limiteTransaccion==null || limiteTransaccion==undefined || limiteTransaccion==0){
+            mensjeError = 'Por Favor Ingrese el Límite por Operación';
+        }
+        
+        if(mensjeError!=''){
+            Swal.fire({
+                title: mensjeError,
+                text: '',
+                icon: 'warning',
+                confirmButtonColor: '#47FFAB',
+                confirmButtonText: 'OK',
+                reverseButtons: true
+            }).then((result) => {});
+        }else{
+
+            var data={
+                nombre: nombreProducto,
+                idMercado: idMercado,
+                cdActivo: 1,
+                limiteInstrumento: limiteInstrumento,
+                limiteTransaccion: limiteTransaccion
+            };
+
+            functions.addLimitesVarMd(token, data).then(function(response) {
+
+                $('#contraparte').val('');
+                $('#productoVarLimite').val('');
+                $('#globalLimit').val('');
+                $('#directOperationLimit').val('');
+                $('#reportoOperationLimit').val('');
+                $('#operationLimitMoneyMarket').val('');
+                $('#exchangeMarketLimit').val('');
+                $('#limitOperationExchangeMarket').val('');
+                $('#add').css('display', 'none');
+                $('#btnAgregar').slideDown('fast');
+                
+                $('#productoSelect').val('0');
+                $('#mercadoSelect').val('0');
+                $('#globalLimitNuevo').val('');
+                $('#operationLimitMoneyMarketNuevo').val('');
+   
+                var tipo = $('#selectTipo').val();
+                consultarLimites(tipo);
+
+                Swal.fire('Se registro correctamente', '', 'success'); 
+            });
+
+        }               
+    } //fin metodo
 
 
 
@@ -2333,8 +1834,7 @@ app.controller('limites', function($scope, functions, $window) {
             if (result.value) {
 
                 functions.deleteLimites(token, id).then(function(response) {
-                    cambioDivisasMethod($('#selectTipo').val());
-
+                    //TODO REFRESH
 
                 })
 
@@ -2350,7 +1850,7 @@ app.controller('limites', function($scope, functions, $window) {
         if (tipo == "mercado") {
             tituloMensaTempo = "¿Esta seguro de querer eliminar el mercado?"
         } else {
-            tituloMensaTempo = "¿Esta seguro de querer eliminar el limite var?"
+            tituloMensaTempo = "¿Esta Seguro de Querer Eliminar el Limite VaR?"
 
         }
 
@@ -2364,22 +1864,18 @@ app.controller('limites', function($scope, functions, $window) {
             confirmButtonText: 'Aceptar'
         }).then((result) => {
             if (result.value) {
-
                 if (tipo == "mercado") {
-
                     functions.deleteMercado(token, id).then(function(response) {
-                        cambioDivisasMethod($('#selectTipo').val());
+                        //TODO: REFRESH
                     })
 
                 } else {
-
                     functions.deletelimiteVar(token, id).then(function(response) {
-                        cambioDivisasMethod($('#selectTipo').val());
+                        var tipo = $('#selectTipo').val();
+                        consultarLimites(tipo);
                     })
 
                 }
-
-
             }
         });
 
@@ -2580,10 +2076,12 @@ app.controller('limites', function($scope, functions, $window) {
                 //usuario : "Roberto"
             });
 
-            functions.updateLimites(token, data, id).then(function(response) {
+            //document.getElementById("button_modi_" + contador).style.display = "block";
+            //document.getElementById("button_guar_" + contador).style.display = "none";
+            //document.getElementById("button_cancel_" + contador).style.display = "none";
 
+            functions.updateLimites(token, data, id).then(function(response) {
                 Swal.fire('Datos actualizados correctamente', '', 'success');
-                cambioDivisasMethod($('#selectTipo').val());
 
             })
 
@@ -2603,11 +2101,6 @@ app.controller('limites', function($scope, functions, $window) {
     $scope.guardarModiMercadoVarLimite = function(id, contador, tipo, otro) {
 
         var valoresColumna = [];
-
-        //document.getElementById("button_modi_"+contador).style.display="block";
-        //document.getElementById("button_guar_"+contador).style.display="none";
-        //document.getElementById("button_cancel_"+contador).style.display="none";
-
         contador = parseInt(contador) + 1;
         var table = document.getElementById("limites");
         var valueTr = table.getElementsByTagName('tr')[contador]
@@ -2735,63 +2228,27 @@ app.controller('limites', function($scope, functions, $window) {
             functions.updateLimitesMercado(token, data, id).then(function(response) {
 
                 Swal.fire('Datos actualizados correctamente', '', 'success');
-                cambioDivisasMethod($('#selectTipo').val());
-
+                //TODO: REFRESH
             })
 
         } else {
-
-            var splitOtro = otro.split("&");
-
-            /*const data = JSON.stringify({
-                producto: splitOtro[1],
-                limite: splitOtro[0],
-                globalLimit: valoresColumna[0],
-                directOperationLimit: valoresColumna[1],
-                reportoOperationLimit: valoresColumna[2],
-                operationLimitMoneyMarket: valoresColumna[3],
-                exchangeMarketLimit: valoresColumna[4],
-                limitOperationExchangeMarket: valoresColumna[5],
-                status: '1',
-
-                //mercado: 'mexicano',
-                //usuario : "Roberto"
-            });*/
-
-            //nuevo 27_09_2020
             const data = JSON.stringify({
-                producto: splitOtro[1],
-                limite: 0,
-                globalLimit: valoresColumna[0],
-                directOperationLimit: 0,
-                reportoOperationLimit: 0,
-                operationLimitMoneyMarket: valoresColumna[1],
-                exchangeMarketLimit: 0,
-                limitOperationExchangeMarket: 0,
-                status: '1'
-
-                //mercado: 'mexicano',
-                //usuario : "Roberto"
+                idInstrumento: id,
+                limiteInstrumento: valoresColumna[0],
+                limiteTransaccion: valoresColumna[1]
             });
-            //-----------------
 
-
+            console.log("DATA_UPDATE:", data);
             functions.updateLimitesVarMd(token, data, id).then(function(response) {
 
-                Swal.fire('Datos actualizados correctamente', '', 'success');
-                cambioDivisasMethod($('#selectTipo').val());
-
-            })
-
+                Swal.fire({
+                    title: 'Datos Actualizados Correctamente',
+                    text: '',
+                    icon: 'success',
+                    confirmButtonText: 'Aceptar'
+                }).then((result) => {});
+            });
         }
-
-
-
-
-        //}
-
-
-
 
 
     }
@@ -2822,7 +2279,6 @@ app.controller('limites', function($scope, functions, $window) {
 
     agregar = $scope.agregar;
     consultarLimites = $scope.consultarLimites;
-    cambioDivisasMethod = $scope.cambioDivisasMethod;
     cambio = $scope.cambio;
     add = $scope.add;
     cancelar = $scope.cancelar;
@@ -3679,9 +3135,9 @@ app.controller('csv', function($scope, functions, $window) {
                 cols.push(response[0][i]["columna"]);
                 cdCurvas.push(response[0][i]["cdCurva"]);
             }
-            console.log(rows);
-            console.log(cols);
-            console.log(cdCurvas);
+            console.log("ROWS::",rows);
+            console.log("COLS::",cols);
+            console.log("CD_CURVAS::",cdCurvas);
             $('#loader-wrapper').css('display', 'none');
         }).catch(err => {
             $('#loader-wrapper').css('display', 'none');
@@ -3701,19 +3157,7 @@ app.controller('csv', function($scope, functions, $window) {
         })
     }
 
-    $scope.upValidation= function() {
-        // determinas fecha X nombreArchivo
-        // tipoArchivo
-        // var tipo = document.getElementById('elements').value;
-
-
-        if(respuesta == "SUCCESS"){
-            $scope.up();
-        }{
-            //MSJ "Se reemplazaran datos?  "
-        }
-    }
-
+  
     $scope.up = function(results) {
         $('#loader-wrapper').css('display', '');
         var xlsxflag = false;
@@ -3766,7 +3210,7 @@ app.controller('csv', function($scope, functions, $window) {
         var columns = header(jsondata);
         var conteo = 0;
 
-        if (tipo == "1") { // H_Curvas
+        if (tipo == "1") { // H_Curvas >> ahora Curvas
             for (var c = 0; c < columns.length; c++) {
                 var rv = {};
                 var arrayRows = rows[c].split('|');
@@ -3778,6 +3222,7 @@ app.controller('csv', function($scope, functions, $window) {
                         rv[d] = conteo;
                         conteo++
                         d++;
+                        console.log("ID?",cdCurvas[c]);
                         rv[d] = cdCurvas[c];
                         d++;
                         rv[d] = jsondata[dataInt][columns[c]]
@@ -3788,7 +3233,12 @@ app.controller('csv', function($scope, functions, $window) {
                         d++;
                     }
                 }
+                console.log(rv);
+                console.log("FECHA:",  document.getElementById("calendario").value);
+                rv.fecha = document.getElementById("calendario").value;
                 url = 'hcurvas';
+                console.log(rv);
+                debugger;
                 functions.csv(token, rv, url).then(function(response) {
                     var response = response.data;
                     console.log(response)
@@ -3824,7 +3274,7 @@ app.controller('csv', function($scope, functions, $window) {
                     return
                 })
             }
-        } else if (tipo == "2") { //CURVAS
+        } else if (tipo == "12") { //CURVAS
             return new Promise((resolve, reject) => {
                 functions.deleteSwapData(token).then(function(response) {
                     var response = response.data;
@@ -3896,7 +3346,7 @@ app.controller('csv', function($scope, functions, $window) {
                 })
             })
 
-        } else if (tipo == "5") { // SWAPS
+        } else if (tipo == "2") { // SWAPS
             return new Promise((resolve, reject) => {
                 functions.deleteSwapData(token).then(function(response) {
                     var response = response.data;
@@ -4021,7 +3471,7 @@ app.controller('csv', function($scope, functions, $window) {
                 var rv = {};
                 switch (tipo) {
                     //CAPS
-                    case "3":
+                    case "10":
                         url = 'decapsfloor';
                         if (columns.length == 10) {
                             for (var colIndex = 0; colIndex < columns.length; colIndex++) {
@@ -4126,7 +3576,7 @@ app.controller('csv', function($scope, functions, $window) {
                         }
                         break;
                     // FLUJO DE CAPS
-                    case "4":
+                    case "11":
 
                         url = 'flujoscapsfloor';
 
@@ -4238,7 +3688,7 @@ app.controller('csv', function($scope, functions, $window) {
                         }
                         break;
                     // FLUJO DE SWAPS
-                    case "6":
+                    case "3":
                         url = 'flujosSwap';
 
                         if (columns.length == 10) {
@@ -4344,18 +3794,18 @@ app.controller('csv', function($scope, functions, $window) {
                             return;
                         }
                         break;
-                    // FUTUROS
-                    case "7":
-                        url = 'deFuturos';
+                    // FORDWARD
+                    case "4":
+                        url = 'fordward';
+                        
+                        if (columns.length == 14) {
 
-                        if (columns.length == 12) {
                             for (var colIndex = 0; colIndex < columns.length; colIndex++) {
+                                console.log('cheli',colIndex,jsondata[i][columns[colIndex]]);
+
                                 if (colIndex == 2 || colIndex == 3) {
                                     var cellValue = jsondata[i][columns[colIndex]];
                                     if (cellValue.indexOf("/") > -1) {
-
-                                        var date = new Date(cellValue);
-
                                         if (isNaN(date.getTime())) {
                                             var arrayRows = cellValue.split('/');
                                             var d = arrayRows[2] + "-" + arrayRows[1] + "-" + arrayRows[0]
@@ -4406,9 +3856,7 @@ app.controller('csv', function($scope, functions, $window) {
                                     rv[colIndex] = cellValue;
                                 }
                             }
-
                             console.log(rv);
-
                             functions.csv(token, rv, url).then(function(response) {
                                 var response = response.data;
                                 console.log(response)
@@ -4455,6 +3903,176 @@ app.controller('csv', function($scope, functions, $window) {
                             return;
                         }
                         break;
+                        
+                    // MESA DE DEUDA
+                    case "5":
+                        url = 'deuda';
+
+                        if (columns.length == 25) {
+
+                            for (var colIndex = 0; colIndex < columns.length; colIndex++) {
+                               var cellValue = jsondata[i][columns[colIndex]];
+                                rv[colIndex] = cellValue;
+                                
+                            }
+                            console.log(rv);
+                            functions.csv(token, rv, url).then(function(response) {
+                                var response = response.data;
+                                console.log(response)
+                                return response
+                            }).then(res => {
+                                if (val1 == jsondata.length) {
+                                    $('#loader-wrapper').css('display', 'none');
+                                    Swal.fire({
+                                        title: 'Proceso terminado correctamente',
+                                        icon: 'success',
+                                        showDenyButton: false,
+                                        showCancelButton: false,
+                                        confirmButtonText: `Entendido`,
+                                    }).then((result) => {
+                                        /* Read more about isConfirmed, isDenied below */
+                                        if (result.isConfirmed) {}
+                                    })
+                                }
+                                val1++;
+                            }).catch(error => {
+                                $('#loader-wrapper').css('display', 'none');
+                                Swal.fire({
+                                    title: 'Error en el proceso',
+                                    icon: 'error',
+                                    showDenyButton: false,
+                                    showCancelButton: false,
+                                    confirmButtonText: `Entendido`,
+                                }).then((result) => {
+                                    /* Read more about isConfirmed, isDenied below */
+                                    if (result.isConfirmed) {}
+                                })
+                                return
+                            })
+                        } else {
+                            Swal.fire({
+                                title: 'Error de archivo',
+                                showDenyButton: false,
+                                showCancelButton: false,
+                                confirmButtonText: `Entendido`,
+                            }).then((result) => {
+                                /* Read more about isConfirmed, isDenied below */
+                                if (result.isConfirmed) {}
+                            })
+                            return;
+                        }
+                        break;
+
+                         // Flujo mesa de deudas
+                    case "6":
+                        url = 'flujosDeuda';
+                        
+                        if (columns.length == 7) {
+
+                            for (var colIndex = 0; colIndex < columns.length; colIndex++) {
+                                console.log('cheli',colIndex,jsondata[i][columns[colIndex]]);
+
+                                if (colIndex == 5 || colIndex == 6) {
+                                    var cellValue = jsondata[i][columns[colIndex]];
+                                    if (cellValue.indexOf("/") > -1) {
+                                        if (isNaN(date.getTime())) {
+                                            var arrayRows = cellValue.split('/');
+                                            var d = arrayRows[2] + "-" + arrayRows[1] + "-" + arrayRows[0]
+                                        } else {
+                                            date.setDate(date.getDate() + 1);
+                                            var d = date.toISOString().slice(0, 10);
+                                        }
+                                    } else if (cellValue.indexOf("-") > -1) {
+                                        var date = new Date(cellValue);
+
+                                        if (isNaN(date.getTime())) {
+                                            $('#loader-wrapper').css('display', 'none');
+                                            Swal.fire({
+                                                title: 'Error en el formato de fecha',
+                                                text: 'El formato de fecha debe ser yyyy-mm-dd',
+                                                icon: 'error',
+                                                showDenyButton: false,
+                                                showCancelButton: false,
+                                                confirmButtonText: `Entendido`,
+                                            }).then((result) => {
+                                                /* Read more about isConfirmed, isDenied below */
+                                                if (result.isConfirmed) {}
+                                            })
+                                            return
+                                        } else {
+                                            date.setDate(date.getDate() + 1);
+                                            var d = date.toISOString().slice(0, 10);
+                                        }
+                                    } else {
+                                        $('#loader-wrapper').css('display', 'none');
+                                        Swal.fire({
+                                            title: 'Error en el formato de fecha',
+                                            text: 'El formato de fecha debe ser yyyy-mm-dd',
+                                            icon: 'error',
+                                            showDenyButton: false,
+                                            showCancelButton: false,
+                                            confirmButtonText: `Entendido`,
+                                        }).then((result) => {
+                                            /* Read more about isConfirmed, isDenied below */
+                                            if (result.isConfirmed) {}
+                                        })
+                                        return
+
+                                    }
+                                    rv[colIndex] = d;
+                                } else {
+                                    var cellValue = jsondata[i][columns[colIndex]];
+                                    rv[colIndex] = cellValue;
+                                }
+                            }
+                            console.log(rv);
+                            functions.csv(token, rv, url).then(function(response) {
+                                var response = response.data;
+                                console.log(response)
+                                return response
+                            }).then(res => {
+                                if (val1 == jsondata.length) {
+                                    $('#loader-wrapper').css('display', 'none');
+                                    Swal.fire({
+                                        title: 'Proceso terminado correctamente',
+                                        icon: 'success',
+                                        showDenyButton: false,
+                                        showCancelButton: false,
+                                        confirmButtonText: `Entendido`,
+                                    }).then((result) => {
+                                        /* Read more about isConfirmed, isDenied below */
+                                        if (result.isConfirmed) {}
+                                    })
+                                }
+                                val1++;
+                            }).catch(error => {
+                                $('#loader-wrapper').css('display', 'none');
+                                Swal.fire({
+                                    title: 'Error en el proceso',
+                                    icon: 'error',
+                                    showDenyButton: false,
+                                    showCancelButton: false,
+                                    confirmButtonText: `Entendido`,
+                                }).then((result) => {
+                                    /* Read more about isConfirmed, isDenied below */
+                                    if (result.isConfirmed) {}
+                                })
+                                return
+                            })
+                        } else {
+                            Swal.fire({
+                                title: 'Error de archivo',
+                                showDenyButton: false,
+                                showCancelButton: false,
+                                confirmButtonText: `Entendido`,
+                            }).then((result) => {
+                                /* Read more about isConfirmed, isDenied below */
+                                if (result.isConfirmed) {}
+                            })
+                            return;
+                        }
+                        break;
+                        
                     default:
                         $('#loader-wrapper').css('display', 'none');
 
@@ -4573,7 +4191,7 @@ app.controller('generarvar', function( $scope, functions) {
                 $("#conntentSpinner").fadeOut();
             });
         }
-        
+                                    
         
     };
     validaGenerarVar = $scope.validaGenerarVar;

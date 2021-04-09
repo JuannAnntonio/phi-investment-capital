@@ -52,8 +52,59 @@
         padding: .75rem 1.5rem;
     }
 
+    .btn-danger {
+        color: #fff;
+        background-color: #bd6161;
+        border-color: #c51515;
+    }
 
+    .btn-danger:hover {
+        color: #fff;
+        background-color: #c51515;
+        border-color: #c51515;
+    }
 
+    .btn-save {
+        color: #fff;
+        background-color: #82da50;
+        border-color: #20cc23;
+    }
+
+    .btn-save:hover {
+        color: #fff;
+        background-color: #20cc23;
+        border-color: #20cc23;
+    }
+
+    .btn-update {
+        color: #fff;
+        background-color: #5785af;
+        border-color: #2d93f1;
+    }
+
+    .btn-update:hover {
+        color: #fff;
+        background-color: #2d93f1;
+        border-color: #2d93f1;
+    }
+
+    .btn-cancel {
+        color: #fff !important;
+        background-color: #b3b3b3;
+        border-color: #b3b3b3;
+    }
+
+    .btn-cancel:hover {
+        color: #fff !important;
+        background-color: #000000a8;
+        border-color: #000000a8;
+    }
+
+    table.dataTable tbody>tr.selected{
+        background: #b3b3b347;
+        -webkit-box-shadow: inset 0 0 0 1px #d1d1d1;
+        box-shadow: inset 0 0 0 1px #d1d1d1;
+    }
 
 </style>
 
@@ -132,20 +183,18 @@
 
 
 
-                        <a class="btn buttons-print btn-outline-default" onclick='add()'
+                        <a class="btn btn-cancel btn-outline-default" onclick='add()'
                           id="btnAgregar" style="">Agregar</a>
 
-                        <select class="selectCustom" id="selectTipo" class="form-control" style="width: 25%; display: inline-table; margin-left: 5px;" >
-                           <option value="contraparte">Contraparte</option>
-                            <option value="operador">Operador</option>
-                            <option value="varLimite">Limite Var</option>
+                        <select class="selectCustom" id="selectTipo" class="form-control" style="width: 200px; display: inline-table; margin-left: 5px;" >
+                            <!--option value="contraparte">Contraparte</option>
                             <option value="mercadoLimite">Mercado</option>
+                            <option value="operador">Operador</option-->
+                            <option value="null">-- Selecciona --</option>
+                            <option value="varLimite">Limite Var</option>
                        </select>
                        
-                        <select class="selectCustom" id="selectDivisas" class="form-control" style="width: 25%; display: inline-table; margin-left: 5px;" >
-                            <option value="MXN">MXN</option>
-                            <option value="US">USD</option>
-                         </select>
+                        
                          <br>
                          <br>
                          
@@ -160,24 +209,16 @@
                                                                 <div class="form-group row" id="inputsFromLimitesVar" style="display: none;">
 
 
-                                                                    <select style="width: 25%;" class="selectCustom form-control" name="productoSelect" id="productoSelect">
-                                                                      <option value="0">Selecciona un producto</option>
-                                                                      <option value="2">Swaps</option>
-                                                                      <option value="3" disabled>Opciones</option>
-                                                                      <option value="4" disabled>Futuros</option>
-                                                                      <option value="5" disabled>Capsflor</option>
-                                                                      <option value="6" disabled>Deuda gubernamental</option>
-                                                                      <option value="7" disabled>Deuda corporativa</option>
-                                                                    </select>
+                                                                    <input  class="form-control col-sm-3" placeholder="Nombre del Producto" id="newNameProducto" >
                                                                     <div class="col-sm-1"> </div>
 
                                                                     <select style="width: 25%;" class="selectCustom form-control" name="mercadoSelect" id="mercadoSelect">
                                                                       <option value="0">Selecciona un mercado</option>
-                                                                      <option value="Global">Mercado global</option>
-                                                                      <option value="Derivados">Mercado de derivados</option>
-                                                                      <option value="Dinero">Mercado de dinero</option>
-                                                                      <option value="Cambios">Mercado de cambios</option>
-                                                                      <option value="Renta variable">Mercado de renta variable</option>
+                                                                      <option value="1">Mercado Global</option>
+                                                                      <option value="2">Mercado Capital</option>
+                                                                      <option value="3">Mercado Dinero</option>
+                                                                      <option value="4">Mercado Divisas</option>
+                                                                      <option value="5">Mercado Derivado</option>
                                                                     </select>
                                                                     <div class="col-sm-1"> </div>
 
@@ -188,9 +229,9 @@
 
                                                                 <div id="inputsFromLimitesVar2" class="form-group row">
 
-                                                                    <input class="form-control col-sm-3" type="number" placeholder="Limite Global"  id="globalLimitNuevo">
+                                                                    <input class="form-control col-sm-3" type="number" placeholder="Limite por Instrumento"  id="instrumentLimitNuevo">
                                                                     <div class="col-sm-1"> </div>
-                                                                    <input class="form-control col-sm-3" type="number" placeholder="Límite por Operción" id="operationLimitMoneyMarketNuevo" >
+                                                                    <input class="form-control col-sm-3" type="number" placeholder="Límite por Operción" id="operationLimitNuevo" >
                                                                     <div class="col-sm-1"> </div>
                                                                     <div class="col-sm-1" > </div>
 
@@ -227,7 +268,7 @@
                                                                     <input class="form-control col-sm-3" type="number" placeholder="Límite por Operción Mercado de Cambios" id="limitOperationExchangeMarket" >
                                                                     <div class=" col-sm-1"> </div>
                                                                     <div col-sm-3>
-                                                                    <button class="btn btn-primary btn-xs " onclick = "insert()">Registrar</button>
+                                                                    <button class="btn btn-save btn-xs " onclick = "insert()">Registrar</button>
                                                                      &nbsp;&nbsp;&nbsp;&nbsp;
                                                                     <button class="btn btn-danger btn-xs " onclick="cancelar()">Cancelar</button>
                                                                     </div>
@@ -913,8 +954,6 @@
     <script>
         $(document).ready(function()
         {
-            cambioDivisasMethod("contraparte");
-
             $(".uair2").addClass("activeTop");
             $(".mesaDeDineroMenu").css("display","none");
             $(".UAIR").css("display","");
@@ -925,11 +964,6 @@
                 cancelar();
                 cambio();
             });
-
-            $(document).on('change', '#selectDivisas', function () {
-                cambio();
-            });
-
         });
 
     </script>

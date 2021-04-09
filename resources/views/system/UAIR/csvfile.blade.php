@@ -204,47 +204,6 @@
 
                                 <div class="panel-hdr">
                                     <h2 class="ui-sortable-handle">
-                                        Proceso VaR
-                                    </h2>
-
-
-
-
-                                    <div class="panel-saving mr-2" style="display:none"><i class="fal fa-spinner-third fa-spin-4x fs-xl"></i></div><div class="panel-toolbar" role="menu">
-                                        <a href="#" class="btn btn-panel hover-effect-dot js-panel-collapse waves-effect waves-themed" data-toggle="tooltip" data-offset="0,10" data-original-title="Collapse"></a>
-                                        <a href="#" class="btn btn-panel hover-effect-dot js-panel-fullscreen waves-effect waves-themed" data-toggle="tooltip" data-offset="0,10" data-original-title="Fullscreen"></a>
-                                    </div>
-                                    <div class="panel-toolbar" role="menu"><a href="#" class="btn btn-toolbar-master waves-effect waves-themed" data-toggle="dropdown"><i class="fal fa-ellipsis-v"></i></a><div class="dropdown-menu dropdown-menu-animated dropdown-menu-right p-0">
-                                            <div class="dropdown-multilevel dropdown-multilevel-left"><div class="dropdown-item"><span data-i18n="drpdwn.panelcolor">Panel Style</span> </div><div class="dropdown-menu d-flex flex-wrap" style="min-width: 9.5rem; width: 9.5rem; padding: 0.5rem"><a href="#" class="btn d-inline-block bg-primary-700 bg-success-gradient width-2 height-2 p-0 rounded-0 js-panel-color hover-effect-dot waves-effect waves-themed" data-panel-setstyle="bg-primary-700 bg-success-gradient" style="margin:1px;"></a> <a href="#" class="btn d-inline-block bg-primary-500 bg-info-gradient width-2 height-2 p-0 rounded-0 js-panel-color hover-effect-dot waves-effect waves-themed" data-panel-setstyle="bg-primary-500 bg-info-gradient" style="margin:1px;"></a> <a href="#" class="btn d-inline-block bg-primary-600 bg-primary-gradient width-2 height-2 p-0 rounded-0 js-panel-color hover-effect-dot waves-effect waves-themed" data-panel-setstyle="bg-primary-600 bg-primary-gradient" style="margin:1px;"></a> <a href="#" class="btn d-inline-block bg-info-600 bg-primray-gradient width-2 height-2 p-0 rounded-0 js-panel-color hover-effect-dot waves-effect waves-themed" data-panel-setstyle="bg-info-600 bg-primray-gradient" style="margin:1px;"></a> <a href="#" class="btn d-inline-block bg-info-600 bg-info-gradient width-2 height-2 p-0 rounded-0 js-panel-color hover-effect-dot waves-effect waves-themed" data-panel-setstyle="bg-info-600 bg-info-gradient" style="margin:1px;"></a> <a href="#" class="btn d-inline-block bg-info-700 bg-success-gradient width-2 height-2 p-0 rounded-0 js-panel-color hover-effect-dot waves-effect waves-themed" data-panel-setstyle="bg-info-700 bg-success-gradient" style="margin:1px;"></a> <a href="#" class="btn d-inline-block bg-success-900 bg-info-gradient width-2 height-2 p-0 rounded-0 js-panel-color hover-effect-dot waves-effect waves-themed" data-panel-setstyle="bg-success-900 bg-info-gradient" style="margin:1px;"></a> <a href="#" class="btn d-inline-block bg-success-700 bg-primary-gradient width-2 height-2 p-0 rounded-0 js-panel-color hover-effect-dot waves-effect waves-themed" data-panel-setstyle="bg-success-700 bg-primary-gradient" style="margin:1px;"></a> <a href="#" class="btn d-inline-block bg-success-600 bg-success-gradient width-2 height-2 p-0 rounded-0 js-panel-color hover-effect-dot waves-effect waves-themed" data-panel-setstyle="bg-success-600 bg-success-gradient" style="margin:1px;"></a> <a href="#" class="btn d-inline-block bg-danger-900 bg-info-gradient width-2 height-2 p-0 rounded-0 js-panel-color hover-effect-dot waves-effect waves-themed" data-panel-setstyle="bg-danger-900 bg-info-gradient" style="margin:1px;"></a> <a href="#" class="btn d-inline-block bg-fusion-400 bg-fusion-gradient width-2 height-2 p-0 rounded-0 js-panel-color hover-effect-dot waves-effect waves-themed" data-panel-setstyle="bg-fusion-400 bg-fusion-gradient" style="margin:1px;"></a> <a href="#" class="btn d-inline-block bg-faded width-2 height-2 p-0 rounded-0 js-panel-color hover-effect-dot waves-effect waves-themed" data-panel-setstyle="bg-faded" style="margin:1px;"></a></div>                                       </div>  <div class="dropdown-divider m-0"></div>
-                                        </div></div>
-                                </div>
-
-                                <div class="panel-container show" role="content">
-                                    <div class="panel-content border-faded border-left-0 border-right-0 border-top-0">
-
-                                        <div class="row no-gutters">
-                                            <div class="col-lg-12 col-xl-12">
-                                                <div class="position-relative">
-                                                        <button onclick="procesoVar()" class="btn buttons-print btn-outline-default waves-effect waves-themed">Iniciar el proceso de VaR</button>
-
-                                                <div>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
-
-
-
-                            <div id="panel-1" class="panel panel-locked panel-sortable" data-panel-lock="false" data-panel-close="false" data-panel-fullscreen="false" data-panel-collapsed="false" data-panel-color="false" data-panel-locked="true" data-panel-refresh="false" data-panel-reset="false" role="widget">
-
-                                <div class="panel-hdr">
-                                    <h2 class="ui-sortable-handle">
                                         {{$title}}
                                     </h2>
 
@@ -257,30 +216,41 @@
                                             <div class="dropdown-multilevel dropdown-multilevel-left"><div class="dropdown-item"><span data-i18n="drpdwn.panelcolor">Panel Style</span>	</div><div class="dropdown-menu d-flex flex-wrap" style="min-width: 9.5rem; width: 9.5rem; padding: 0.5rem"><a href="#" class="btn d-inline-block bg-primary-700 bg-success-gradient width-2 height-2 p-0 rounded-0 js-panel-color hover-effect-dot waves-effect waves-themed" data-panel-setstyle="bg-primary-700 bg-success-gradient" style="margin:1px;"></a> <a href="#" class="btn d-inline-block bg-primary-500 bg-info-gradient width-2 height-2 p-0 rounded-0 js-panel-color hover-effect-dot waves-effect waves-themed" data-panel-setstyle="bg-primary-500 bg-info-gradient" style="margin:1px;"></a> <a href="#" class="btn d-inline-block bg-primary-600 bg-primary-gradient width-2 height-2 p-0 rounded-0 js-panel-color hover-effect-dot waves-effect waves-themed" data-panel-setstyle="bg-primary-600 bg-primary-gradient" style="margin:1px;"></a> <a href="#" class="btn d-inline-block bg-info-600 bg-primray-gradient width-2 height-2 p-0 rounded-0 js-panel-color hover-effect-dot waves-effect waves-themed" data-panel-setstyle="bg-info-600 bg-primray-gradient" style="margin:1px;"></a> <a href="#" class="btn d-inline-block bg-info-600 bg-info-gradient width-2 height-2 p-0 rounded-0 js-panel-color hover-effect-dot waves-effect waves-themed" data-panel-setstyle="bg-info-600 bg-info-gradient" style="margin:1px;"></a> <a href="#" class="btn d-inline-block bg-info-700 bg-success-gradient width-2 height-2 p-0 rounded-0 js-panel-color hover-effect-dot waves-effect waves-themed" data-panel-setstyle="bg-info-700 bg-success-gradient" style="margin:1px;"></a> <a href="#" class="btn d-inline-block bg-success-900 bg-info-gradient width-2 height-2 p-0 rounded-0 js-panel-color hover-effect-dot waves-effect waves-themed" data-panel-setstyle="bg-success-900 bg-info-gradient" style="margin:1px;"></a> <a href="#" class="btn d-inline-block bg-success-700 bg-primary-gradient width-2 height-2 p-0 rounded-0 js-panel-color hover-effect-dot waves-effect waves-themed" data-panel-setstyle="bg-success-700 bg-primary-gradient" style="margin:1px;"></a> <a href="#" class="btn d-inline-block bg-success-600 bg-success-gradient width-2 height-2 p-0 rounded-0 js-panel-color hover-effect-dot waves-effect waves-themed" data-panel-setstyle="bg-success-600 bg-success-gradient" style="margin:1px;"></a> <a href="#" class="btn d-inline-block bg-danger-900 bg-info-gradient width-2 height-2 p-0 rounded-0 js-panel-color hover-effect-dot waves-effect waves-themed" data-panel-setstyle="bg-danger-900 bg-info-gradient" style="margin:1px;"></a> <a href="#" class="btn d-inline-block bg-fusion-400 bg-fusion-gradient width-2 height-2 p-0 rounded-0 js-panel-color hover-effect-dot waves-effect waves-themed" data-panel-setstyle="bg-fusion-400 bg-fusion-gradient" style="margin:1px;"></a> <a href="#" class="btn d-inline-block bg-faded width-2 height-2 p-0 rounded-0 js-panel-color hover-effect-dot waves-effect waves-themed" data-panel-setstyle="bg-faded" style="margin:1px;"></a></div>										</div>  <div class="dropdown-divider m-0"></div>
                                         </div></div>
                                 </div>
-
+                                
                                 <div class="panel-container show" role="content">
                                     <div class="panel-content border-faded border-left-0 border-right-0 border-top-0">
 
-                                        <div class="row no-gutters">
-                                            <div class="col-lg-12 col-xl-12">
-                                                <div class="position-relative">
-
-                                                        <div class="form-group">
-                                                        <input type="file" id="excelfile"  class="btn buttons-print btn-outline-default waves-effect waves-themed"  accept=".csv,.xlsx,.xls" required />
-
-                                                        <select style="margin-left: 10px;" class="selectCustom" id="elements">
-                                                          <option value="1">Histórico de curvas</option>
-                                                          <option value="2">Curvas</option>
-                                                          <option value="3">Caps</option>
-                                                          <option value="4">Flujos de caps</option>
-                                                          <option value="5">Swaps</option>
-                                                          <option value="6">Flujos de swap</option>
-                                                          <option value="7">Futuros</option>
+                                        <div class="row">
+                                            <div class="col-lg-5 col-xl-5">
+                                                    
+                                                        <input type="file" id="excelfile" style="width-: 210px; margin-right: 50px;" class=" btn btn-file buttons-print btn-outline-default waves-effect waves-themed"  accept=".csv,.xlsx,.xls" required />
+                                                        
+                                                        <select style="margin-left: 10px;" class="selectCustom" name="elements" id="elements" >
+                                                            <option value="0" disabled selected>-- Tipo de Archivo --</option>
+                                                            <option value="1">Curvas</option>
+                                                            <option value="2">Swaps</option>
+                                                            <option value="3">Flujos de swap</option>
+                                                            <option value="4">Fordward</option>
+                                                            <option value="5">Mesa de deuda</option>
+                                                            <option value="6">Flujo mesa de deudas</option>
+                                                      <!--  <option value="1">Histórico de curvas</option>
+                                                            <option value="2">Curvas</option>
+                                                            <option value="3">Caps</option>
+                                                            <option value="4">Flujos de caps</option>
+                                                            <option value="5">Swaps</option>
+                                                            <option value="6">Flujos de swap</option>
+                                                            <option value="7">Futuros</option>-->
                                                         </select>
-                                                        <button onclick="up()" class="btn buttons-print btn-outline-default waves-effect waves-themed">Subir</button>
-                                                        <label class="position-absolute  pos-right" id="fecha"></label>
-
-                                                      </div>
+                                                </div>
+                                                        <div class="col-xl-7 col-lg-7">
+                                                            <div class="row">
+                                                                    <input id="calendario" type="date" class="form-control" style="width: 210px; margin-right: 50px; display:none;"/>
+                                                                
+                                                                    <button onclick="mensajeOk()" class="pos-left btn buttons-print btn-outline-default waves-effect waves-themed" >Subir</button>
+                                                                    <label class="position-absolute  pos-right" id="fecha"></label>
+                                                                
+                                                            </div>
+                                                </div>
 
 
 
@@ -991,13 +961,62 @@
             $(".contratos").css("display","none");
 
         });
+        function mensajeOk () {
+            if (document.getElementById("elements").value== 0){
+                Swal.fire({
+                    title: 'Selecciona un tipo de archivo',
+                    icon: 'warning',
+                    showDenyButton: false,
+                    showCancelButton: false,
+                    confirmButtonText: `Entendido`,
+                }).then((result) => {
+                    /* Read more about isConfirmed, isDenied below */
+                    if (result.isConfirmed) {
+                        console.log('Hola')
+                    }
+                })
+            }else if ($("#excelfile")[0].files.length == 0){
+                Swal.fire({
+                    title: 'Selecciona un archivo',
+                    icon: 'warning',
+                    showDenyButton: false,
+                    showCancelButton: false,
+                    confirmButtonText: `Entendido`,
+                }).then((result) => {
+                    /* Read more about isConfirmed, isDenied below */
+                    if (result.isConfirmed) {
+                        console.log('Hola')
+                    }
+                })
+            }  else{
+                Swal.fire({
+                    title: 'Existen datos para el proceso, se reemplazaran.',
+                    icon: 'warning',
+                    showDenyButton: false,
+                    showCancelButton: false,
+                    confirmButtonText: `OK`,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        up();
+                    }
+                })
+            } 
 
-
-
-
-
-
-
+        };   
     </script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script>
+            $( function() {
+              $("#elements").change( function() {
+                if ($(this).val() != "1") {
+                    //$("#calendario").prop("disabled", true);
+                    document.getElementById("calendario").style.display = "none";
+                } else {
+                    //$("#calendario").prop("disabled", false);
+                    document.getElementById("calendario").style.display = "block";
+                }
+                });
+            });
+        </script>
 
 @stop
