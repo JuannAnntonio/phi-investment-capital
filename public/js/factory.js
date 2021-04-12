@@ -855,6 +855,20 @@
                 const uri = 'http://localhost:8080/app/archivos/' + url;
                 console.log(uri);
                 console.log(data);
+                var x = $http.post(uri, data, {
+                    headers: {
+                        'Content-Type': 'application/json;charset=utf8',
+                        Authorization: token
+                    }
+                });
+                return x;
+            },
+
+            existenDatos: function(token, data) {
+                console.log("entro factory");
+                const uri = 'http://localhost:8080/app/archivos/existenDotos';
+                console.log(uri);
+                console.log(data);
                 return $http.post(uri, data, {
                     headers: {
                         'Content-Type': 'application/json;charset=utf8',
@@ -875,12 +889,26 @@
                     }
                 });
             },
-            deleteCurvas: function(token, url) {
+            deleteExistenteFecha: function(token, data) {
                 console.log("entro factory");
                 //const uri = 'http://localhost:8080/app/archivos/deleteCurvas';
-                const uri = 'http://localhost:8080/app/archivos/deleteCurvas';
+                const uri = 'http://localhost:8080/app/archivos/deleteExisteFecha';
                 console.log(uri);
-                return $http.post(uri, {
+                console.log(data);
+                return $http.post(uri, data, {
+                    headers: {
+                        'Content-Type': 'application/json;charset=utf8',
+                        Authorization: token
+                    }
+                });
+            },
+            insertaLn: function(token, data) {
+                console.log("entro factory");
+                //const uri = 'http://localhost:8080/app/archivos/deleteCurvas';
+                const uri = 'http://localhost:8080/app/archivos/insertaLn';
+                console.log(uri);
+                console.log(data);
+                return $http.post(uri, data, {
                     headers: {
                         'Content-Type': 'application/json;charset=utf8',
                         Authorization: token

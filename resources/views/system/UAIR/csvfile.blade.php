@@ -989,17 +989,7 @@
                     }
                 })
             }  else{
-                Swal.fire({
-                    title: 'Existen datos para el proceso, se reemplazaran.',
-                    icon: 'warning',
-                    showDenyButton: false,
-                    showCancelButton: false,
-                    confirmButtonText: `OK`,
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        up();
-                    }
-                })
+                existeDatos();
             } 
 
         };   
@@ -1018,5 +1008,6 @@
                 });
             });
         </script>
+
 
 @stop

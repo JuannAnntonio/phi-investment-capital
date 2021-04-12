@@ -2845,7 +2845,7 @@ app.controller('csv', function($scope, functions, $window) {
             var cellValue = response[1];
             var date = new Date(cellValue);
             $("#fecha").text("Fecha: " + date.toLocaleDateString("es-ES", options));
-            for (var i = 0; i < response.length; i++) {
+            for (var i = 0; i < response[0].length; i++) {
                 rows.push(response[0][i]["filas"]);
                 cols.push(response[0][i]["columna"]);
                 cdCurvas.push(response[0][i]["cdCurva"]);
@@ -2915,7 +2915,57 @@ app.controller('csv', function($scope, functions, $window) {
         }
     }
 
+    $scope.existeDatos = function (){
+        var fechaCalendario = document.getElementById("calendario").value;
+        if (fechaCalendario != null && fechaCalendario != undefined && fechaCalendario !='') {
+            var data={
+                fecha:fechaCalendario
+            };
+            functions.existenDatos(token, data).then(function(response) {
+                var numeroRegistros = response.data;
+                console.log("RES_1",numeroRegistros);
+                
+                if(numeroRegistros > 0){
+                    Swal.fire({
+                        title: 'Existen datos para el proceso, se reemplazaran.',
+                        icon: 'warning',
+                        showDenyButton: false,
+                        showCancelButton: false,
+                        confirmButtonText: `OK`,
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $scope.deleteExistenteFecha();                           
+                        };
+                    })
+                } else {
+                    $scope.up();
+                }
+            })
+        } else {
+            $scope.up();
+        }
+    }
+    existeDatos = $scope.existeDatos;
 
+    $scope.deleteExistenteFecha = function (){
+        var fechaCalendario = document.getElementById("calendario").value;
+        var data={
+            fecha:fechaCalendario
+        }; functions.deleteExistenteFecha(token, data).then(function(response) {
+            $scope.up();
+        })
+    }
+
+    $scope.insertaLn = function (){
+        var fechaCalendario = document.getElementById("calendario").value;
+        var data={
+            fecha:fechaCalendario
+        }; 
+        debugger;
+        functions.insertaLn(token, data).then(function(response) {
+      
+        })
+    }
 
     $scope.procesoExcel = function(jsondata) {
         $('#loader-wrapper').css('display', '');
@@ -2953,7 +3003,6 @@ app.controller('csv', function($scope, functions, $window) {
                 rv.fecha = document.getElementById("calendario").value;
                 url = 'hcurvas';
                 console.log(rv);
-                debugger;
                 functions.csv(token, rv, url).then(function(response) {
                     var response = response.data;
                     console.log(response)
@@ -2989,6 +3038,9 @@ app.controller('csv', function($scope, functions, $window) {
                     return
                 })
             }
+
+            $scope.insertaLn();
+
         } else if (tipo == "12") { //CURVAS
             return new Promise((resolve, reject) => {
                 functions.deleteSwapData(token).then(function(response) {
