@@ -122,7 +122,7 @@ list($r, $g, $b) = sscanf($colorHex, "#%02x%02x%02x");
   <meta name="description" content="@yield('description')">
   <meta name="viewport" content="@yield('viewport')">
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <meta name="author" content="Manlio Emiliano Terán Ramos">
+  <meta name="author" content="Act. Edgar Yañez">
 
   <!-- css -->
   <link href="https://fonts.googleapis.com/css?family=Noto+Serif:400,400italic,700|Open+Sans:300,400,600,700" rel="stylesheet">

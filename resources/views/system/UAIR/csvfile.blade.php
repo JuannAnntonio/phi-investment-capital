@@ -241,10 +241,10 @@
                                                     <option value="0" disabled selected>-- Tipo de Archivo --</option>
                                                     <option value="1">Curvas</option>
                                                     <option value="2">Swaps</option>
-                                                    <option value="3">Flujos de swap</option>
+                                                    <option value="3">Cupones de Swap</option>
                                                     <option value="4">Fordward</option>
-                                                    <option value="5">Mesa de deuda</option>
-                                                    <option value="6">Flujo mesa de deudas</option>
+                                                    <option value="5">Mercado de Dinero</option>
+                                                    <option value="6">Cupones Mercado de Dinero</option>
                                               <!--  <option value="1">Histórico de curvas</option>
                                                     <option value="2">Curvas</option>
                                                     <option value="3">Caps</option>
@@ -973,12 +973,12 @@
             var fechaCalendario = document.getElementById("calendario").value;
             var mensaje = "";
             if (document.getElementById("elements").value== 0){
-                var mensaje = "Selecciona un tipo de archivo";
+                var mensaje = "Selecciona un Tipo de Archivo";
             } else if ($("#excelfile")[0].files.length == 0){
-                var mensaje = "Selecciona un archivo";
+                var mensaje = "Selecciona un Archivo";
             } else if (document.getElementById("elements").value== 1 
                 && (fechaCalendario == null || fechaCalendario == undefined || fechaCalendario =='')){
-                var mensaje = "Selecciona una fecha";
+                var mensaje = "Selecciona una Fecha";
             }  
             
             if(mensaje!=""){

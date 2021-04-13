@@ -183,16 +183,16 @@
 
 
 
-                        <a class="btn btn-cancel btn-outline-default" onclick='add()'
-                          id="btnAgregar" style="">Agregar</a>
+                        <!--<a class="btn btn-cancel btn-outline-default" onclick='add()'
+                          id="btnAgregar" style="">Agregar</a>-->
 
-                        <select class="selectCustom" id="selectTipo" class="form-control" style="width: 200px; display: inline-table; margin-left: 5px;" >
+                        <select class="selectCustom" id="selectTipo" class="form-control" style="width: 250px; display: inline-table; margin-left: 5px;" >
                             <!--option value="contraparte">Contraparte</option>
                             <option value="mercadoLimite">Mercado</option>
                             <option value="operador">Operador</option-->
                             <option value="0">-- Selecciona --</option>
-                            <option value="mercado">Mercados</option>
-                            <option value="varLimite">Limite Var</option>
+                            <option value="mercado">Límite VaR por Mercados</option>
+                            <option value="varLimite">Limite VaR por Instrumento</option>
                        </select>
                        
                         

@@ -2927,11 +2927,11 @@ app.controller('csv', function($scope, functions, $window) {
                 
                 if(numeroRegistros > 0){
                     Swal.fire({
-                        title: 'Existen datos para el proceso, se reemplazaran.',
+                        title: 'Se Encontrarón Datos Para el Proceso Seleccionado, ¿Desea Reemplazarlos?',
                         icon: 'warning',
                         showDenyButton: false,
-                        showCancelButton: false,
-                        confirmButtonText: `OK`,
+                        showCancelButton: true,
+                        confirmButtonText: 'Continuar',
                     }).then((result) => {
                         if (result.isConfirmed) {
                             $scope.deleteExistenteFecha();                           
@@ -3012,7 +3012,7 @@ app.controller('csv', function($scope, functions, $window) {
                     if (val == columns.length) {
                         $('#loader-wrapper').css('display', 'none');
                         Swal.fire({
-                            title: 'Proceso terminado correctamente',
+                            title: 'Proceso Realizado Correctamente.',
                             icon: 'success',
                             showDenyButton: false,
                             showCancelButton: false,
@@ -3026,7 +3026,7 @@ app.controller('csv', function($scope, functions, $window) {
                 }).catch(error => {
                     $('#loader-wrapper').css('display', 'none');
                     Swal.fire({
-                        title: 'Error en el proceso',
+                        title: 'Error en el Proceso.',
                         icon: 'error',
                         showDenyButton: false,
                         showCancelButton: false,
@@ -3081,7 +3081,7 @@ app.controller('csv', function($scope, functions, $window) {
                                 if (val == val2) {
                                     $('#loader-wrapper').css('display', 'none');
                                     Swal.fire({
-                                        title: 'Proceso terminado correctamente',
+                                        title: 'Proceso Realizado Correctamente.',
                                         icon: 'success',
                                         showDenyButton: false,
                                         showCancelButton: false,
@@ -3096,7 +3096,7 @@ app.controller('csv', function($scope, functions, $window) {
                                 $('#loader-wrapper').css('display', 'none');
 
                                 Swal.fire({
-                                    title: 'Error en el proceso',
+                                    title: 'Error en el Proceso.',
                                     icon: 'error',
                                     showDenyButton: false,
                                     showCancelButton: false,
@@ -3145,8 +3145,8 @@ app.controller('csv', function($scope, functions, $window) {
                                         if (isNaN(date.getTime())) {
                                             $('#loader-wrapper').css('display', 'none');
                                             Swal.fire({
-                                                title: 'Error en el formato de fecha',
-                                                text: 'El formato de fecha debe ser yyyy-mm-dd',
+                                                title: 'Error en el Formato de Fecha.',
+                                                text: 'El Formato de Fecha Debe Ser yyyy-mm-dd',
                                                 icon: 'error',
                                                 showDenyButton: false,
                                                 showCancelButton: false,
@@ -3163,8 +3163,8 @@ app.controller('csv', function($scope, functions, $window) {
                                     } else {
                                         $('#loader-wrapper').css('display', 'none');
                                         Swal.fire({
-                                            title: 'Error en el formato de fecha',
-                                            text: 'El formato de fecha debe ser yyyy-mm-dd',
+                                            title: 'Error en el Formato de Fecha.',
+                                            text: 'El Formato de Fecha Debe Ser yyyy-mm-dd',
                                             icon: 'error',
                                             showDenyButton: false,
                                             showCancelButton: false,
@@ -3191,7 +3191,7 @@ app.controller('csv', function($scope, functions, $window) {
                                 if (val1 == jsondata.length) {
                                     $('#loader-wrapper').css('display', 'none');
                                     Swal.fire({
-                                        title: 'Proceso terminado correctamente',
+                                        title: 'Proceso Realizado Correctamente.',
                                         icon: 'success',
                                         showDenyButton: false,
                                         showCancelButton: false,
@@ -3206,7 +3206,7 @@ app.controller('csv', function($scope, functions, $window) {
                                 $('#loader-wrapper').css('display', 'none');
 
                                 Swal.fire({
-                                    title: 'Error en el proceso',
+                                    title: 'Error en el Proceso.',
                                     icon: 'error',
                                     showDenyButton: false,
                                     showCancelButton: false,
@@ -3219,7 +3219,8 @@ app.controller('csv', function($scope, functions, $window) {
                             })
                         } else {
                             Swal.fire({
-                                title: 'Error de archivo',
+                                icon: 'error',
+                                title: 'Error de Archivo.',
                                 showDenyButton: false,
                                 showCancelButton: false,
                                 confirmButtonText: `Entendido`,
@@ -3259,8 +3260,8 @@ app.controller('csv', function($scope, functions, $window) {
                                         if (isNaN(date.getTime())) {
                                             $('#loader-wrapper').css('display', 'none');
                                             Swal.fire({
-                                                title: 'Error en el formato de fecha',
-                                                text: 'El formato de fecha debe ser yyyy-mm-dd',
+                                                title: 'Error en el Formato de Fecha.',
+                                                text: 'El Formato de Fecha Debe Ser yyyy-mm-dd',
                                                 icon: 'error',
                                                 showDenyButton: false,
                                                 showCancelButton: false,
@@ -3277,8 +3278,8 @@ app.controller('csv', function($scope, functions, $window) {
                                     } else {
                                         $('#loader-wrapper').css('display', 'none');
                                         Swal.fire({
-                                            title: 'Error en el formato de fecha',
-                                            text: 'El formato de fecha debe ser yyyy-mm-dd',
+                                            title: 'Error en el Formato de Fecha.',
+                                            text: 'El Formato de Fecha Debe Ser yyyy-mm-dd',
                                             icon: 'error',
                                             showDenyButton: false,
                                             showCancelButton: false,
@@ -3305,7 +3306,7 @@ app.controller('csv', function($scope, functions, $window) {
                                 if (val1 == jsondata.length) {
                                     $('#loader-wrapper').css('display', 'none');
                                     Swal.fire({
-                                        title: 'Proceso terminado correctamente',
+                                        title: 'Proceso Realizado Correctamente.',
                                         icon: 'success',
                                         showDenyButton: false,
                                         showCancelButton: false,
@@ -3319,7 +3320,7 @@ app.controller('csv', function($scope, functions, $window) {
                             }).catch(error => {
                                 $('#loader-wrapper').css('display', 'none');
                                 Swal.fire({
-                                    title: 'Error en el proceso',
+                                    title: 'Error en el Proceso.',
                                     icon: 'error',
                                     showDenyButton: false,
                                     showCancelButton: false,
@@ -3332,7 +3333,8 @@ app.controller('csv', function($scope, functions, $window) {
                             })
                         } else {
                             Swal.fire({
-                                title: 'Error de archivo',
+                                icon: 'error',
+                                title: 'Error de Archivo.',
                                 showDenyButton: false,
                                 showCancelButton: false,
                                 confirmButtonText: `Entendido`,
@@ -3371,8 +3373,8 @@ app.controller('csv', function($scope, functions, $window) {
                                         if (isNaN(date.getTime())) {
                                             $('#loader-wrapper').css('display', 'none');
                                             Swal.fire({
-                                                title: 'Error en el formato de fecha',
-                                                text: 'El formato de fecha debe ser yyyy-mm-dd',
+                                                title: 'Error en el Formato de Fecha.',
+                                                text: 'El Formato de Fecha Debe Ser yyyy-mm-dd',
                                                 icon: 'error',
                                                 showDenyButton: false,
                                                 showCancelButton: false,
@@ -3389,8 +3391,8 @@ app.controller('csv', function($scope, functions, $window) {
                                     } else {
                                         $('#loader-wrapper').css('display', 'none');
                                         Swal.fire({
-                                            title: 'Error en el formato de fecha',
-                                            text: 'El formato de fecha debe ser yyyy-mm-dd',
+                                            title: 'Error en el Formato de Fecha.',
+                                            text: 'El Formato de Fecha Debe Ser yyyy-mm-dd',
                                             icon: 'error',
                                             showDenyButton: false,
                                             showCancelButton: false,
@@ -3417,7 +3419,7 @@ app.controller('csv', function($scope, functions, $window) {
                                 if (val1 == jsondata.length) {
                                     $('#loader-wrapper').css('display', 'none');
                                     Swal.fire({
-                                        title: 'Proceso terminado correctamente',
+                                        title: 'Proceso Realizado Correctamente.',
                                         icon: 'success',
                                         showDenyButton: false,
                                         showCancelButton: false,
@@ -3432,7 +3434,7 @@ app.controller('csv', function($scope, functions, $window) {
                                 $('#loader-wrapper').css('display', 'none');
 
                                 Swal.fire({
-                                    title: 'Error en el proceso',
+                                    title: 'Error en el Proceso.',
                                     icon: 'error',
                                     showDenyButton: false,
                                     showCancelButton: false,
@@ -3447,7 +3449,8 @@ app.controller('csv', function($scope, functions, $window) {
                             console.log(rv);
                         } else {
                             Swal.fire({
-                                title: 'Error de archivo',
+                                icon: 'error',
+                                title: 'Error de Archivo.',
                                 showDenyButton: false,
                                 showCancelButton: false,
                                 confirmButtonText: `Entendido`,
@@ -3483,8 +3486,8 @@ app.controller('csv', function($scope, functions, $window) {
                                         if (isNaN(date.getTime())) {
                                             $('#loader-wrapper').css('display', 'none');
                                             Swal.fire({
-                                                title: 'Error en el formato de fecha',
-                                                text: 'El formato de fecha debe ser yyyy-mm-dd',
+                                                title: 'Error en el Formato de Fecha.',
+                                                text: 'El Formato de Fecha Debe Ser yyyy-mm-dd',
                                                 icon: 'error',
                                                 showDenyButton: false,
                                                 showCancelButton: false,
@@ -3501,8 +3504,8 @@ app.controller('csv', function($scope, functions, $window) {
                                     } else {
                                         $('#loader-wrapper').css('display', 'none');
                                         Swal.fire({
-                                            title: 'Error en el formato de fecha',
-                                            text: 'El formato de fecha debe ser yyyy-mm-dd',
+                                            title: 'Error en el Formato de Fecha.',
+                                            text: 'El Formato de Fecha Debe Ser yyyy-mm-dd',
                                             icon: 'error',
                                             showDenyButton: false,
                                             showCancelButton: false,
@@ -3529,7 +3532,7 @@ app.controller('csv', function($scope, functions, $window) {
                                 if (val1 == jsondata.length) {
                                     $('#loader-wrapper').css('display', 'none');
                                     Swal.fire({
-                                        title: 'Proceso terminado correctamente',
+                                        title: 'Proceso Realizado Correctamente.',
                                         icon: 'success',
                                         showDenyButton: false,
                                         showCancelButton: false,
@@ -3543,7 +3546,7 @@ app.controller('csv', function($scope, functions, $window) {
                             }).catch(error => {
                                 $('#loader-wrapper').css('display', 'none');
                                 Swal.fire({
-                                    title: 'Error en el proceso',
+                                    title: 'Error en el Proceso.',
                                     icon: 'error',
                                     showDenyButton: false,
                                     showCancelButton: false,
@@ -3556,7 +3559,8 @@ app.controller('csv', function($scope, functions, $window) {
                             })
                         } else {
                             Swal.fire({
-                                title: 'Error de archivo',
+                                icon: 'error',
+                                title: 'Error de Archivo.',
                                 showDenyButton: false,
                                 showCancelButton: false,
                                 confirmButtonText: `Entendido`,
@@ -3594,8 +3598,8 @@ app.controller('csv', function($scope, functions, $window) {
                                         if (isNaN(date.getTime())) {
                                             $('#loader-wrapper').css('display', 'none');
                                             Swal.fire({
-                                                title: 'Error en el formato de fecha',
-                                                text: 'El formato de fecha debe ser yyyy-mm-dd',
+                                                title: 'Error en el Formato de Fecha.',
+                                                text: 'El Formato de Fecha Debe Ser yyyy-mm-dd',
                                                 icon: 'error',
                                                 showDenyButton: false,
                                                 showCancelButton: false,
@@ -3612,8 +3616,8 @@ app.controller('csv', function($scope, functions, $window) {
                                     } else {
                                         $('#loader-wrapper').css('display', 'none');
                                         Swal.fire({
-                                            title: 'Error en el formato de fecha',
-                                            text: 'El formato de fecha debe ser yyyy-mm-dd',
+                                            title: 'Error en el Formato de Fecha.',
+                                            text: 'El Formato de Fecha Debe Ser yyyy-mm-dd',
                                             icon: 'error',
                                             showDenyButton: false,
                                             showCancelButton: false,
@@ -3640,7 +3644,7 @@ app.controller('csv', function($scope, functions, $window) {
                                 if (val1 == jsondata.length) {
                                     $('#loader-wrapper').css('display', 'none');
                                     Swal.fire({
-                                        title: 'Proceso terminado correctamente',
+                                        title: 'Proceso Realizado Correctamente.',
                                         icon: 'success',
                                         showDenyButton: false,
                                         showCancelButton: false,
@@ -3654,7 +3658,7 @@ app.controller('csv', function($scope, functions, $window) {
                             }).catch(error => {
                                 $('#loader-wrapper').css('display', 'none');
                                 Swal.fire({
-                                    title: 'Error en el proceso',
+                                    title: 'Error en el Proceso.',
                                     icon: 'error',
                                     showDenyButton: false,
                                     showCancelButton: false,
@@ -3667,7 +3671,8 @@ app.controller('csv', function($scope, functions, $window) {
                             })
                         } else {
                             Swal.fire({
-                                title: 'Error de archivo',
+                                icon: 'error',
+                                title: 'Error de Archivo.',
                                 showDenyButton: false,
                                 showCancelButton: false,
                                 confirmButtonText: `Entendido`,
@@ -3701,7 +3706,7 @@ app.controller('csv', function($scope, functions, $window) {
                                 if (val1 == jsondata.length) {
                                     $('#loader-wrapper').css('display', 'none');
                                     Swal.fire({
-                                        title: 'Proceso terminado correctamente',
+                                        title: 'Proceso Realizado Correctamente.',
                                         icon: 'success',
                                         showDenyButton: false,
                                         showCancelButton: false,
@@ -3715,7 +3720,7 @@ app.controller('csv', function($scope, functions, $window) {
                             }).catch(error => {
                                 $('#loader-wrapper').css('display', 'none');
                                 Swal.fire({
-                                    title: 'Error en el proceso',
+                                    title: 'Error en el Proceso.',
                                     icon: 'error',
                                     showDenyButton: false,
                                     showCancelButton: false,
@@ -3728,7 +3733,8 @@ app.controller('csv', function($scope, functions, $window) {
                             })
                         } else {
                             Swal.fire({
-                                title: 'Error de archivo',
+                                icon: 'error',
+                                title: 'Error de Archivo.',
                                 showDenyButton: false,
                                 showCancelButton: false,
                                 confirmButtonText: `Entendido`,
@@ -3767,8 +3773,8 @@ app.controller('csv', function($scope, functions, $window) {
                                         if (isNaN(date.getTime())) {
                                             $('#loader-wrapper').css('display', 'none');
                                             Swal.fire({
-                                                title: 'Error en el formato de fecha',
-                                                text: 'El formato de fecha debe ser yyyy-mm-dd',
+                                                title: 'Error en el Formato de Fecha.',
+                                                text: 'El Formato de Fecha Debe Ser yyyy-mm-dd',
                                                 icon: 'error',
                                                 showDenyButton: false,
                                                 showCancelButton: false,
@@ -3785,8 +3791,8 @@ app.controller('csv', function($scope, functions, $window) {
                                     } else {
                                         $('#loader-wrapper').css('display', 'none');
                                         Swal.fire({
-                                            title: 'Error en el formato de fecha',
-                                            text: 'El formato de fecha debe ser yyyy-mm-dd',
+                                            title: 'Error en el Formato de Fecha.',
+                                            text: 'El Formato de Fecha Debe Ser yyyy-mm-dd',
                                             icon: 'error',
                                             showDenyButton: false,
                                             showCancelButton: false,
@@ -3813,7 +3819,7 @@ app.controller('csv', function($scope, functions, $window) {
                                 if (val1 == jsondata.length) {
                                     $('#loader-wrapper').css('display', 'none');
                                     Swal.fire({
-                                        title: 'Proceso terminado correctamente',
+                                        title: 'Proceso Realizado Correctamente.',
                                         icon: 'success',
                                         showDenyButton: false,
                                         showCancelButton: false,
@@ -3827,7 +3833,7 @@ app.controller('csv', function($scope, functions, $window) {
                             }).catch(error => {
                                 $('#loader-wrapper').css('display', 'none');
                                 Swal.fire({
-                                    title: 'Error en el proceso',
+                                    title: 'Error en el Proceso.',
                                     icon: 'error',
                                     showDenyButton: false,
                                     showCancelButton: false,
@@ -3840,7 +3846,8 @@ app.controller('csv', function($scope, functions, $window) {
                             })
                         } else {
                             Swal.fire({
-                                title: 'Error de archivo',
+                                icon: 'error',
+                                title: 'Error de Archivo.',
                                 showDenyButton: false,
                                 showCancelButton: false,
                                 confirmButtonText: `Entendido`,
@@ -3925,7 +3932,7 @@ app.controller('csv', function($scope, functions, $window) {
 
 
             $("#conntentSpinner").fadeOut();
-            Swal.fire('Proceso realizado correctamente', '', 'success');
+            Swal.fire('Proceso Realizado Correctamente.', '', 'success');
 
 
         })
@@ -3974,9 +3981,9 @@ app.controller('generarvar', function( $scope, functions) {
                         }
                     });
                 } else if (res.status=="OK"){
-                    Swal.fire('Datos actualizados correctamente', '', 'success');
+                    Swal.fire('Cálculo de VaR Relizado Correctamente.', '', 'success');
                 } else {
-                    Swal.fire('Ocurrió un problema al realizar el proceso.', '', 'error');
+                    Swal.fire('Ocurrió un Problema al Realizar el Proceso.', '', 'error');
                 }
                 $("#conntentSpinner").fadeOut();
             });
@@ -3998,9 +4005,9 @@ app.controller('generarvar', function( $scope, functions) {
             $("#conntentSpinner").fadeOut();
             console.log("termino el proceso--------")
             if (res.status=="OK"){
-                Swal.fire('Datos actualizados correctamente', '', 'success');
+                Swal.fire('Cálculo de VaR Relizado Correctamente.', '', 'success');
             } else {
-                Swal.fire('Ocurrió un problema al realizar el proceso.', '', 'error');
+                Swal.fire('Ocurrió un Problema al Realizar el Proceso.', '', 'error');
             }
 
         })
