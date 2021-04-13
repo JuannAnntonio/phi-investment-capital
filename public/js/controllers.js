@@ -3126,7 +3126,7 @@ app.controller('csv', function($scope, functions, $window) {
                     for (var i = 0; i < jsondata.length; i++) {
                         var rv = {};
                         url = 'deswap';
-                        if (columns.length == 16) {
+                        if (columns.length == 18) {
                             rv[0] = conteo;
                             for (var colIndex = 0; colIndex < columns.length; colIndex++) {
                                 if (colIndex == 2 || colIndex == 3) {
@@ -3877,7 +3877,7 @@ app.controller('csv', function($scope, functions, $window) {
 
         var tipo = document.getElementById('elements').value;
 
-        if (tipo == "1" || tipo == "2") {
+        if (tipo == "1" ) {
             var colTemp = [];
             for (var i = 0; i < cols.length; i++) {
                 for (var u = 0; u < columExcel.length; u++) {

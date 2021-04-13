@@ -925,7 +925,7 @@
 
             });
 
-            $('#js-page-content').smartPanel();
+            //$('#js-page-content').smartPanel();
 
 
         });
@@ -962,9 +962,20 @@
 
         });
         function mensajeOk () {
+            var fechaCalendario = document.getElementById("calendario").value;
+            var mensaje = "";
             if (document.getElementById("elements").value== 0){
+                var mensaje = "Selecciona un tipo de archivo";
+            } else if ($("#excelfile")[0].files.length == 0){
+                var mensaje = "Selecciona un archivo";
+            } else if (document.getElementById("elements").value== 1 
+                && (fechaCalendario == null || fechaCalendario == undefined || fechaCalendario =='')){
+                var mensaje = "Selecciona una fecha";
+            }  
+            
+            if(mensaje!=""){
                 Swal.fire({
-                    title: 'Selecciona un tipo de archivo',
+                    title: mensaje,
                     icon: 'warning',
                     showDenyButton: false,
                     showCancelButton: false,
@@ -975,20 +986,7 @@
                         console.log('Hola')
                     }
                 })
-            }else if ($("#excelfile")[0].files.length == 0){
-                Swal.fire({
-                    title: 'Selecciona un archivo',
-                    icon: 'warning',
-                    showDenyButton: false,
-                    showCancelButton: false,
-                    confirmButtonText: `Entendido`,
-                }).then((result) => {
-                    /* Read more about isConfirmed, isDenied below */
-                    if (result.isConfirmed) {
-                        console.log('Hola')
-                    }
-                })
-            }  else{
+            } else {
                 existeDatos();
             } 
 
