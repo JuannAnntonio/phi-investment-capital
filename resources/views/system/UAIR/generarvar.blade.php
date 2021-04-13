@@ -179,45 +179,7 @@
                             Ejecutando proceso, esto puede tardar varios minutos
                             </div>
                 </div>
-                
-                <!-- Modal de validaciones -->
-                <div class="modal fade" id="messageValidaVar" tabindex="-1" role="dialog" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <h5><label id="mensajeError"></h5>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
-                        </div>
-                    </div>
-                    </div>
-                </div>
-
-                <!-- Modal de confirmacion -->
-                <div class="modal fade" id="messageConfirmacion" tabindex="-1" role="dialog"  aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <h5><label id="mensajeConfirmacion"></h5>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                            <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="generarVar()">Continuar</button>
-                        </div>
-                    </div>
-                    </div>
-                </div>
+                 
 
                 <main id="js-page-content" role="main" class="page-content">
 

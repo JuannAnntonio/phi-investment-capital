@@ -3962,8 +3962,17 @@ app.controller('generarvar', function( $scope, functions) {
                 if (res.status=="NO_CONTENT"){
                     Swal.fire(res.mensaje, '', 'warning');
                 } else if (res.status=="FOUND"){
-                    document.getElementById('mensajeConfirmacion').innerHTML =res.mensaje;
-                    $('#messageConfirmacion').modal('show');
+                    Swal.fire({
+                        title: res.mensaje,
+                        icon: 'warning',
+                        showDenyButton: false,
+                        showCancelButton: true,
+                        confirmButtonText: 'Continuar',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $scope.generarVar();
+                        }
+                    });
                 } else if (res.status=="OK"){
                     Swal.fire('Datos actualizados correctamente', '', 'success');
                 } else {

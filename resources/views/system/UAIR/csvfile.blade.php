@@ -73,6 +73,9 @@
         top: 60%
 
     }
+    .input-group {
+        margin-top: 0px;
+    }
     .sk-cube-grid {
         width: 40px;
         height: 40px;
@@ -82,6 +85,7 @@
         left: 45%;
         top: 30%
     }
+
 
 .sk-cube-grid .sk-cube {
   width: 33%;
@@ -221,36 +225,42 @@
                                     <div class="panel-content border-faded border-left-0 border-right-0 border-top-0">
 
                                         <div class="row">
-                                            <div class="col-lg-5 col-xl-5">
-                                                    
-                                                        <input type="file" id="excelfile" style="width-: 210px; margin-right: 50px;" class=" btn btn-file buttons-print btn-outline-default waves-effect waves-themed"  accept=".csv,.xlsx,.xls" required />
-                                                        
-                                                        <select style="margin-left: 10px;" class="selectCustom" name="elements" id="elements" >
-                                                            <option value="0" disabled selected>-- Tipo de Archivo --</option>
-                                                            <option value="1">Curvas</option>
-                                                            <option value="2">Swaps</option>
-                                                            <option value="3">Flujos de swap</option>
-                                                            <option value="4">Fordward</option>
-                                                            <option value="5">Mesa de deuda</option>
-                                                            <option value="6">Flujo mesa de deudas</option>
-                                                      <!--  <option value="1">Histórico de curvas</option>
-                                                            <option value="2">Curvas</option>
-                                                            <option value="3">Caps</option>
-                                                            <option value="4">Flujos de caps</option>
-                                                            <option value="5">Swaps</option>
-                                                            <option value="6">Flujos de swap</option>
-                                                            <option value="7">Futuros</option>-->
-                                                        </select>
-                                                </div>
-                                                        <div class="col-xl-7 col-lg-7">
-                                                            <div class="row">
-                                                                    <input id="calendario" type="date" class="form-control" style="width: 210px; margin-right: 50px; display:none;"/>
-                                                                
-                                                                    <button onclick="mensajeOk()" class="pos-left btn buttons-print btn-outline-default waves-effect waves-themed" >Subir</button>
-                                                                    <label class="position-absolute  pos-right" id="fecha"></label>
-                                                                
-                                                            </div>
-                                                </div>
+                                            <div class="col-lg-3 col-xl-3">
+                                                
+                                                <input type="file" id="excelfile" class="filestyle" 
+                                                data-text="Selecciona archivo" 
+                                                data-placeholder="Ningún archivo seleccionado"
+                                                accept=".csv,.xlsx,.xls" style="width: 350px;" required>
+                                                
+
+
+
+                                            </div>
+                                            <div class="col-xl-2 col-lg-2">
+                                                <select style="margin-left: 10px;" class="selectCustom" name="elements" id="elements" >
+                                                    <option value="0" disabled selected>-- Tipo de Archivo --</option>
+                                                    <option value="1">Curvas</option>
+                                                    <option value="2">Swaps</option>
+                                                    <option value="3">Flujos de swap</option>
+                                                    <option value="4">Fordward</option>
+                                                    <option value="5">Mesa de deuda</option>
+                                                    <option value="6">Flujo mesa de deudas</option>
+                                              <!--  <option value="1">Histórico de curvas</option>
+                                                    <option value="2">Curvas</option>
+                                                    <option value="3">Caps</option>
+                                                    <option value="4">Flujos de caps</option>
+                                                    <option value="5">Swaps</option>
+                                                    <option value="6">Flujos de swap</option>
+                                                    <option value="7">Futuros</option>-->
+                                                </select>
+                                            </div>
+                                            <div class="col-xl-2 col-lg-2">
+                                                <input id="calendario" type="date" class="form-control" style="width: 210px;  display:none;"/>
+                                            </div>
+                                            <div class="col-xl-5 col-lg-5">
+                                                <button onclick="mensajeOk()" class="pos-left btn buttons-print btn-outline-default waves-effect waves-themed btn-secondary" >Subir</button>
+                                                <label class="position-absolute  pos-right" id="fecha"></label>
+                                            </div>
 
 
 
@@ -903,7 +913,7 @@
     <script src="{{ url('js/selects.js?v='.cache("js_version_number").'') }}"></script>
 
     <!-- The order of scripts is irrelevant. Please check out the plugin pages for more details about these plugins below: -->
-
+<!--
     <script>
         $(document).ready(function()
         {
@@ -925,17 +935,16 @@
 
             });
 
-            //$('#js-page-content').smartPanel();
+            $('#js-page-content').smartPanel();
 
 
         });
     </script>
-
+-->
 
 
     <!-- Toastr-->
     <script src="{{ url('js/toastr.js?v='.cache("js_version_number").'') }}"></script>
-
     <!--Angular-->
 
     <script src="{{ url('js/angular.min.js?v='.cache("js_version_number").'') }}"></script>
@@ -947,12 +956,11 @@
     <script src="{{ url('js/selects.js?v='.cache("js_version_number").'') }}"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script type="text/javascript" src="{{ url('js/bootstrap-filestyle.min.js?v='.cache("js_version_number").'') }}"> </script>
 
     <script>
-        $(document).ready(function()
-        {
+        $(document).ready(function(){
             getParameter();
             $(".uair2").addClass("activeTop");
             $(".mesaDeDineroMenu").css("display","none");
@@ -990,11 +998,8 @@
                 existeDatos();
             } 
 
-        };   
-    </script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-        <script>
-            $( function() {
+        };
+        $( function() {
               $("#elements").change( function() {
                 if ($(this).val() != "1") {
                     //$("#calendario").prop("disabled", true);
@@ -1004,8 +1009,8 @@
                     document.getElementById("calendario").style.display = "block";
                 }
                 });
-            });
-        </script>
-
+            });   
+    </script>
+        
 
 @stop
