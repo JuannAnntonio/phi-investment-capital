@@ -3225,7 +3225,9 @@ app.controller('csv', function($scope, functions, $window) {
                                 confirmButtonText: `Entendido`,
                             }).then((result) => {
                                 /* Read more about isConfirmed, isDenied below */
-                                if (result.isConfirmed) {}
+                                if (result.isConfirmed) {
+                                    $('#loader-wrapper').css('display', 'none');
+                                }
                             })
                             return;
                         }
@@ -3336,7 +3338,9 @@ app.controller('csv', function($scope, functions, $window) {
                                 confirmButtonText: `Entendido`,
                             }).then((result) => {
                                 /* Read more about isConfirmed, isDenied below */
-                                if (result.isConfirmed) {}
+                                if (result.isConfirmed) {
+                                    $('#loader-wrapper').css('display', 'none');
+                                }
                             })
 
                             return;
@@ -3449,7 +3453,9 @@ app.controller('csv', function($scope, functions, $window) {
                                 confirmButtonText: `Entendido`,
                             }).then((result) => {
                                 /* Read more about isConfirmed, isDenied below */
-                                if (result.isConfirmed) {}
+                                if (result.isConfirmed) {
+                                    $('#loader-wrapper').css('display', 'none');
+                                }
                             })
                             return;
                         }
@@ -3556,7 +3562,9 @@ app.controller('csv', function($scope, functions, $window) {
                                 confirmButtonText: `Entendido`,
                             }).then((result) => {
                                 /* Read more about isConfirmed, isDenied below */
-                                if (result.isConfirmed) {}
+                                if (result.isConfirmed) {
+                                    $('#loader-wrapper').css('display', 'none');
+                                }
                             })
                             return;
                         }
@@ -3665,7 +3673,9 @@ app.controller('csv', function($scope, functions, $window) {
                                 confirmButtonText: `Entendido`,
                             }).then((result) => {
                                 /* Read more about isConfirmed, isDenied below */
-                                if (result.isConfirmed) {}
+                                if (result.isConfirmed) {
+                                    $('#loader-wrapper').css('display', 'none');
+                                }
                             })
                             return;
                         }
@@ -3724,7 +3734,9 @@ app.controller('csv', function($scope, functions, $window) {
                                 confirmButtonText: `Entendido`,
                             }).then((result) => {
                                 /* Read more about isConfirmed, isDenied below */
-                                if (result.isConfirmed) {}
+                                if (result.isConfirmed) {
+                                    $('#loader-wrapper').css('display', 'none');
+                                }
                             })
                             return;
                         }
@@ -3834,7 +3846,9 @@ app.controller('csv', function($scope, functions, $window) {
                                 confirmButtonText: `Entendido`,
                             }).then((result) => {
                                 /* Read more about isConfirmed, isDenied below */
-                                if (result.isConfirmed) {}
+                                if (result.isConfirmed) {
+                                    $('#loader-wrapper').css('display', 'none');
+                                }
                             })
                             return;
                         }
