@@ -678,6 +678,24 @@
                 });
 
             },
+            getHistoricoVarMercado: function(token) {
+                var url = 'http://localhost:8080/app/semaforosalertas/historicoVarMercado/';
+                return $http.get(url, {
+                    headers: {
+                        'Content-Type': 'application/json;charset=utf8',
+                        Authorization: token
+                    }
+                });
+            },
+            getSemaforoContraParte: function(token) {
+                var url = 'http://localhost:8080/app/semaforosalertas/contraParte/';
+                return $http.get(url, {
+                    headers: {
+                        'Content-Type': 'application/json;charset=utf8',
+                        Authorization: token
+                    }
+                });
+            },
             getSemaforos: function(token, tipoEnvio) {
                 var url = 'http://localhost:8080/app/semaforosalertas/lista/' + tipoEnvio;
                 //var url = 'http://localhost:8080/app/semaforosalertas/lista/' + tipoEnvio;
@@ -837,6 +855,64 @@
                 pieChart();
             },
 
+            generarGraficaBarra: function(idGrafica, labelsChart, dataChart, title) {
+                var barChart = function() {
+                    var config = {
+                        type: 'bar',
+                        data: {
+                            datasets: [{
+                                label: title,
+                                data: dataChart,
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(255, 159, 64, 0.2)',
+                                    'rgba(255, 205, 86, 0.2)',
+                                    'rgba(75, 192, 192, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                    'rgba(153, 102, 255, 0.2)',
+                                    'rgba(201, 203, 207, 0.2)'
+                                ],
+                                borderColor: [
+                                    'rgb(255, 99, 132)',
+                                    'rgb(255, 159, 64)',
+                                    'rgb(255, 205, 86)',
+                                    'rgb(75, 192, 192)',
+                                    'rgb(54, 162, 235)',
+                                    'rgb(153, 102, 255)',
+                                    'rgb(201, 203, 207)'
+                                  ],
+                                borderWidth: 1,
+                            }],
+                            labels: labelsChart
+                        },
+                        options: {
+                            responsive: true,
+                        }
+                    };
+                    new Chart($("#" + idGrafica).get(0).getContext("2d"), config); 
+                }
+                barChart();
+            },
+
+            generarGraficaHistoricoVaR: function(idGrafica, dataChart, title) {
+                var barChart = function() {
+                    var config = {
+                        type: 'bar',
+                        data: dataChart,
+                        options: {
+                            plugins: {
+                              title: {
+                                text: title,
+                                display: true
+                              }
+                            }
+                        }
+                    };
+                    new Chart($("#" + idGrafica).get(0).getContext("2d"), config); 
+                }
+                barChart();
+            },
+
             iniciarProcesoVar: function(token) {
                 var url = 'http://localhost:8080/app/logaritmo/log2';
                 //var url = 'http://localhost:8080/app/logaritmo/log2';
@@ -945,8 +1021,7 @@
                 });
             },
             generarGraficaDona: function(idGrafica, labels, data, color, limite) {
-                console.log("generarGraficaDona_DATA:: ",data);
-
+                
                 document.getElementById(idGrafica).remove();
                 var canvas = document.createElement("canvas");
                 canvas.id = idGrafica; 
@@ -965,7 +1040,6 @@
                 }
                 
                 var ctx = document.getElementById(idGrafica).getContext("2d");
-                console.log("generarGraficaDona", ctx);
                 var chart = new Chart(ctx, {
                     type: 'doughnut',
                     data: {
@@ -1098,9 +1172,7 @@
                         }
                     }
                 });
-                console.log("generarGraficaDona", chart);
                 chart.update();
-
                 comas = function numberWithCommas(x) {
                     x = x.toString();
                     var pattern = /(-?\d+)(\d{3})/;
@@ -1108,7 +1180,6 @@
                         x = x.replace(pattern, "$1,$2");
                     return x;
                 };
-        
                 dosDecimales = function(numero) {
                     var numeroOriginal = numero;
                     var signo = 1;
@@ -1123,15 +1194,6 @@
                     return vreturn;
                 };
             },
-            
-            
-            /*return $http.post(uri, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: token
-                }
-            });*/
-
         };
     });
 

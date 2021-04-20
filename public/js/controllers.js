@@ -2036,18 +2036,21 @@ app.controller('semaforos', function($scope, functions, $window) {
 
     functions.loading()
 
-    functions.getSemaforos(token, 0).then(function(response) {
+    functions.getSemaforoContraParte(token).then(function(response) {
         var da = response.data;
 
-        console.log(da);
+        console.log("[getSemaforoContraParte]",da);
         $('#spinner').fadeIn();
         $('#conteTableSemaforo').append('<table class="table table-striped" id="semaforo" >' +
-            '<thead class="bg-warning-200">' +
+            '<thead class="bg-dark text-white">' +
             '<tr>' +
-            '<th>Contraparte</th>' +
-            '<th>Limite Global</th>' +
-            '<th>Límite Utilizado</th>' +
-            '<th>Límite Restante</th>' +
+            '<th>Mercado</th>' +
+            '<th>Instrumento</th>' +
+            '<th>Nu Valuacion Dia</th>' +
+            '<th>Nu Valuacion Historico</th>' +
+            '<th>Nu Diferencia</th>' +
+            '<th>Trader</th>' +
+            '<th>ContraParte</th>' +
             '</tr>' +
             '</thead>' +
             '<tbody id="tableSemaforo">' +
@@ -2056,31 +2059,35 @@ app.controller('semaforos', function($scope, functions, $window) {
 
 
         for (let i = 0; i < da['length']; i++) {
-            const resta = (parseFloat(da[i].globalLimit) - parseFloat(da[i].suma));
-            const porcentaje = ((resta * 100) / parseFloat(da[i].globalLimit));
-            let clase = '';
+            //const resta = (parseFloat(da[i].globalLimit) - parseFloat(da[i].suma));
+            //const porcentaje = ((resta * 100) / parseFloat(da[i].globalLimit));
+            /*let clase = '';
             if (porcentaje > 50) {
                 clase = 'alert alert-success';
             } else if (porcentaje > 25 && porcentaje < 50) {
                 clase = 'alert alert-warning';
             } else {
                 clase = 'alert alert-danger';
-            }
+            }*/
             $('#tableSemaforo').append('<tr>' +
-                '<td>' + da[i].contraparte + '</td>' +
-                '<td>' + formatDollar(parseFloat(da[i].globalLimit)) + '</td>' +
-                '<td>' + formatDollar(parseFloat(da[i].suma)) + '</td>' +
-                '<td class="' + clase + '">' + formatDollar(parseFloat(resta)) + '</td>' +
+                '<td>' + da[i].mercado + '</td>' +
+                '<td>' + da[i].instrumento + '</td>' +
+                '<td>' + formatDollar(parseFloat(da[i].nuValuacionDia)) + '</td>' +
+                '<td>' + formatDollar(parseFloat(da[i].nuValuacionHistorico)) + '</td>' +
+                '<td>' + formatDollar(parseFloat(da[i].nuDiferencia)) + '</td>' +
+                '<td>' + da[i].trader + '</td>' +
+                '<td>' + da[i].contraParte + '</td>' +
                 '</tr>');
-            this.arrayContraparte.push(da[i].contraparte); // Pariente
+            /*this.arrayContraparte.push(da[i].contraparte); // Pariente
             this.arrayLimiteGlobal.push(da[i].globalLimit); // Pariente
             this.arrayLimiteUtilizado.push(da[i].suma); // Pariente
             this.arrayLimiteRestante.push(resta); // Pariente
+            */
         }
 
         $('#semaforo').dataTable({
 
-            "pageLength": 25,
+            "pageLength": 5,
             select: true,
             "ordering": true,
             responsive: true,
@@ -2152,8 +2159,8 @@ app.controller('semaforos', function($scope, functions, $window) {
 
         });
 
-        functions.generarGraficaSemaforos(arrayContraparte, 'graficaSemaforo', arrayLimiteGlobal);
-        this.getListaSemaforosOperador();
+        //functions.generarGraficaSemaforos(arrayContraparte, 'graficaSemaforo', arrayLimiteGlobal);
+        //$scope.getListaSemaforosOperador();
 
 
     })
@@ -2455,7 +2462,7 @@ app.controller('semaforos', function($scope, functions, $window) {
             console.log("la tabla buena")
 
             $('#conteTableSemaforoVarLimite').append('<table class="table table-striped" id="semaforoLimiteVar" >' +
-                '<thead class="bg-warning-200">' +
+                '<thead class="bg-dark text-white">' +
                 '<tr>' +
                 '<th>Producto</th>' +
                 '<th>Limite Global</th>' +
@@ -2580,7 +2587,7 @@ app.controller('semaforos', function($scope, functions, $window) {
 
             });
 
-            this.getListaSemaforosLimitesVarMercado();
+            this.getHistoricoVarMercado();
             functions.generarGraficaSemaforos(arrayContraparte4, 'graficaSemaforoVarLimite', arrayLimiteGlobal4);
 
 
@@ -2588,62 +2595,59 @@ app.controller('semaforos', function($scope, functions, $window) {
     }
 
 
+    
+    $scope.getHistoricoVarMercado = function() {
 
-    $scope.getListaSemaforosLimitesVarMercado = function() {
-
-        functions.getLimitesVarMercado(token).then(function(response) {
-            var da = response.data;
-            console.log(da)
-            console.log("termino 2--------")
+        functions.getHistoricoVarMercado(token).then(function(response) {
+            var data = response.data;
+            console.log()
+            console.log("[getHistoricoVarMercado] ", data)
 
             $('#conteTableSemaforoMercado').append('<table class="table table-striped" id="semaforoMercado" >' +
-                '<thead class="bg-warning-200">' +
+                '<thead class="bg-dark text-white">' +
                 '<tr>' +
                 '<th>Mercado</th>' +
-                '<th>Limite Global</th>' +
-                '<th>Límite Utilizado</th>' +
-                '<th>Límite Restante</th>' +
+                '<th>Fecha</th>' +
+                '<th>Instrumento</th>' +
+                '<th>Valuacion D</th>' +
+                '<th>Valuacion H</th>' +
+                '<th>Nu Diferencia</th>' +
                 '</tr>' +
                 '</thead>' +
                 '<tbody id="tableSemaforoMercado">' +
                 '</tbody>' +
                 '</table>');
 
+            var dataHistotico =  {};
+            var dataLimiteMercado =  [];
+            var labelsChart = [];
 
-            // console.log(da);
-            const arrayContraparte = [],
-                arrayLimiteGlobal = [],
-                arrayLimiteUtilizado = [],
-                arrayLimiteRestante = []; // Pariente
-            for (let i = 0; i < da['length']; i++) {
-                // console.log("....");
-                da[i].suma = 10; //temporal
-                const resta = (parseFloat(da[i].globalLimit) - parseFloat(da[i].suma));
-                const porcentaje = ((resta * 100) / parseFloat(da[i].globalLimit));
-                let clase = '';
-                if (porcentaje > 50) {
-                    clase = 'alert alert-success';
-                } else if (porcentaje > 25 && porcentaje < 50) {
-                    clase = 'alert alert-warning';
-                } else {
-                    clase = 'alert alert-danger';
-                }
+            for (let i = 0; i < data.length; i++) {
+                dataHistotico[data[i].mercado] = [];
+            }
 
+            for (let i = 0; i < data.length; i++) {
+                
                 $('#tableSemaforoMercado').append('<tr>' +
-                    '<td>' + da[i].mercado + '</td>' +
-                    '<td>' + formatDollar(parseFloat(da[i].globalLimit)) + '</td>' +
-                    '<td>' + formatDollar(parseFloat(da[i].suma)) + '</td>' +
-                    '<td class="' + clase + '">' + formatDollar(parseFloat(resta)) + '</td>' +
+                    '<td>' + data[i].mercado + '</td>' +
+                    '<td>' + data[i].fhDate + '</td>' +
+                    '<td>' + data[i].instrumento + '</td>' +
+                    '<td>' + formatDollar(parseFloat(data[i].nuValuaciond)) + '</td>' +
+                    '<td>' + formatDollar(parseFloat(data[i].nuValuacionh)) + '</td>' +
+                    '<td>' + formatDollar(parseFloat(data[i].nuDiferencia)) + '</td>' +
                     '</tr>');
-                this.arrayContraparte5.push(da[i].mercado); // Pariente
-                this.arrayLimiteGlobal5.push(da[i].globalLimit); // Pariente
-                //this.arrayLimiteUtilizado2.push(da[i].suma); // Pariente
-                //this.arrayLimiteRestante2.push(resta); // Pariente
+                
+                dataHistotico[data[i].mercado].push(Math.abs(data[i].nuDiferencia).toFixed(2));
+                
+                if (labelsChart.indexOf(data[i].fhDate) === -1){
+                    labelsChart.push(data[i].fhDate);
+                    dataLimiteMercado.push(Math.abs(data[i].limite).toFixed(2));    
+                }
             }
 
             $('#semaforoMercado').dataTable({
 
-                "pageLength": 25,
+                "pageLength": 3,
                 select: true,
                 "ordering": true,
                 responsive: true,
@@ -2715,13 +2719,43 @@ app.controller('semaforos', function($scope, functions, $window) {
 
             });
 
-            //this.getListaSemaforosLimitesVarMercado();
-            functions.generarGraficaSemaforos(arrayContraparte5, 'graficaSemaforoMercado', arrayLimiteGlobal5);
+            var dataSet=[{
+                type: 'line',
+                label: 'Límite Global',
+                backgroundColor: 'rgba(255, 205, 86, 0.2)',
+                borderColor: 'rgb(255, 205, 86)',
+                data: dataLimiteMercado,
+            }];
+            var dynamicColors = function() {
+                var r = Math.floor(Math.random() * 255);
+                var g = Math.floor(Math.random() * 255);
+                var b = Math.floor(Math.random() * 255);
+                return "rgb(" + r + "," + g + "," + b + ")";
+             };
+            Object.keys(dataHistotico).forEach(function(key){
+                var color = dynamicColors();
+                dataSet.push({
+                    type: 'line',
+                    data: dataHistotico[key],
+                    label: key,
+                    backgroundColor: color,
+                    borderColor: color,
+                    fill: false,      
+                    borderWidth: 2,
+                });
+            });
+
+            const dataChart = {
+                labels: labelsChart,
+                datasets: dataSet
+            };
+            console.log('dataChart', dataChart);
+            functions.generarGraficaHistoricoVaR('graficaSemaforoMercado', dataChart, 'Histórico VaR');
 
 
         });
-    }
-
+    };
+    $scope.getHistoricoVarMercado();
 
 
 
@@ -2771,7 +2805,7 @@ app.controller('semaforos', function($scope, functions, $window) {
     showChart = $scope.showChart;
     getListaSemaforosLimitesVarMd = $scope.getListaSemaforosLimitesVarMd;
     getListaSemaforosLimitesVarMdPre = $scope.getListaSemaforosLimitesVarMdPre;
-    getListaSemaforosLimitesVarMercado = $scope.getListaSemaforosLimitesVarMercado;
+    getHistoricoVarMercado = $scope.getHistoricoVarMercado;
 }); //fin controller semaforos
 
 

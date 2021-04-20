@@ -83,7 +83,7 @@
                                          <!--<a class="btn btn-primary btn-xs" onclick="showChart('graficaSemaforoUsuario', 'btnShowGraficaSemaforoUsuario')"
                                          id="btnShowGraficaSemaforoUsuario" style="color: white; display: block;">Mostrar Grafica</a>-->
 
-                                         <span>Mercado</span>
+                                         <span>Histórico de VaR por Mercado</span>
                                     </h2>
                                     
 
@@ -102,20 +102,23 @@
                                         <div class="row no-gutters">
                                             <div class="col-lg-12 col-xl-12">
                                                 <div class="position-relative">
-                                                <div id="conteTableSemaforoMercado"></div>
-
-                        
-                                                <canvas id="graficaSemaforoMercado" style="display:none" ></canvas>
-
-                                                <div>
+                                                    <div id="conteTableSemaforoMercado"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-12 col-xl-12">
+                                                <div class="position-relative">
+                                                    <canvas id="graficaSemaforoMercado" style="display:none" height="50"></canvas>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+
+                                
                             </div>
                         </div>
-                    </div>
-                   </div>
                   </div>  
 
 
