@@ -1,5 +1,6 @@
 (function() {
-    var PORT=8080;
+	var IP="10.14.102.100";    
+	var PORT=8080;
     app.factory('functions', function($http, $window) {
         return {
             loading: function() {
@@ -549,8 +550,8 @@
                 });
             },
             postLimitesLineas: function(token, tipoEnvio) {
-                var url = 'http://localhost:'+PORT+'/app/limiteslineas/lista/' + tipoEnvio;
-                //var url = 'http://localhost:'+PORT+'/app/limiteslineas/lista/' + tipoEnvio;
+                var url = 'http://' + IP + ':'+PORT+'/app/limiteslineas/lista/' + tipoEnvio;
+                //var url = 'http://' + IP + ':'+PORT+'/app/limiteslineas/lista/' + tipoEnvio;
 
 
                 console.log(token)
@@ -564,7 +565,7 @@
             },
 
             deleteMercado: function(token, id) {
-                var url = 'http://localhost:'+PORT+'/app/limitesMercado/' + id;
+                var url = 'http://' + IP + ':'+PORT+'/app/limitesMercado/' + id;
                 return $http.delete(url, {
                     headers: {
                         'Content-Type': 'application/json',
@@ -573,7 +574,7 @@
                 });
             },
             deletelimiteVar: function(token, id) {
-                var url = 'http://localhost:'+PORT+'/app/limitesVarMd/' + id;
+                var url = 'http://' + IP + ':'+PORT+'/app/limitesVarMd/' + id;
                 return $http.delete(url, {
                     headers: {
                         'Content-Type': 'application/json',
@@ -584,7 +585,7 @@
 
             addLimites: function(token, data) {
 
-                var url = 'http://localhost:'+PORT+'/app/limiteslineas/';
+                var url = 'http://' + IP + ':'+PORT+'/app/limiteslineas/';
 
                 console.log(token)
 
@@ -597,8 +598,8 @@
             },
             addLimitesVarMd: function(token, data) {
 
-                //var url = 'http://localhost:'+PORT+'/app/limitesVarMd/';
-                var url = 'http://localhost:'+PORT+'/app/limitesVarMd/';
+                //var url = 'http://' + IP + ':'+PORT+'/app/limitesVarMd/';
+                var url = 'http://' + IP + ':'+PORT+'/app/limitesVarMd/';
 
                 console.log(token)
 
@@ -611,8 +612,8 @@
             },
             addLimitesMercado: function(token, data) {
 
-                //var url = 'http://localhost:'+PORT+'/app/limitesMercado/';
-                var url = 'http://localhost:'+PORT+'/app/limitesMercado/';
+                //var url = 'http://' + IP + ':'+PORT+'/app/limitesMercado/';
+                var url = 'http://' + IP + ':'+PORT+'/app/limitesMercado/';
 
                 console.log(token)
 
@@ -627,7 +628,7 @@
 
             updateLimites: function(token, data, id) {
 
-                var url = 'http://localhost:'+PORT+'/app/limiteslineas/' + id;
+                var url = 'http://' + IP + ':'+PORT+'/app/limiteslineas/' + id;
 
                 console.log(token)
 
@@ -640,7 +641,7 @@
             },
 
             updateLimitesMercado: function(token, data, id) {
-                var url = 'http://localhost:'+PORT+'/app/limitesMercado/' + id;
+                var url = 'http://' + IP + ':'+PORT+'/app/limitesMercado/' + id;
                 return $http.put(url, data, {
                     headers: {
                         'Content-Type': 'application/json',
@@ -651,9 +652,9 @@
 
             updateLimitesVarMd: function(token, data, id) {
 
-                //var url = 'http://localhost:'+PORT+'/app/limiteslineas/' + id;
-                //var url = 'http://localhost:'+PORT+'/app/limitesVarMd/' + id;
-                var url = 'http://localhost:'+PORT+'/app/limitesVarMd/' + id;
+                //var url = 'http://' + IP + ':'+PORT+'/app/limiteslineas/' + id;
+                //var url = 'http://' + IP + ':'+PORT+'/app/limitesVarMd/' + id;
+                var url = 'http://' + IP + ':'+PORT+'/app/limitesVarMd/' + id;
 
                 console.log(token)
 
@@ -667,7 +668,7 @@
 
             deleteLimites: function(token, id) {
 
-                var url = 'http://localhost:'+PORT+'/app/limiteslineas/' + id;
+                var url = 'http://' + IP + ':'+PORT+'/app/limiteslineas/' + id;
 
                 console.log(token)
 
@@ -680,7 +681,7 @@
 
             },
             getHistoricoVarMercado: function(token) {
-                var url = 'http://localhost:'+PORT+'/app/semaforosalertas/historicoVarMercado/';
+                var url = 'http://' + IP + ':'+PORT+'/app/semaforosalertas/historicoVarMercado/';
                 return $http.get(url, {
                     headers: {
                         'Content-Type': 'application/json;charset=utf8',
@@ -689,7 +690,7 @@
                 });
             },
             getSemaforoContraParte: function(token) {
-                var url = 'http://localhost:'+PORT+'/app/semaforosalertas/contraParte/';
+                var url = 'http://' + IP + ':'+PORT+'/app/semaforosalertas/contraParte/';
                 return $http.get(url, {
                     headers: {
                         'Content-Type': 'application/json;charset=utf8',
@@ -698,8 +699,8 @@
                 });
             },
             getSemaforos: function(token, tipoEnvio) {
-                var url = 'http://localhost:'+PORT+'/app/semaforosalertas/lista/' + tipoEnvio;
-                //var url = 'http://localhost:'+PORT+'/app/semaforosalertas/lista/' + tipoEnvio;
+                var url = 'http://' + IP + ':'+PORT+'/app/semaforosalertas/lista/' + tipoEnvio;
+                //var url = 'http://' + IP + ':'+PORT+'/app/semaforosalertas/lista/' + tipoEnvio;
 
 
                 console.log(token)
@@ -714,8 +715,8 @@
                 });
             },
             getListaSemaforosOperaciones: function(token) {
-                var url = 'http://localhost:'+PORT+'/app/semaforosalertas/listaSegundaTabla';
-                //var url = 'http://localhost:'+PORT+'/app/semaforosalertas/listaSegundaTabla';
+                var url = 'http://' + IP + ':'+PORT+'/app/semaforosalertas/listaSegundaTabla';
+                //var url = 'http://' + IP + ':'+PORT+'/app/semaforosalertas/listaSegundaTabla';
 
 
                 console.log(token)
@@ -729,8 +730,8 @@
                 });
             },
             getLimitesVarMd: function(token) {
-                var url = 'http://localhost:'+PORT+'/app/limitesVarMd/findAllVar';
-                //var url = 'http://localhost:'+PORT+'/applimitesVarMd/findAllVar';
+                var url = 'http://' + IP + ':'+PORT+'/app/limitesVarMd/findAllVar';
+                //var url = 'http://' + IP + ':'+PORT+'/applimitesVarMd/findAllVar';
 
 
                 console.log(token)
@@ -744,7 +745,7 @@
                 });
             },
             getLimitesVarMercado: function(token) {
-                var url = 'http://localhost:'+PORT+'/app/limitesMercado/findAll';
+                var url = 'http://' + IP + ':'+PORT+'/app/limitesMercado/findAll';
                 return $http.get(url, {
 
                     headers: {
@@ -754,7 +755,7 @@
                 });
             },
             getLogaritmo: function(token, data) {
-                var url = 'http://localhost:'+PORT+'/app/logaritmo/log';
+                var url = 'http://' + IP + ':'+PORT+'/app/logaritmo/log';
 
                 console.log(token)
 
@@ -768,7 +769,7 @@
             },
 
             mesaDeDinero(token) {
-                const uri = 'http://localhost:'+PORT+'/app/logaritmo/mesaDinero/';
+                const uri = 'http://' + IP + ':'+PORT+'/app/logaritmo/mesaDinero/';
 
                 return $http.get(uri, {
 
@@ -782,8 +783,8 @@
             },
 
             mesaDeDerivados(token, data) {
-                const uri = 'http://localhost:'+PORT+'/app/logaritmo/mesaDerivados/';
-                //const uri = 'http://localhost:'+PORT+'/app/logaritmo/mesaDerivados/';
+                const uri = 'http://' + IP + ':'+PORT+'/app/logaritmo/mesaDerivados/';
+                //const uri = 'http://' + IP + ':'+PORT+'/app/logaritmo/mesaDerivados/';
 
                 return $http.post(uri,data, {
 
@@ -796,7 +797,7 @@
                 });
             },
             getProductosVar(token, data) {
-                const uri = 'http://localhost:'+PORT+'/app/logaritmo/getProductos/';
+                const uri = 'http://' + IP + ':'+PORT+'/app/logaritmo/getProductos/';
 
                 return $http.post(uri,data, {
 
@@ -809,7 +810,7 @@
                 });
             },
             getTransaccionesVar(token, data) {
-                return $http.post('http://localhost:'+PORT+'/app/logaritmo/getTransacciones/',
+                return $http.post('http://' + IP + ':'+PORT+'/app/logaritmo/getTransacciones/',
                     data, {
                         headers: {
                         'Content-Type': 'application/json;charset=utf8',
@@ -915,8 +916,8 @@
             },
 
             iniciarProcesoVar: function(token) {
-                var url = 'http://localhost:'+PORT+'/app/logaritmo/log2';
-                //var url = 'http://localhost:'+PORT+'/app/logaritmo/log2';
+                var url = 'http://' + IP + ':'+PORT+'/app/logaritmo/log2';
+                //var url = 'http://' + IP + ':'+PORT+'/app/logaritmo/log2';
                 console.log(token)
 
                 return $http.post(url, {
@@ -929,7 +930,7 @@
 
             csv: function(token, data, url) {
                 console.log("entro factory");
-                const uri = 'http://localhost:'+PORT+'/app/archivos/' + url;
+                const uri = 'http://' + IP + ':'+PORT+'/app/archivos/' + url;
                 console.log(uri);
                 console.log(data);
                 var x = $http.post(uri, data, {
@@ -943,7 +944,7 @@
 
             existenDatos: function(token, data) {
                 console.log("entro factory");
-                const uri = 'http://localhost:'+PORT+'/app/archivos/existenDotos';
+                const uri = 'http://' + IP + ':'+PORT+'/app/archivos/existenDotos';
                 console.log(uri);
                 console.log(data);
                 return $http.post(uri, data, {
@@ -955,8 +956,8 @@
             },
             deleteSwapData: function(token, url) {
                 console.log("entro factory");
-                //const uri = 'http://localhost:'+PORT+'/app/archivos/deleteSwap';
-                const uri = 'http://localhost:'+PORT+'/app/archivos/deleteSwap';
+                //const uri = 'http://' + IP + ':'+PORT+'/app/archivos/deleteSwap';
+                const uri = 'http://' + IP + ':'+PORT+'/app/archivos/deleteSwap';
 
                 console.log(uri);
                 return $http.post(uri, {
@@ -968,8 +969,8 @@
             },
             deleteExistenteFecha: function(token, data) {
                 console.log("entro factory");
-                //const uri = 'http://localhost:'+PORT+'/app/archivos/deleteCurvas';
-                const uri = 'http://localhost:'+PORT+'/app/archivos/deleteExisteFecha';
+                //const uri = 'http://' + IP + ':'+PORT+'/app/archivos/deleteCurvas';
+                const uri = 'http://' + IP + ':'+PORT+'/app/archivos/deleteExisteFecha';
                 console.log(uri);
                 console.log(data);
                 return $http.post(uri, data, {
@@ -981,8 +982,8 @@
             },
             insertaLn: function(token, data) {
                 console.log("entro factory");
-                //const uri = 'http://localhost:'+PORT+'/app/archivos/deleteCurvas';
-                const uri = 'http://localhost:'+PORT+'/app/archivos/insertaLn';
+                //const uri = 'http://' + IP + ':'+PORT+'/app/archivos/deleteCurvas';
+                const uri = 'http://' + IP + ':'+PORT+'/app/archivos/insertaLn';
                 console.log(uri);
                 console.log(data);
                 return $http.post(uri, data, {
@@ -993,8 +994,8 @@
                 });
             },
             getParametros: function(token) {
-                var url = 'http://localhost:'+PORT+'/app/archivos/Column/';
-                //var url = 'http://localhost:'+PORT+'/app/semaforosalertas/lista/' + tipoEnvio;
+                var url = 'http://' + IP + ':'+PORT+'/app/archivos/Column/';
+                //var url = 'http://' + IP + ':'+PORT+'/app/semaforosalertas/lista/' + tipoEnvio;
                 return $http.post(url, {
                     headers: {
                         'Content-Type': 'application/json;charset=utf8',
@@ -1004,7 +1005,7 @@
             },
 
             validaGenerarVarFactory(token, data) {
-                var uri = 'http://localhost:'+PORT+'/app/mercadoDeDerivadoss/validaGenerarVarFactory';
+                var uri = 'http://' + IP + ':'+PORT+'/app/mercadoDeDerivadoss/validaGenerarVarFactory';
                 return $http.post(uri, data, {
                     headers: {
                         'Content-Type': 'application/json;charset=utf8',
@@ -1013,7 +1014,7 @@
                 });
             },
             generarVarFactory(token, data) {
-                var uri = 'http://localhost:'+PORT+'/app/mercadoDeDerivadoss/generarVarFactory';
+                var uri = 'http://' + IP + ':'+PORT+'/app/mercadoDeDerivadoss/generarVarFactory';
                 return $http.post(uri, data, {
                     headers: {
                         'Content-Type': 'application/json;charset=utf8',
@@ -1050,14 +1051,17 @@
                                 color1,
                                 '#34495E',
                                 '#808B96',
-                                '#154360',
+                                '#090249',
+                                '#a7d2c4',
+                                '#dbb8b8',
+                                '#ffa5d8',
+                                '#512E5F',
+                                '#641E16',
+                                '#abc8f8',
                                 '#95A5A6',
                                 '#7D6608',
                                 '#17202A',
-                                '#512E5F',
-                                '#090249 ',
-                                '#641E16',
-                                '#abc8f8',
+                                '#154360',
                                 '#d7abf8',
                                 '#f88e86',
                                 '#92ddea',
@@ -1067,9 +1071,7 @@
                                 '#d3ffd4',
                                 '#d6d8b2',
                                 '#ffd2d9',
-                                '#a7d2c4',
-                                '#dbb8b8',
-                                '#ffa5d8',
+                                
                                 '#d3ffd4',
                                 '#9579d1',
                                 '#ffe7c9',
@@ -1108,7 +1110,13 @@
                                 };
                                 c.fillText(t,a*1.7,h/1.2);
                                 c.save();
-                                c2.drawImage(imagen,a/1.18,h/2.4,50,50);
+				
+				if(color==2) {
+                                    c2.drawImage(imagen,a/1.15,h/2.4,50,50);
+                                } else  { 
+  				    c2.drawImage(imagen,a/1.10,h/2.4,50,50);
+                                };
+                                
                                 c2.save();
                                 var f = (h/190).toFixed(2);
                                 c1.font = 'bold ' + f + 'em sans-serif';
@@ -1142,7 +1150,7 @@
                                     var titulo = data.labels[tooltipItem.index];
                                     var dataset = data['datasets'][0];
                                     var percent = dosDecimales((dataset['data'][tooltipItem['index']] / limite) * 100)
-                                    if(titulo!="Límite Disponible"){
+                                    if(titulo!="Límite Disponible" || titulo=="Límite Excedido"){
                                         label = Math.abs(label);
                                     }
                                     label = comas(dosDecimales(label));
@@ -1155,7 +1163,7 @@
                                     var percent = dosDecimales((dataset['data'][tooltipItem['index']] / limite) * 100)
                                     percent = Math.abs(percent);
                                     
-                                    if(titulo=="Límite Disponible"){
+                                    if(titulo=="Límite Disponible" || titulo=="Límite Excedido"){
                                         if(color==0){
                                             return "Límite de VaR Dispible " +   comas(dosDecimales(percent)) + '%';
                                         }else if(color==1) {

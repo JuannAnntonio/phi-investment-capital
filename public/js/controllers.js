@@ -519,7 +519,7 @@
                             if(month<10){
                                 month='0'+month;
                             }
-                            var dia = date.getDate();
+			    var dia = date.getDate();
                             if(dia<10){
                                 dia='0'+dia;
                             }
@@ -773,18 +773,21 @@
                 $scope.data.push(data[i].nuDiferencia.toFixed(2));
                 sumVar+=data[i].nuDiferencia;
             }
-
-            $scope.data.splice(0, 0, ($scope.limite-sumVar).toFixed(2));
-            $scope.labels.splice(0, 0,"Límite Disponible");
-            console.log("CHART_LABELS::",$scope.labels);
-            console.log("CHART_DATA::",$scope.data);
+            var NbLeyendaP = 'Límite Disponible';
+            
 
             var color = 0;
             if ($scope.limite-sumVar<=0){
                 color = 1;
+                NbLeyendaP ='Límite Excedido';
             }else if(0.10>=1-sumVar/$scope.limite>0){
                 color = 2;
+                NbLeyendaP ='Límite Disponible';
             }
+            $scope.data.splice(0, 0, ($scope.limite-sumVar).toFixed(2));
+            $scope.labels.splice(0, 0, NbLeyendaP);
+            console.log("CHART_LABELS::",$scope.labels);
+            console.log("CHART_DATA::",$scope.data);
             functions.generarGraficaDona('graficaVarHistorico',$scope.labels, $scope.data,color,$scope.limite);
 
         };
