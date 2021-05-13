@@ -509,15 +509,17 @@
 
                 if(null!=da && undefined != da){
                     if (da['length'] > 0) {
-                        
                         let htmTableMercado = '';
-
                         var cellValue = da[3];
                         var date = new Date(cellValue);
                         date.setDate(date.getDate() + 1);
                         $("#fecha").text("Fecha: " + date.toLocaleDateString("es-ES", options));
                         if(fecha===null || fecha===""){
-                            document.getElementById("varDate").value = (""+date.getUTCFullYear())+"-"+(date.getMonth()+1)+"-"+date.getDate();
+                            var month = date.getMonth()+1;
+                            if(month<10){
+                                month='0'+month;
+                            }
+                            document.getElementById("varDate").value = (""+date.getUTCFullYear())+"-"+ month +"-"+date.getDate();
                         }
 
                         if (undefined != da[2]) {
