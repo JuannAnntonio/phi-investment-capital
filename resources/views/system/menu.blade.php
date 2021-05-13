@@ -687,7 +687,7 @@
                                             </a>
                                         </li>
 
-                                    @if ($__env->yieldContent('menuActive')=="UAIRAsemaforos")
+                                    <!--@if ($__env->yieldContent('menuActive')=="UAIRAsemaforos")
                                         <li class="active">
                                     @else
                                         <li class="">
@@ -695,7 +695,7 @@
                                             <a href="/UAIR/semaforos" title="Semáforos y Alertas" data-filter-tags="Semáforos y Alertas">
                                                 <span class="nav-link-text" data-i18n="nav.application_intel_introduction">Semáforos y Alertas</span>
                                             </a>
-                                        </li>
+                                        </li-->
 
                                     </ul>
 

@@ -954,10 +954,11 @@
     <script src="{{ url('js/factory.js?v='.cache("js_version_number").'') }}"></script>
     <script src="{{ url('js/functions.js?v='.cache("js_version_number").'') }}"></script>
     <script src="{{ url('js/selects.js?v='.cache("js_version_number").'') }}"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
-    <script type="text/javascript" src="{{ url('js/bootstrap-filestyle.min.js?v='.cache("js_version_number").'') }}"> </script>
+    
+    <script src="{{ url('js/xlsx/xlsx.full.min.js') }}"></script>
+    <script src="{{ url('js/xlsx/jszip.js') }}"></script>
+    <script src="{{ url('js/sweetalert2/sweetalert2.all.min.js') }}"></script>
+    <script src="{{ url('js/bootstrap-filestyle.min.js') }}"> </script>
 
     <script>
         $(document).ready(function(){

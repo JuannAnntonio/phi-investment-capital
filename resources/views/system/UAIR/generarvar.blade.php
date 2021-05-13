@@ -925,8 +925,7 @@
     <script src="{{ url('js/functions.js?v='.cache("js_version_number").'') }}"></script>
     <script src="{{ url('js/papaparse.js?v='.cache("js_version_number").'') }}"></script>
     <script src="{{ url('js/selects.js?v='.cache("js_version_number").'') }}"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="{{ url('js/sweetalert2/sweetalert2.all.min.js') }}"></script>
 
     <script>
         $(document).ready(function()

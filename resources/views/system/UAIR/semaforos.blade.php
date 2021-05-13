@@ -154,20 +154,16 @@
                                         <div class="row no-gutters">
                                             <div class="col-lg-12 col-xl-12">
                                                 <div class="position-relative">
-                                                   <div id="conteTableSemaforo"></div>
-                                              
-                                                <canvas id="graficaSemaforo"  style="display:none" ></canvas>
-
-                                                <div>
+                                                    <div id="conteTableSemaforo"></div>
+                                                    <canvas id="graficaSemaforo"  style="display:none" height="50"></canvas>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                   </div>
-                  </div>  
+                    </div>  
 
 
 
@@ -978,8 +974,8 @@
     <script src="{{ url('js/factory.js?v='.cache("js_version_number").'') }}"></script>
 
     <script src="{{ url('js/functions.js?v='.cache("js_version_number").'') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script src="{{ url('js/sweetalert2/sweetalert2.all.min.js') }}"></script>
+    <script src="{{ url('js/chart/chart.min.js') }}"></script>
 
     <script>
         $(document).ready(function()

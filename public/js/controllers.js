@@ -1226,13 +1226,13 @@ app.controller('limites', function($scope, functions, $window) {
                 console.log(da);
                 $("#conteTable").empty();
 
-                $("#conteTable").append('<table class="table table-striped" id="limites" style=\'width: 1295px;\'>' +
+                $("#conteTable").append('<table class="table" id="limites">' +
                     '<thead class="bg-dark text-white">' +
                     '<tr>' +
                     '<th style=\'text-align: center;\'>Mercado</th>' +
                     '<th> Limite del Mercado</th>' +
-                    '<th style=\'text-align: center; width: 140px;\'></th>' +
-                    '<th style=\'text-align: center; width: 140px;\'></th>' +
+                    '<th style=\'text-align: center;\'></th>' +
+                    '<th style=\'text-align: center;\'></th>' +
                     '</tr>' +
                     '</thead>' +
                     '<tbody id="tableLimites">' +
@@ -1258,10 +1258,9 @@ app.controller('limites', function($scope, functions, $window) {
 
                 $('#limites').dataTable({
 
-                    "pageLength": 25,
+                    pageLength: 25,
                     select: true,
-                    "ordering": false,
-                    responsive: true,
+                    ordering: false,
                     dom: "<'row mb-3'<'col-sm-12 col-md-6 d-flex align-items-center justify-content-start'f><'col-sm-12 col-md-4 d-flex justify-content-end'B>>" +
                         "<'row'<'col-sm-12'tr>>" +
                         "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
@@ -1333,7 +1332,7 @@ app.controller('limites', function($scope, functions, $window) {
                 var da = response.data;
                 console.log(da);
                 $("#conteTable").empty();
-                $("#conteTable").append('<table class="table table-striped" id="limites" >' +
+                $("#conteTable").append('<table class="table" id="limites" >' +
                     '<thead class="bg-dark text-white">' +
                     '<tr>' +
                     '<th>Producto</th>' +
@@ -1380,7 +1379,7 @@ app.controller('limites', function($scope, functions, $window) {
                     "pageLength": 25,
                     select: true,
                     "ordering": false,
-                    responsive: true,
+                    //responsive: true,
                     dom: "<'row mb-3'<'col-sm-12 col-md-4 d-flex align-items-center justify-content-start'f><'col-sm-12 col-md-8 d-flex align-items-center justify-content-end'B>>" +
                         "<'row'<'col-sm-12'tr>>" +
                         "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
@@ -2057,8 +2056,13 @@ app.controller('semaforos', function($scope, functions, $window) {
             '</tbody>' +
             '</table>');
 
+        var dataChart =  [];
+        var labelsChart = [];
+        for (let i = 0; i < da.length; i++) {
+            dataChart[da[i].contraparte] = 0;
+        }
 
-        for (let i = 0; i < da['length']; i++) {
+        for (let i = 0; i < da.length; i++) {
             //const resta = (parseFloat(da[i].globalLimit) - parseFloat(da[i].suma));
             //const porcentaje = ((resta * 100) / parseFloat(da[i].globalLimit));
             /*let clase = '';
@@ -2069,25 +2073,29 @@ app.controller('semaforos', function($scope, functions, $window) {
             } else {
                 clase = 'alert alert-danger';
             }*/
+            var valDia = parseFloat(da[i].nuValuacionDia);
             $('#tableSemaforo').append('<tr>' +
                 '<td>' + da[i].mercado + '</td>' +
                 '<td>' + da[i].instrumento + '</td>' +
-                '<td>' + formatDollar(parseFloat(da[i].nuValuacionDia)) + '</td>' +
+                '<td>' + formatDollar(valDia) + '</td>' +
                 '<td>' + formatDollar(parseFloat(da[i].nuValuacionHistorico)) + '</td>' +
                 '<td>' + formatDollar(parseFloat(da[i].nuDiferencia)) + '</td>' +
                 '<td>' + da[i].trader + '</td>' +
-                '<td>' + da[i].contraParte + '</td>' +
+                '<td>' + da[i].contraparte + '</td>' +
                 '</tr>');
             /*this.arrayContraparte.push(da[i].contraparte); // Pariente
             this.arrayLimiteGlobal.push(da[i].globalLimit); // Pariente
             this.arrayLimiteUtilizado.push(da[i].suma); // Pariente
             this.arrayLimiteRestante.push(resta); // Pariente
             */
+            if (labelsChart.indexOf(da[i].contraparte) === -1){
+                labelsChart.push(da[i].contraparte);   
+            }
+            dataChart[da[i].contraparte] =+valDia.toFixed(2);
         }
 
         $('#semaforo').dataTable({
-
-            "pageLength": 5,
+            "pageLength": 3,
             select: true,
             "ordering": true,
             responsive: true,
@@ -2159,7 +2167,13 @@ app.controller('semaforos', function($scope, functions, $window) {
 
         });
 
-        //functions.generarGraficaSemaforos(arrayContraparte, 'graficaSemaforo', arrayLimiteGlobal);
+        var dataValues=[];
+        Object.keys(dataChart).forEach(function(key){
+            dataValues.push(dataChart[key]);
+        });
+        console.log("LABELS_2", labelsChart);
+        console.log("CHART_2", dataValues);
+        functions.generarGraficaDonaBasic('graficaSemaforo', labelsChart, dataValues);
         //$scope.getListaSemaforosOperador();
 
 
@@ -2782,20 +2796,23 @@ app.controller('semaforos', function($scope, functions, $window) {
 
     formatDollar = $scope.formatDollar;
 
-    $scope.showChart = function(idGrafica, idButton) {
-
-
+    $scope.showChart = function(idGrafica, idButton, idContenedor) {
         if (document.getElementById(idGrafica).style.display == "none") {
+            if(undefined!=idContenedor){
+                document.getElementById(idContenedor).style.display = "block";    
+            }
             document.getElementById(idGrafica).style.display = "block";
             document.getElementById(idButton).text = "Ocultar Grafica";
             document.getElementById(idButton).innerHTML = "Ocultar Grafica";
         } else {
+            if(undefined!=idContenedor){
+                document.getElementById(idContenedor).style.display = "none";    
+            }
             document.getElementById(idGrafica).style.display = "none";
             document.getElementById(idButton).text = "Mostrar Grafica";
             document.getElementById(idButton).innerHTML = "Mostrar Grafica";
 
         }
-
     }
 
 

@@ -88,7 +88,7 @@
                                 <div class="panel-container show" role="content">
                                     <div class="panel-content border-faded border-left-0 border-right-0 border-top-0">
                                         <div class="row no-gutters">
-                                            <div class="col-lg-4 col-xl-4">
+                                            <div class="col-sm-12 col-md-4 col-lg-3">
                                                 <table style="float: left; width: auto; border: 1px solid #dee2e6; text-align: center;" class="table">
                                                     <thead class="p-3 mb-2 bg-dark text-white">
                                                         <tr>
@@ -127,15 +127,15 @@
                                                 </table>
                                             </div>
                                             
-                                            <div id="contenedorChart" class="col-lg-5 col-xl-5" style="height: 10%!important">
+                                            <div id="contenedorChart" class="col-sm-12 col-md-7 col-lg-6" style="height: 10%!important">
                                                 <canvas id="graficaVarHistorico"></canvas>
                                                 <img id="botonRojo" src="{{ url('img/palomaRoja.png') }}" style="display:none;"/>
                                                 <img id="botonVerde" src="{{ url('img/palomaVerde.png') }}" style="display:none;"/>
                                                 <img id="botonNaranja" src="{{ url('img/palomaNaraja.png') }}" style="display:none;"/>
                                             </div>
 
-                                            <div class="col-lg-3 col-xl-3">
-                                                <div class="position-absolute pos-right">
+                                            <div class="col-sm-12 col-md-4 col-lg-2">
+                                                <div class="pos-right">
                                                     <label id="fecha"></label>
                                                     <br/>
                                                     <input id="varDate" type="date" class="form-control"/>
@@ -151,8 +151,8 @@
                                             </div>
                                         </div>
 
-                                        <div class="row no-gutters">
-                                            <div class="col-lg-12 col-xl-12">
+                                        <div class="row">
+                                            <div class="col-md-10 col-lg-10 col-xl-12">
                                                     <div style="margin-top: 15px; position: relative; right: 198px; margin-bottom: 1px;"  class="btn buttons-print" >
                                                     </div>
                                                     <div style="text-align: center; display: none" class="table table-hover" id="tableFirst"></div>
@@ -824,8 +824,8 @@
     <script src="{{ url('js/factory.js?v='.cache("js_version_number").'') }}"></script>
 
     <script src="{{ url('js/functions.js?v='.cache("js_version_number").'') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-
+    <script src="{{ url('js/chart/chart.min.js') }}"></script>
+    
     <script>
         $(document).ready(function()
         {
