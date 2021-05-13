@@ -519,7 +519,11 @@
                             if(month<10){
                                 month='0'+month;
                             }
-                            document.getElementById("varDate").value = (""+date.getUTCFullYear())+"-"+ month +"-"+date.getDate();
+                            var dia = date.getDate();
+                            if(dia<10){
+                                dia='0'+dia;
+                            }
+                            document.getElementById("varDate").value = (""+date.getUTCFullYear())+"-"+ month +"-"+dia;
                         }
 
                         if (undefined != da[2]) {
