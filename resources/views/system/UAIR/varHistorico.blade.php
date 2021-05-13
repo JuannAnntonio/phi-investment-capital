@@ -88,7 +88,7 @@
                                 <div class="panel-container show" role="content">
                                     <div class="panel-content border-faded border-left-0 border-right-0 border-top-0">
                                         <div class="row no-gutters">
-                                            <div class="col-sm-12 col-md-4 col-lg-3">
+                                            <div class="col-md-6 col-lg-3 col-xl-3">
                                                 <table style="float: left; width: auto; border: 1px solid #dee2e6; text-align: center;" class="table">
                                                     <thead class="p-3 mb-2 bg-dark text-white">
                                                         <tr>
@@ -127,14 +127,16 @@
                                                 </table>
                                             </div>
                                             
-                                            <div id="contenedorChart" class="col-sm-12 col-md-7 col-lg-6" style="height: 10%!important">
-                                                <canvas id="graficaVarHistorico"></canvas>
-                                                <img id="botonRojo" src="{{ url('img/palomaRoja.png') }}" style="display:none;"/>
-                                                <img id="botonVerde" src="{{ url('img/palomaVerde.png') }}" style="display:none;"/>
-                                                <img id="botonNaranja" src="{{ url('img/palomaNaraja.png') }}" style="display:none;"/>
+                                            <div id="contenedorChart" class="col-md-6 col-lg-6 col-xl-6" style="height: 11%!important">
+                                                    <canvas id="graficaVarHistorico"></canvas>
+                                                    <img id="botonRojo" src="{{ url('img/palomaRoja.png') }}" style="display:none;"/>
+                                                    <img id="botonVerde" src="{{ url('img/palomaVerde.png') }}" style="display:none;"/>
+                                                    <img id="botonNaranja" src="{{ url('img/palomaNaraja.png') }}" style="display:none;"/>
+                                            </div>
+                                            <div class="col-lg-1 col-xl-1">
                                             </div>
 
-                                            <div class="col-sm-12 col-md-4 col-lg-2">
+                                            <div class="col-lg-2 col-xl-2">
                                                 <div class="pos-right">
                                                     <label id="fecha"></label>
                                                     <br/>
@@ -825,7 +827,7 @@
 
     <script src="{{ url('js/functions.js?v='.cache("js_version_number").'') }}"></script>
     <script src="{{ url('js/chart/chart.min.js') }}"></script>
-    
+
     <script>
         $(document).ready(function()
         {

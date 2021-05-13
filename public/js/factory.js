@@ -1092,7 +1092,7 @@
                                 c.textBaseline = 'midle';
                                 var t='Hola';
                                 var a = Math.round((w-3.5*c.measureText(t).width)/2);
-                                t='Nivel de Límite de VaR: '
+                                t='Nivel de Límite de VaR:'
                                 if(color==0){
                                     var imagen = document.getElementById("botonVerde");
                                     var t1='Estable';
@@ -1106,23 +1106,26 @@
                                     var t1='Alerta';
                                     
                                 };
-                                c.fillText(t,a*1.7,h/1.3);
+                                c.fillText(t,a*1.7,h/1.2);
                                 c.save();
                                 c2.drawImage(imagen,a/1.18,h/2.4,50,50);
                                 c2.save();
                                 var f = (h/190).toFixed(2);
                                 c1.font = 'bold ' + f + 'em sans-serif';
                                 c1.fillStyle = color1;
-                                c1.fillText(t1,a+a*.9,h/1.1,150,150);
+                                c1.fillText(t1,a+a*.9,h/1.1,100,100);
                             }
                     }],
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,    
-                        legend: {
-                            display: true,
-                            fontSize:30,
-                            position: 'right'
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'right',
+                                align: 'start',
+                                fontSize:10,
+                            }
                         },
                         animation :{
                           animateScale: true,
