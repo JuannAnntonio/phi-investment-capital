@@ -2977,9 +2977,12 @@ app.controller('csv', function($scope, functions, $window) {
 
     $scope.existeDatos = function (){
         var fechaCalendario = document.getElementById("calendario").value;
-        if (fechaCalendario != null && fechaCalendario != undefined && fechaCalendario !='') {
+       // if (fechaCalendario != null && fechaCalendario != undefined && fechaCalendario !='') {
+            var tipoDocto =document.getElementById("elements").value
+            
             var data={
-                fecha:fechaCalendario
+                fecha:fechaCalendario,
+                tipo: tipoDocto
             };
             functions.existenDatos(token, data).then(function(response) {
                 var numeroRegistros = response.data;
@@ -3001,17 +3004,20 @@ app.controller('csv', function($scope, functions, $window) {
                     $scope.up();
                 }
             })
-        } else {
+       /* } else {
             $scope.up();
-        }
+        }*/
     }
     existeDatos = $scope.existeDatos;
 
     $scope.deleteExistenteFecha = function (){
         var fechaCalendario = document.getElementById("calendario").value;
+        var tipoDocto =document.getElementById("elements").value
         var data={
-            fecha:fechaCalendario
-        }; functions.deleteExistenteFecha(token, data).then(function(response) {
+            fecha:fechaCalendario,
+            tipo: tipoDocto
+        }; 
+        functions.deleteExistenteFecha(token, data).then(function(response) {
             $scope.up();
         })
     }
@@ -3021,7 +3027,6 @@ app.controller('csv', function($scope, functions, $window) {
         var data={
             fecha:fechaCalendario
         }; 
-        debugger;
         functions.insertaLn(token, data).then(function(response) {
       
         })

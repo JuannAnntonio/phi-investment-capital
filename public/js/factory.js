@@ -1,5 +1,6 @@
 (function() {
-	var IP="10.14.102.100";    
+	//var IP="10.14.102.100";
+    var IP="localhost";    
 	var PORT=8080;
     app.factory('functions', function($http, $window) {
         return {
@@ -944,7 +945,7 @@
 
             existenDatos: function(token, data) {
                 console.log("entro factory");
-                const uri = 'http://' + IP + ':'+PORT+'/app/archivos/existenDotos';
+                const uri = 'http://' + IP + ':'+PORT+'/app/archivos/existenDatos';
                 console.log(uri);
                 console.log(data);
                 return $http.post(uri, data, {
