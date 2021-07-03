@@ -245,6 +245,7 @@
                                                     <option value="4">Fordward</option>
                                                     <option value="5">Mercado de Dinero</option>
                                                     <option value="6">Cupones Mercado de Dinero</option>
+                                                    <option value="7">Mercado de Divisas</option>
                                               <!--  <option value="1">Histórico de curvas</option>
                                                     <option value="2">Curvas</option>
                                                     <option value="3">Caps</option>

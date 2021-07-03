@@ -3075,32 +3075,12 @@ app.controller('csv', function($scope, functions, $window) {
                 }).then(res => {
 
                     if (val == columns.length) {
-                        $('#loader-wrapper').css('display', 'none');
-                        Swal.fire({
-                            title: 'Proceso Realizado Correctamente.',
-                            icon: 'success',
-                            showDenyButton: false,
-                            showCancelButton: false,
-                            confirmButtonText: `Entendido`,
-                        }).then((result) => {
-                            /* Read more about isConfirmed, isDenied below */
-                            if (result.isConfirmed) {}
-                        })
+                        $scope.msjExitoArchivo();
                     }
                     val++;
                 }).catch(error => {
-                    $('#loader-wrapper').css('display', 'none');
-                    Swal.fire({
-                        title: 'Error en el Proceso.',
-                        icon: 'error',
-                        showDenyButton: false,
-                        showCancelButton: false,
-                        confirmButtonText: `Entendido`,
-                    }).then((result) => {
-                        /* Read more about isConfirmed, isDenied below */
-                        if (result.isConfirmed) {}
-                    })
-                    return
+                    $scope.msjErrorProcesarArchivo();
+                    return;
                 })
             }
 
@@ -3315,38 +3295,15 @@ app.controller('csv', function($scope, functions, $window) {
                                     } else if (cellValue.indexOf("-") > -1) {
                                         var date = new Date(cellValue);
                                         if (isNaN(date.getTime())) {
-                                            $('#loader-wrapper').css('display', 'none');
-                                            Swal.fire({
-                                                title: 'Error en el Formato de Fecha.',
-                                                text: 'El Formato de Fecha Debe Ser yyyy-mm-dd',
-                                                icon: 'error',
-                                                showDenyButton: false,
-                                                showCancelButton: false,
-                                                confirmButtonText: `Entendido`,
-                                            }).then((result) => {
-                                                /* Read more about isConfirmed, isDenied below */
-                                                if (result.isConfirmed) {}
-                                            })
-                                            return
+                                            $scope.msjErrorFormatoFecha();
+                                            return;
                                         } else {
                                             date.setDate(date.getDate() + 1);
                                             var d = date.toISOString().slice(0, 10);
                                         }
                                     } else {
-                                        $('#loader-wrapper').css('display', 'none');
-                                        Swal.fire({
-                                            title: 'Error en el Formato de Fecha.',
-                                            text: 'El Formato de Fecha Debe Ser yyyy-mm-dd',
-                                            icon: 'error',
-                                            showDenyButton: false,
-                                            showCancelButton: false,
-                                            confirmButtonText: `Entendido`,
-                                        }).then((result) => {
-                                            /* Read more about isConfirmed, isDenied below */
-                                            if (result.isConfirmed) {}
-                                        })
-                                        return
-
+                                        $scope.msjErrorFormatoFecha();
+                                        return;
                                     }
                                     rv[colIndex] = d;
                                 } else {
@@ -3361,47 +3318,15 @@ app.controller('csv', function($scope, functions, $window) {
                                 return response
                             }).then(res => {
                                 if (val1 == jsondata.length) {
-                                    $('#loader-wrapper').css('display', 'none');
-                                    Swal.fire({
-                                        title: 'Proceso Realizado Correctamente.',
-                                        icon: 'success',
-                                        showDenyButton: false,
-                                        showCancelButton: false,
-                                        confirmButtonText: `Entendido`,
-                                    }).then((result) => {
-                                        /* Read more about isConfirmed, isDenied below */
-                                        if (result.isConfirmed) {}
-                                    })
+                                    $scope.msjExitoArchivo();
                                 }
                                 val1++;
                             }).catch(error => {
-                                $('#loader-wrapper').css('display', 'none');
-                                Swal.fire({
-                                    title: 'Error en el Proceso.',
-                                    icon: 'error',
-                                    showDenyButton: false,
-                                    showCancelButton: false,
-                                    confirmButtonText: `Entendido`,
-                                }).then((result) => {
-                                    /* Read more about isConfirmed, isDenied below */
-                                    if (result.isConfirmed) {}
-                                })
+                                $scope.msjErrorProcesarArchivo();
                                 return
                             })
                         } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error de Archivo.',
-                                showDenyButton: false,
-                                showCancelButton: false,
-                                confirmButtonText: `Entendido`,
-                            }).then((result) => {
-                                /* Read more about isConfirmed, isDenied below */
-                                if (result.isConfirmed) {
-                                    $('#loader-wrapper').css('display', 'none');
-                                }
-                            })
-
+                            $scope.msjErrorArchivo();
                             return;
                         }
                         break;
@@ -3428,38 +3353,15 @@ app.controller('csv', function($scope, functions, $window) {
                                         var date = new Date(cellValue);
 
                                         if (isNaN(date.getTime())) {
-                                            $('#loader-wrapper').css('display', 'none');
-                                            Swal.fire({
-                                                title: 'Error en el Formato de Fecha.',
-                                                text: 'El Formato de Fecha Debe Ser yyyy-mm-dd',
-                                                icon: 'error',
-                                                showDenyButton: false,
-                                                showCancelButton: false,
-                                                confirmButtonText: `Entendido`,
-                                            }).then((result) => {
-                                                /* Read more about isConfirmed, isDenied below */
-                                                if (result.isConfirmed) {}
-                                            })
-                                            return
+                                            $scope.msjErrorFormatoFecha();
+                                            return;
                                         } else {
                                             date.setDate(date.getDate() + 1);
                                             var d = date.toISOString().slice(0, 10);
                                         }
                                     } else {
-                                        $('#loader-wrapper').css('display', 'none');
-                                        Swal.fire({
-                                            title: 'Error en el Formato de Fecha.',
-                                            text: 'El Formato de Fecha Debe Ser yyyy-mm-dd',
-                                            icon: 'error',
-                                            showDenyButton: false,
-                                            showCancelButton: false,
-                                            confirmButtonText: `Entendido`,
-                                        }).then((result) => {
-                                            /* Read more about isConfirmed, isDenied below */
-                                            if (result.isConfirmed) {}
-                                        })
-                                        return
-
+                                        $scope.msjErrorFormatoFecha();
+                                        return;
                                     }
                                     rv[colIndex] = d;
                                 } else {
@@ -3474,49 +3376,17 @@ app.controller('csv', function($scope, functions, $window) {
                                 return response
                             }).then(res => {
                                 if (val1 == jsondata.length) {
-                                    $('#loader-wrapper').css('display', 'none');
-                                    Swal.fire({
-                                        title: 'Proceso Realizado Correctamente.',
-                                        icon: 'success',
-                                        showDenyButton: false,
-                                        showCancelButton: false,
-                                        confirmButtonText: `Entendido`,
-                                    }).then((result) => {
-                                        /* Read more about isConfirmed, isDenied below */
-                                        if (result.isConfirmed) {}
-                                    })
+                                    $scope.msjExitoArchivo();
                                 }
                                 val1++;
                             }).catch(error => {
-                                $('#loader-wrapper').css('display', 'none');
-
-                                Swal.fire({
-                                    title: 'Error en el Proceso.',
-                                    icon: 'error',
-                                    showDenyButton: false,
-                                    showCancelButton: false,
-                                    confirmButtonText: `Entendido`,
-                                }).then((result) => {
-                                    /* Read more about isConfirmed, isDenied below */
-                                    if (result.isConfirmed) {}
-                                })
-                                return
+                                $scope.msjErrorProcesarArchivo();
+                                return;
                             })
 
                             console.log(rv);
                         } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error de Archivo.',
-                                showDenyButton: false,
-                                showCancelButton: false,
-                                confirmButtonText: `Entendido`,
-                            }).then((result) => {
-                                /* Read more about isConfirmed, isDenied below */
-                                if (result.isConfirmed) {
-                                    $('#loader-wrapper').css('display', 'none');
-                                }
-                            })
+                            $scope.msjErrorArchivo();
                             return;
                         }
                         break;
@@ -3541,38 +3411,15 @@ app.controller('csv', function($scope, functions, $window) {
                                         var date = new Date(cellValue);
 
                                         if (isNaN(date.getTime())) {
-                                            $('#loader-wrapper').css('display', 'none');
-                                            Swal.fire({
-                                                title: 'Error en el Formato de Fecha.',
-                                                text: 'El Formato de Fecha Debe Ser yyyy-mm-dd',
-                                                icon: 'error',
-                                                showDenyButton: false,
-                                                showCancelButton: false,
-                                                confirmButtonText: `Entendido`,
-                                            }).then((result) => {
-                                                /* Read more about isConfirmed, isDenied below */
-                                                if (result.isConfirmed) {}
-                                            })
-                                            return
+                                            $scope.msjErrorFormatoFecha();
+                                            return;
                                         } else {
                                             date.setDate(date.getDate() + 1);
                                             var d = date.toISOString().slice(0, 10);
                                         }
                                     } else {
-                                        $('#loader-wrapper').css('display', 'none');
-                                        Swal.fire({
-                                            title: 'Error en el Formato de Fecha.',
-                                            text: 'El Formato de Fecha Debe Ser yyyy-mm-dd',
-                                            icon: 'error',
-                                            showDenyButton: false,
-                                            showCancelButton: false,
-                                            confirmButtonText: `Entendido`,
-                                        }).then((result) => {
-                                            /* Read more about isConfirmed, isDenied below */
-                                            if (result.isConfirmed) {}
-                                        })
-                                        return
-
+                                        $scope.msjErrorFormatoFecha();
+                                        return;
                                     }
                                     rv[colIndex] = d;
                                 } else {
@@ -3587,46 +3434,15 @@ app.controller('csv', function($scope, functions, $window) {
                                 return response
                             }).then(res => {
                                 if (val1 == jsondata.length) {
-                                    $('#loader-wrapper').css('display', 'none');
-                                    Swal.fire({
-                                        title: 'Proceso Realizado Correctamente.',
-                                        icon: 'success',
-                                        showDenyButton: false,
-                                        showCancelButton: false,
-                                        confirmButtonText: `Entendido`,
-                                    }).then((result) => {
-                                        /* Read more about isConfirmed, isDenied below */
-                                        if (result.isConfirmed) {}
-                                    })
+                                    $scope.msjExitoArchivo();
                                 }
                                 val1++;
                             }).catch(error => {
-                                $('#loader-wrapper').css('display', 'none');
-                                Swal.fire({
-                                    title: 'Error en el Proceso.',
-                                    icon: 'error',
-                                    showDenyButton: false,
-                                    showCancelButton: false,
-                                    confirmButtonText: `Entendido`,
-                                }).then((result) => {
-                                    /* Read more about isConfirmed, isDenied below */
-                                    if (result.isConfirmed) {}
-                                })
-                                return
+                                $scope.msjErrorProcesarArchivo();
+                                return;
                             })
                         } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error de Archivo.',
-                                showDenyButton: false,
-                                showCancelButton: false,
-                                confirmButtonText: `Entendido`,
-                            }).then((result) => {
-                                /* Read more about isConfirmed, isDenied below */
-                                if (result.isConfirmed) {
-                                    $('#loader-wrapper').css('display', 'none');
-                                }
-                            })
+                            $scope.msjErrorArchivo();
                             return;
                         }
                         break;
@@ -3653,37 +3469,15 @@ app.controller('csv', function($scope, functions, $window) {
                                         var date = new Date(cellValue);
 
                                         if (isNaN(date.getTime())) {
-                                            $('#loader-wrapper').css('display', 'none');
-                                            Swal.fire({
-                                                title: 'Error en el Formato de Fecha.',
-                                                text: 'El Formato de Fecha Debe Ser yyyy-mm-dd',
-                                                icon: 'error',
-                                                showDenyButton: false,
-                                                showCancelButton: false,
-                                                confirmButtonText: `Entendido`,
-                                            }).then((result) => {
-                                                /* Read more about isConfirmed, isDenied below */
-                                                if (result.isConfirmed) {}
-                                            })
-                                            return
+                                            $scope.msjErrorFormatoFecha();
+                                            return;
                                         } else {
                                             date.setDate(date.getDate() + 1);
                                             var d = date.toISOString().slice(0, 10);
                                         }
                                     } else {
-                                        $('#loader-wrapper').css('display', 'none');
-                                        Swal.fire({
-                                            title: 'Error en el Formato de Fecha.',
-                                            text: 'El Formato de Fecha Debe Ser yyyy-mm-dd',
-                                            icon: 'error',
-                                            showDenyButton: false,
-                                            showCancelButton: false,
-                                            confirmButtonText: `Entendido`,
-                                        }).then((result) => {
-                                            /* Read more about isConfirmed, isDenied below */
-                                            if (result.isConfirmed) {}
-                                        })
-                                        return
+                                        $scope.msjErrorFormatoFecha();
+                                        return;
 
                                     }
                                     rv[colIndex] = d;
@@ -3699,46 +3493,15 @@ app.controller('csv', function($scope, functions, $window) {
                                 return response
                             }).then(res => {
                                 if (val1 == jsondata.length) {
-                                    $('#loader-wrapper').css('display', 'none');
-                                    Swal.fire({
-                                        title: 'Proceso Realizado Correctamente.',
-                                        icon: 'success',
-                                        showDenyButton: false,
-                                        showCancelButton: false,
-                                        confirmButtonText: `Entendido`,
-                                    }).then((result) => {
-                                        /* Read more about isConfirmed, isDenied below */
-                                        if (result.isConfirmed) {}
-                                    })
+                                    $scope.msjExitoArchivo();
                                 }
                                 val1++;
                             }).catch(error => {
-                                $('#loader-wrapper').css('display', 'none');
-                                Swal.fire({
-                                    title: 'Error en el Proceso.',
-                                    icon: 'error',
-                                    showDenyButton: false,
-                                    showCancelButton: false,
-                                    confirmButtonText: `Entendido`,
-                                }).then((result) => {
-                                    /* Read more about isConfirmed, isDenied below */
-                                    if (result.isConfirmed) {}
-                                })
-                                return
+                                $scope.msjErrorProcesarArchivo();
+                                return;
                             })
                         } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error de Archivo.',
-                                showDenyButton: false,
-                                showCancelButton: false,
-                                confirmButtonText: `Entendido`,
-                            }).then((result) => {
-                                /* Read more about isConfirmed, isDenied below */
-                                if (result.isConfirmed) {
-                                    $('#loader-wrapper').css('display', 'none');
-                                }
-                            })
+                            $scope.msjErrorArchivo();
                             return;
                         }
                         break;
@@ -3761,51 +3524,20 @@ app.controller('csv', function($scope, functions, $window) {
                                 return response
                             }).then(res => {
                                 if (val1 == jsondata.length) {
-                                    $('#loader-wrapper').css('display', 'none');
-                                    Swal.fire({
-                                        title: 'Proceso Realizado Correctamente.',
-                                        icon: 'success',
-                                        showDenyButton: false,
-                                        showCancelButton: false,
-                                        confirmButtonText: `Entendido`,
-                                    }).then((result) => {
-                                        /* Read more about isConfirmed, isDenied below */
-                                        if (result.isConfirmed) {}
-                                    })
+                                    $scope.msjExitoArchivo();
                                 }
                                 val1++;
                             }).catch(error => {
-                                $('#loader-wrapper').css('display', 'none');
-                                Swal.fire({
-                                    title: 'Error en el Proceso.',
-                                    icon: 'error',
-                                    showDenyButton: false,
-                                    showCancelButton: false,
-                                    confirmButtonText: `Entendido`,
-                                }).then((result) => {
-                                    /* Read more about isConfirmed, isDenied below */
-                                    if (result.isConfirmed) {}
-                                })
-                                return
+                                $scope.msjErrorProcesarArchivo();
+                                return;
                             })
                         } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error de Archivo.',
-                                showDenyButton: false,
-                                showCancelButton: false,
-                                confirmButtonText: `Entendido`,
-                            }).then((result) => {
-                                /* Read more about isConfirmed, isDenied below */
-                                if (result.isConfirmed) {
-                                    $('#loader-wrapper').css('display', 'none');
-                                }
-                            })
+                            $scope.msjErrorArchivo();
                             return;
                         }
                         break;
 
-                         // Flujo mesa de deudas
+                    // Flujo mesa de deudas
                     case "6":
                         url = 'flujosDeuda';
                         
@@ -3874,46 +3606,75 @@ app.controller('csv', function($scope, functions, $window) {
                                 return response
                             }).then(res => {
                                 if (val1 == jsondata.length) {
-                                    $('#loader-wrapper').css('display', 'none');
-                                    Swal.fire({
-                                        title: 'Proceso Realizado Correctamente.',
-                                        icon: 'success',
-                                        showDenyButton: false,
-                                        showCancelButton: false,
-                                        confirmButtonText: `Entendido`,
-                                    }).then((result) => {
-                                        /* Read more about isConfirmed, isDenied below */
-                                        if (result.isConfirmed) {}
-                                    })
+                                    $scope.msjExitoArchivo();
                                 }
                                 val1++;
                             }).catch(error => {
-                                $('#loader-wrapper').css('display', 'none');
-                                Swal.fire({
-                                    title: 'Error en el Proceso.',
-                                    icon: 'error',
-                                    showDenyButton: false,
-                                    showCancelButton: false,
-                                    confirmButtonText: `Entendido`,
-                                }).then((result) => {
-                                    /* Read more about isConfirmed, isDenied below */
-                                    if (result.isConfirmed) {}
-                                })
+                                $scope.msjErrorProcesarArchivo();
                                 return
                             })
                         } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error de Archivo.',
-                                showDenyButton: false,
-                                showCancelButton: false,
-                                confirmButtonText: `Entendido`,
-                            }).then((result) => {
-                                /* Read more about isConfirmed, isDenied below */
-                                if (result.isConfirmed) {
-                                    $('#loader-wrapper').css('display', 'none');
+                            $scope.msjErrorArchivo();
+                            return;
+                        }
+                        break;
+                    
+                    
+                    // Flujo mercado de divisas
+                    case "7":
+                        url = 'flujosDivisas';
+                        
+                        if (columns.length == 9) {
+
+                            for (var colIndex = 0; colIndex < columns.length; colIndex++) {
+                                console.log('columnas divisas: ',colIndex,jsondata[i][columns[colIndex]]);
+
+                                /*if (colIndex == 5 || colIndex == 6) {
+                                    var cellValue = jsondata[i][columns[colIndex]];
+                                    if (cellValue.indexOf("/") > -1) {
+                                        if (isNaN(date.getTime())) {
+                                            var arrayRows = cellValue.split('/');
+                                            var d = arrayRows[2] + "-" + arrayRows[1] + "-" + arrayRows[0]
+                                        } else {
+                                            date.setDate(date.getDate() + 1);
+                                            var d = date.toISOString().slice(0, 10);
+                                        }
+                                    } else if (cellValue.indexOf("-") > -1) {
+                                        var date = new Date(cellValue);
+
+                                        if (isNaN(date.getTime())) {
+                                            $scope.msjErrorFormatoFecha();
+                                            return;
+                                        } else {
+                                            date.setDate(date.getDate() + 1);
+                                            var d = date.toISOString().slice(0, 10);
+                                        }
+                                    } else {
+                                        $scope.msjErrorFormatoFecha();
+                                        return;
+                                    }
+                                    rv[colIndex] = d;
+                                } else {*/
+                                    var cellValue = jsondata[i][columns[colIndex]];
+                                    rv[colIndex] = cellValue;
+                                //}
+                            }
+                            console.log(rv);
+                            functions.csv(token, rv, url).then(function(response) {
+                                var response = response.data;
+                                console.log(response)
+                                return response;
+                            }).then(res => {
+                                if (val1 == jsondata.length) {
+                                    $scope.msjExitoArchivo();
                                 }
+                                val1++;
+                            }).catch(error => {
+                                $scope.msjErrorProcesarArchivo();
+                                return;
                             })
+                        } else {
+                            $scope.msjErrorArchivo();
                             return;
                         }
                         break;
@@ -3934,7 +3695,59 @@ app.controller('csv', function($scope, functions, $window) {
 
     }
 
+    $scope.msjExitoArchivo = function() {
+        $('#loader-wrapper').css('display', 'none');
+        Swal.fire({
+            title: 'Proceso Realizado Correctamente.',
+            icon: 'success',
+            showDenyButton: false,
+            showCancelButton: false,
+            confirmButtonText: `Entendido`,
+        }).then((result) => {
+            if (result.isConfirmed) {}
+        })
+    }
 
+    $scope.msjErrorFormatoFecha = function() {
+        $('#loader-wrapper').css('display', 'none');
+        Swal.fire({
+            title: 'Error en el Formato de Fecha.',
+            text: 'El Formato de Fecha Debe Ser yyyy-mm-dd',
+            icon: 'error',
+            showDenyButton: false,
+            showCancelButton: false,
+            confirmButtonText: `Entendido`,
+        }).then((result) => {
+            if (result.isConfirmed) {}
+        })
+    }
+
+    $scope.msjErrorArchivo = function() {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error de Archivo.',
+            showDenyButton: false,
+            showCancelButton: false,
+            confirmButtonText: `Entendido`,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $('#loader-wrapper').css('display', 'none');
+            }
+        });
+    }
+
+    $scope.msjErrorProcesarArchivo = function() {
+        $('#loader-wrapper').css('display', 'none');
+        Swal.fire({
+            title: 'Error en el Proceso.',
+            icon: 'error',
+            showDenyButton: false,
+            showCancelButton: false,
+            confirmButtonText: `Entendido`,
+        }).then((result) => {
+            if (result.isConfirmed) {}
+        });
+    }
 
     $scope.header = function(jsondata) {
         var columExcel = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "AA", "AB", "AC", "AD", "AE", "AF"];
